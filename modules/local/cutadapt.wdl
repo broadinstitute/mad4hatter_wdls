@@ -26,9 +26,10 @@ task cutadapt {
   >>>
 
   output {
-    File sample_summary = "*.SAMPLEsummary.txt"
-    File amplicon_summary = "*.AMPLICONsummary.txt"
-    Directory demultiplexed_fastqs = "demultiplexed_fastqs"
+    File sample_summary = glob("*.SAMPLEsummary.txt")[0]
+    File amplicon_summary = glob("*.AMPLICONsummary.txt")[0]
+    # nextflow returned a directory, so will need change workflows that call this
+    Array[File] demultiplexed_fastqs = glob("demultiplexed_fastqs/*")
   }
 
   runtime {
