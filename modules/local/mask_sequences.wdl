@@ -1,6 +1,6 @@
 version 1.0
 
-task MaskSequences {
+task mask_sequences {
   input {
       Array[File] masks
       File alignments

@@ -1,7 +1,7 @@
 version 1.0
 
 # Denoise the demultiplexed amplicon fastq
-task Dada2Analysis {
+task dada2_analysis {
   input {
     Array[File] demultiplexed_fastqs
     File amplicon_info

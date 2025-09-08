@@ -1,6 +1,6 @@
 version 1.0
 
-task MaskReferenceHomopolymers {
+task mask_reference_homopolymers {
   input {
       File refseq_fasta
       Int homopolymer_threshold

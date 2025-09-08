@@ -1,6 +1,6 @@
 version 1.0
 
-task QualityReport {
+task quality_report {
   input {
     File sample_coverage
     File amplicon_coverage

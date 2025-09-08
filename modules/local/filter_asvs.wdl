@@ -1,7 +1,7 @@
 version 1.0
 
 # Prepare the primer files from the given amplicon_info file
-task FilterASVs {
+task filter_asvs {
   input {
     File alignments
   }

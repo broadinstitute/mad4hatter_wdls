@@ -1,6 +1,6 @@
 version 1.0
 
-task MaskReferenceTandemRepeats {
+task mask_reference_tandem_repeats {
   input {
       File refseq_fasta
       Int min_score

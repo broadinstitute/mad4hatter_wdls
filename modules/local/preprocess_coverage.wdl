@@ -1,6 +1,6 @@
 version 1.0
 
-task PreProcessCoverage {
+task pre_process_coverage {
   input {
     Directory sample_coverages
     Directory amplicon_coverages
