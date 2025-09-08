@@ -1,27 +1,32 @@
-# TODO: Convert to WDL
+version 1.0
 
-/*
- * STEP - ASV FITLERING
- * Prepare the primer files from the given amplicon_info file
- */
+# Prepare the primer files from the given amplicon_info file
+task FilterASVs {
+  input {
+    File alignments
+  }
 
+  # Pulled default value from https://github.com/EPPIcenter/mad4hatter/blob/0fdf688d8bef6b1407de66ed2644a2d26635015d/nextflow.config#L32
+  Int alignment_threshold = 60
+  # TODO: Fill in docker image here when available
+  String docker_image = ""
 
-process FILTER_ASVS {
+  command <<<
+  set -euo pipefail
 
-    label 'process_low'
-    conda 'envs/postproc-env.yml'
+  bash /bin/filter_asv_process.sh \
+    -i ~{alignments} \
+    -o filtered.alignments.txt \
+    -t ~{alignment_threshold}
+  >>>
 
-    input:
-    path alignments
+  output {
+    File filtered_alignments_ch = "filtered.alignments.txt"
+  }
 
-    output:
-    path("filtered.alignments.txt"), emit: filtered_alignments_ch
-
-    script:
-    """
-    bash filter_asv_process.sh \
-        -i ${alignments} \
-        -o filtered.alignments.txt \
-        -t ${params.alignment_threshold}
-    """
+  runtime {
+    docker: "~{docker_image}"
+    cpu: 1
+    memory: "8G"
+  }
 }

@@ -1,20 +1,28 @@
-# TODO: Convert to WDL
+version 1.0
 
-process MASK_REFERENCE_TANDEM_REPEATS {
+task MaskReferenceTandemRepeats {
+  input {
+      File refseq_fasta
+      Int min_score
+      Int max_period
+  }
 
-  label 'process_single'
-  conda 'envs/trf-env.yml'
+  # TODO: Fill in docker image here when available
+  String docker_image = ""
 
-  input:
-  path refseq_fasta
-  val min_score
-  val max_period
+  command <<<
+  set -euo pipefail
 
-  output:
-  path "*.mask", emit: masked_fasta
+  trf ~{refseq_fasta} 2 7 7 80 10 ~{min_score} ~{max_period} -h -m
+  >>>
 
-  script:
-  """
-  trf ${refseq_fasta} 2 7 7 80 10 ${min_score} ${max_period} -h -m
-  """
+  output {
+      File masked_fasta = "*.mask"
+  }
+
+  runtime {
+      docker: "~{docker_image}"
+      cpu: 1
+      memory: "8G"
+  }
 }

@@ -1,34 +1,35 @@
-# TODO: Convert to WDL
+version 1.0
 
-// modules/local/postprocess_coverage.nf
+task PostProcessCoverage {
+  input {
+    File alleledata
+    File clusters
+    File sample_coverage
+    File amplicon_coverage
+  }
 
-process POSTPROCESS_COVERAGE {
+  # TODO: Fill in docker image here when available
+  String docker_image = ""
 
-  conda 'envs/postproc-env.yml'
-  label 'process_single'
+  command <<<
+  set -euo pipefail
 
-  input:
-  path alleledata
-  path clusters
-  path sample_coverage
-  path amplicon_coverage
+  Rscript /bin/asv_coverage.R \
+    --alleledata ~{alleledata} \
+    --clusters ~{clusters} \
+    --sample-coverage ~{sample_coverage} \
+    --amplicon-coverage ~{amplicon_coverage}
+  >>>
 
-  output:
-  path 'sample_coverage_postprocessed.txt', emit: postprocess_sample_coverage
-  path 'amplicon_coverage_postprocessed.txt', emit: postprocess_amplicon_coverage
 
-  script:
-  """
-  # Ensure only one file is provided for each coverage type
-  if [ \$(ls -l $sample_coverage | wc -l) -ne 1 ] || [ \$(ls -l $amplicon_coverage | wc -l) -ne 1 ]; then
-    echo "Error: Multiple coverage files detected. Expecting only one file for each type."
-    exit 1
-  fi
+  output {
+      File postprocess_sample_coverage = "sample_coverage_postprocessed.txt"
+      File postprocess_amplicon_coverage = "amplicon_coverage_postprocessed.txt"
+  }
 
-  Rscript ${projectDir}/bin/asv_coverage.R \
-    --alleledata $alleledata \
-    --clusters $clusters \
-    --sample-coverage $sample_coverage \
-    --amplicon-coverage $amplicon_coverage
-  """
+  runtime {
+      docker: "~{docker_image}"
+      cpu: 1
+      memory: "8G"
+  }
 }

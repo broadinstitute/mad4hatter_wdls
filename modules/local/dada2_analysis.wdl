@@ -1,46 +1,48 @@
-# TODO: Convert to WDL
+version 1.0
 
-/*
- * STEP - DADA2_ANALYSIS
- * Denoise the demultiplexed amplicon fastqs
- */
+# Denoise the demultiplexed amplicon fastq
+task Dada2Analysis {
+  input {
+    Array[File] demultiplexed_fastqs
+    File amplicon_info
 
-process DADA2_ANALYSIS {
+    String dada2_pool
+    Int band_size
+    Float omega_a
+    Int maxEE
+    Boolean just_concatenate
 
-  label 'process_high'
-  conda 'envs/dada2-env.yml'
+    Int cpus = 1
+    # TODO: Fill in docker image here when available
+    String docker_image = ""
+  }
 
-  publishDir(
-    path: "${params.outDIR}/raw_dada2_output",
-    mode: 'copy',
-    pattern: 'dada2.clusters.txt'
-  )
+  command <<<
+  set -euo pipefail
 
-  input:
-  path (demultiplexed_fastqs, stageAs: "demultiplexed_fastqs?")
-  path amplicon_info
-  val dada2_pool
-  val band_size
-  val omega_a
-  val maxEE
-  val just_concatenate
+  CONCATENATE_FLAG=""
+  if [[ ~{just_concatenate} == "true" ]]; then
+    CONCATENATE_FLAG="--concat-non-overlaps"
+  fi
 
-  output:
-  path 'dada2.clusters.txt', emit: dada2_clusters
+  Rscript /bin/dada_overlaps.R \
+    --trimmed-path ~{demultiplexed_fastqs} \
+    --ampliconFILE ~{amplicon_info} \
+    --pool ~{dada2_pool} \
+    --band-size ~{band_size} \
+    --omega-a ~{omega_a} \
+    --maxEE ~{maxEE} \
+    --cores ~{cpus} \
+    $CONCATENATE_FLAG
+  >>>
 
-  script:
+  output {
+    File dada2_clusters = "dada2.clusters.txt"
+  }
 
-  def concatenate = just_concatenate ? '--concat-non-overlaps' : ''
-
-  """
-  Rscript ${projectDir}/bin/dada_overlaps.R \
-    --trimmed-path ${demultiplexed_fastqs} \
-    --ampliconFILE ${amplicon_info} \
-    --pool ${params.dada2_pool} \
-    --band-size ${params.band_size} \
-    --omega-a ${params.omega_a} \
-    --maxEE ${params.maxEE} \
-    --cores ${task.cpus} \
-    ${concatenate}
-  """
+  runtime {
+    docker: "~{docker_image}"
+    cpu: cpus
+    memory: "8G"
+  }
 }

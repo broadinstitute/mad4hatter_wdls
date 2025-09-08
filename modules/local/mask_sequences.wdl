@@ -1,25 +1,32 @@
-# TODO: convert to WDL
+version 1.0
 
-// Dada2 Postprocessing
-process MASK_SEQUENCES {
+task MaskSequences {
+  input {
+      Array[File] masks
+      File alignments
+      Int cpus = 1
+  }
 
-  label 'process_medium'
-  conda 'envs/postproc-env.yml'
+  # TODO: Fill in docker image here when available
+  String docker_image = ""
 
-  input:
-  path masks
-  path alignments
+  command <<<
+  Rscript /bin/mask_sequences.R \
+      --masks ~{masks} \
+      --alignments ~{alignments} \
+      --n-cores ~{cpus}
+  >>>
 
-  output:
-  path "masked.alignments.txt", emit: masked_alignments
+  output {
+      File masked_alignments = "masked.alignments.txt"
+  }
 
-  script:
-
-  """
-  Rscript ${projectDir}/bin/mask_sequences.R \
-    --masks ${masks.join(' ')} \
-    --alignments ${alignments} \
-    --n-cores ${task.cpus}
-
-  """
+  runtime {
+      docker: "~{docker_image}"
+      cpu: 1
+      memory: "8G"
+  }
 }
+
+
+

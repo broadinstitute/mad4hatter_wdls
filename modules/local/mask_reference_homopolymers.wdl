@@ -1,22 +1,29 @@
-#TODO: Convert to WDL
+version 1.0
 
-process MASK_REFERENCE_HOMOPOLYMERS {
+task MaskReferenceHomopolymers {
+  input {
+      File refseq_fasta
+      Int homopolymer_threshold
+  }
 
-  label 'process_medium'
-  conda 'envs/postproc-env.yml'
+  # TODO: Fill in docker image here when available
+  String docker_image = ""
 
-  input:
-  path refseq_fasta
-  val homopolymer_threshold
+  command <<<
+  set -euo pipefail
 
-  output:
-  path "*.mask", emit: masked_fasta
+  Rscript /bin/mask_homopolymers.R \
+      --refseq-fasta ~{refseq_fasta} \
+      --homopolymer_threshold ~{homopolymer_threshold}
+  >>>
 
-  script:
-  """
-  Rscript ${projectDir}/bin/mask_homopolymers.R \
-    --refseq-fasta ${refseq_fasta} \
-    --homopolymer_threshold ${homopolymer_threshold}
+  output {
+      File masked_fasta = "*.mask"
+  }
 
-  """
+  runtime {
+      docker: "~{docker_image}"
+      cpu: 1
+      memory: "8G"
+  }
 }

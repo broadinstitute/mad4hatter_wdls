@@ -1,21 +1,17 @@
-# TODO: Convert this to WDL
+version 1.0
 
-// modules/local/preprocess_coverage.nf
+task PreProcessCoverage {
+  input {
+    Directory sample_coverages
+    Directory amplicon_coverages
+  }
 
-process PREPROCESS_COVERAGE {
+  # TODO: Fill in docker image here when available
+  String docker_image = ""
 
-  label 'process_single'
+  command <<<
+  set -euo pipefail
 
-  input:
-  path sample_coverages
-  path amplicon_coverages
-
-  output:
-  path 'sample_coverage.txt', emit: sample_coverage
-  path 'amplicon_coverage.txt', emit: amplicon_coverage
-
-  script:
-  """
   add_sample_name_column() {
     awk -v fname=\$(basename "\$1" | sed -e 's/.SAMPLEsummary.txt//g' -e 's/.AMPLICONsummary.txt//g') -v OFS="\\t" '{print fname, \$0}' "\$1"
   }
@@ -32,5 +28,18 @@ process PREPROCESS_COVERAGE {
   do
       add_sample_name_column \$file >> amplicon_coverage.txt
   done
-  """
+
+  >>>
+
+  output {
+    File sample_coverage = "sample_coverage.txt"
+    File amplicon_coverage = "amplicon_coverage.txt"
+  }
+
+  runtime {
+      docker: "~{docker_image}"
+      cpu: 1
+      memory: "8G"
+  }
+
 }
