@@ -5,7 +5,7 @@ task build_pseudocigar {
   }
 
   command <<<
-    Rscript ./bin/build_pseudocigar.R \
+    Rscript /bin/build_pseudocigar.R \
       --alignments ~{alignments}
   >>>
 

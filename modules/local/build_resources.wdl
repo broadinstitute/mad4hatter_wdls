@@ -7,7 +7,7 @@ task build_amplicon_info {
   }
 
   command <<<
-    python3 ./bin/build_amplicon_info.py \
+    python3 /bin/build_amplicon_info.py \
       --pools ~{pools} \
       --amplicon_info_paths ~{amplicon_info_paths} \
       --amplicon_info_output_path ~{amplicon_info_output}
@@ -30,7 +30,7 @@ task build_targeted_reference {
   }
 
   command <<<
-    python3 ./bin/merge_fasta.py \
+    python3 /bin/merge_fasta.py \
       --reference_paths ~{reference_input_paths} \
       --reference_output_path ~{reference_output_path}
   >>>
@@ -53,7 +53,7 @@ task build_resmarker_info {
   }
 
   command <<<
-    python3 ./bin/build_resmarker_info.py \
+    python3 /bin/build_resmarker_info.py \
       --amplicon_info ~{amplicon_info} \
       --principal_resmarkers ~{principal_resmarkers} \
       --resmarker_info_output_path ~{resmarker_info_output_path}

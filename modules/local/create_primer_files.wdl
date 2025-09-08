@@ -5,7 +5,7 @@ task create_primer_files {
   }
 
   command <<<
-    bash create_primer_files.sh -a ~{amplicon_info} \
+    bash /bin/create_primer_files.sh -a ~{amplicon_info} \
       -f fwd_primers.fasta \
       -r rev_primers.fasta
   >>>

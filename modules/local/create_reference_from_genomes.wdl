@@ -3,12 +3,13 @@ task create_reference_from_genomes {
     File genome
     File amplicon_info
     String refseq_fasta
-    Int n_cores # Should this be used in runtime?
+    # TODO: Should this be used in runtime?
+    Int n_cores
     String docker_name = "your_docker_image"
   }
 
   command <<<
-    Rscript ./bin/create_reference_from_genomes.R \
+    Rscript /bin/create_reference_from_genomes.R \
       --ampliconFILE ~{amplicon_info} \
       --genome ~{genome} \
       --output ~{refseq_fasta} \

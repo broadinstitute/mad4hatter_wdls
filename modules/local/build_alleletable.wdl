@@ -7,14 +7,14 @@ task build_alleletable {
   }
 
   command <<<
-    Rscript ./bin/build_alleletable.R \
+    Rscript /bin/build_alleletable.R \
       --amplicon-info ~{amplicon_info} \
       --denoised-asvs ~{denoised_asvs} \
       --processed-asvs ~{processed_asvs}
   >>>
 
   output {
-    File allele_data = "allele_data.txt"
+    File alleledata = "allele_data.txt"
   }
 
   runtime {

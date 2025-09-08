@@ -8,12 +8,13 @@ task cutadapt {
     Int cutadapt_minlen
     String sequencer
     Float allowed_errors
-    Int cpus = 1 # Should this be used in runtime?
+    #TODO: Should this be used in runtime?
+    Int cpus = 1
     String docker_name = "your_docker_image"
   }
 
   command <<<
-    bash cutadapt_process.sh \
+    bash /bin/cutadapt_process.sh \
       -1 ~{reads_1} \
       -2 ~{reads_2} \
       -r ~{rev_primers} \

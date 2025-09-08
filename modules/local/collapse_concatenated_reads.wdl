@@ -5,12 +5,12 @@ task collapse_concatenated_reads {
   }
 
   command <<<
-    Rscript ./bin/collapse_concatenated_reads.R \
+    Rscript /bin/collapse_concatenated_reads.R \
       --clusters ~{clusters}
   >>>
 
   output {
-    File collapsed = "clusters.concatenated.collapsed.txt"
+    File clusters_concatenated_collapsed = "clusters.concatenated.collapsed.txt"
   }
 
   runtime {
