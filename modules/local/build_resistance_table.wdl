@@ -1,39 +1,30 @@
-# TODO: Convert to wdl
+task build_resistance_table {
+  input {
+    File alleledata
+    File alignment_data
+    File resmarkers
+    File refseq
+    Int n_cores # Should this be used in runtime?
+    String docker_name = "your_docker_image"
+  }
 
-/*
- * STEP - BUILD_RESISTANCE_TABLE
- *
- */
+  command <<<
+    python3 ./bin/resistance_marker_module.py \
+      --allele_data_path ~{alleledata} \
+      --aligned_asv_table_path ~{alignment_data} \
+      --res_markers_info_path ~{resmarkers} \
+      --refseq_path ~{refseq} \
+      --n-cores ~{n_cores}
+  >>>
 
-process BUILD_RESISTANCE_TABLE {
+  output {
+    File resmarker_table = "resmarker_table.txt"
+    File resmarker_table_by_locus = "resmarker_table_by_locus.txt"
+    File microhaps = "resmarker_microhaplotype_table.txt"
+    File new_mutations = "all_mutations_table.txt"
+  }
 
-  label 'process_medium'
-  conda 'envs/resmarker-env.yml'
-
-  publishDir(
-    path: "${params.outDIR}/resistance_marker_module",
-    mode: 'copy'
-  )
-
-  input:
-  path alleledata
-  path alignment_data
-  path resmarkers
-  path refseq
-
-  output:
-  path ('resmarker_table.txt'), emit: resmarkers
-  path ('resmarker_table_by_locus.txt'), emit: resmarkers_by_locus
-  path ('resmarker_microhaplotype_table.txt'), emit: microhaps
-  path ('all_mutations_table.txt'), emit: new_mutations
-
-  script:
-  """
-  python3 ${projectDir}/bin/resistance_marker_module.py \
-    --allele_data_path ${alleledata} \
-    --aligned_asv_table_path ${alignment_data} \
-    --res_markers_info_path ${resmarkers} \
-    --refseq_path ${refseq} \
-    --n-cores ${task.cpus}
-  """
+  runtime {
+    docker: docker_name
+  }
 }
