@@ -1,3 +1,5 @@
+version 1.0
+
 task align_to_reference {
   input {
     File clusters

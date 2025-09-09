@@ -1,3 +1,5 @@
+version 1.0
+
 task create_primer_files {
   input {
     File amplicon_info

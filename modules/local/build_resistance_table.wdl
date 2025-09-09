@@ -1,3 +1,5 @@
+version 1.0
+
 task build_resistance_table {
   input {
     File alleledata

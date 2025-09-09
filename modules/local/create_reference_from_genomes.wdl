@@ -1,3 +1,5 @@
+version 1.0
+
 task create_reference_from_genomes {
   input {
     File genome

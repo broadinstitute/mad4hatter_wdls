@@ -1,3 +1,5 @@
+version 1.0
+
 task cutadapt {
   input {
     File fwd_primers
