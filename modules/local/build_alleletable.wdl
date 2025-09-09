@@ -1,33 +1,25 @@
-# TODO: Convert to wdl
+version 1.0
 
-/*
- * STEP - BUILD_ALLELETABLE
- *
- */
+task build_alleletable {
+  input {
+    File amplicon_info
+    File denoised_asvs
+    File processed_asvs
+    String docker_name = "your_docker_image"
+  }
 
-process BUILD_ALLELETABLE {
+  command <<<
+    Rscript /bin/build_alleletable.R \
+      --amplicon-info ~{amplicon_info} \
+      --denoised-asvs ~{denoised_asvs} \
+      --processed-asvs ~{processed_asvs}
+  >>>
 
-  label 'process_single'
-  conda 'envs/postproc-env.yml'
+  output {
+    File alleledata = "allele_data.txt"
+  }
 
-  publishDir(
-    path: "${params.outDIR}",
-    mode: 'copy'
-  )
-
-  input:
-  path amplicon_info
-  path denoised_asvs
-  path processed_asvs
-
-  output:
-  path("allele_data.txt"), emit: alleledata
-
-  script:
-  """
-  Rscript ${projectDir}/bin/build_alleletable.R \
-    --amplicon-info ${amplicon_info} \
-    --denoised-asvs ${denoised_asvs} \
-    --processed-asvs ${processed_asvs}
-  """
+  runtime {
+    docker: docker_name
+  }
 }

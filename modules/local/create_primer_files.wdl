@@ -1,23 +1,23 @@
-# TODO: Convert to WDL
+version 1.0
 
-/*
- * STEP - CREATE_PRIMER_FILES
- * Prepare the primer files from the given amplicon_info file
- */
+task create_primer_files {
+  input {
+    File amplicon_info
+    String docker_name = "your_docker_image"
+  }
 
-process CREATE_PRIMER_FILES {
+  command <<<
+    bash /bin/create_primer_files.sh -a ~{amplicon_info} \
+      -f fwd_primers.fasta \
+      -r rev_primers.fasta
+  >>>
 
-    label 'process_single'
+  output {
+    File fwd_primers = "fwd_primers.fasta"
+    File rev_primers = "rev_primers.fasta"
+  }
 
-    input:
-    path amplicon_info
-
-    output:
-    path("fwd_primers.fasta"), emit: fwd_primers
-    path("rev_primers.fasta"), emit: rev_primers
-
-    shell:
-    """
-    bash create_primer_files.sh -a ${amplicon_info} -f fwd_primers.fasta -r rev_primers.fasta
-    """
+  runtime {
+    docker: docker_name
+  }
 }

@@ -1,24 +1,21 @@
-# TODO: Convert to WDL
+version 1.0
 
-/*
- * STEP - COLLAPSE_CONCATENATED_READS
- * Denoise the demultiplexed amplicon fastqs 
- */
+task collapse_concatenated_reads {
+  input {
+    File clusters
+    String docker_name = "your_docker_image"
+  }
 
-process COLLAPSE_CONCATENATED_READS {
+  command <<<
+    Rscript /bin/collapse_concatenated_reads.R \
+      --clusters ~{clusters}
+  >>>
 
-  label 'process_single'
-  conda 'envs/postproc-env.yml'
+  output {
+    File clusters_concatenated_collapsed = "clusters.concatenated.collapsed.txt"
+  }
 
-  input:
-  path clusters
-
-  output:
-  path 'clusters.concatenated.collapsed.txt', emit: clusters_concatenated_collapsed
-  
-  script:
-  """
-  Rscript ${projectDir}/bin/collapse_concatenated_reads.R \
-    --clusters ${clusters} 
-  """
+  runtime {
+    docker: docker_name
+  }
 }

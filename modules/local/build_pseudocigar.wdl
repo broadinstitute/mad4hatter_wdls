@@ -1,25 +1,21 @@
-#TODO: Convert to WDL
+version 1.0
 
-/*
- * STEP - BUILD_PSEUDOCIGAR
- *
- */
+task build_pseudocigar {
+  input {
+    File alignments
+    String docker_name = "your_docker_image"
+  }
 
-process BUILD_PSEUDOCIGAR {
+  command <<<
+    Rscript /bin/build_pseudocigar.R \
+      --alignments ~{alignments}
+  >>>
 
-  label 'process_medium'
-  conda 'envs/postproc-env.yml'
+  output {
+    File pseudocigar = "alignments.pseudocigar.txt"
+  }
 
-  input:
-  path alignments
-
-  output:
-  path("alignments.pseudocigar.txt"), emit: pseudocigar
-
-  script:
-  """
-  Rscript ${projectDir}/bin/build_pseudocigar.R \
-    --alignments ${alignments} \
-    --ncores ${task.cpus}
-  """
+  runtime {
+    docker: docker_name
+  }
 }

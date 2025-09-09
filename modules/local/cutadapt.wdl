@@ -1,41 +1,40 @@
-# TODO: Convert to WDL
+version 1.0
 
-/*
- * STEP - CUTADAPT
- * Prepare the primer files from the given amplicon_info file
- */
+task cutadapt {
+  input {
+    File fwd_primers
+    File rev_primers
+    File reads_1
+    File reads_2
+    String pair_id
+    Int cutadapt_minlen
+    String sequencer
+    Float allowed_errors
+    #TODO: Should this be used in runtime?
+    Int cpus = 1
+    String docker_name = "your_docker_image"
+  }
 
+  command <<<
+    bash /bin/cutadapt_process.sh \
+      -1 ~{reads_1} \
+      -2 ~{reads_2} \
+      -r ~{rev_primers} \
+      -f ~{fwd_primers} \
+      -m ~{cutadapt_minlen} \
+      -s ~{sequencer} \
+      -e ~{allowed_errors} \
+      -c ~{cpus} \
+      -o demultiplexed_fastqs
+  >>>
 
-process CUTADAPT {
+  output {
+    File sample_summary = glob("*.SAMPLEsummary.txt")[0]
+    File amplicon_summary = glob("*.AMPLICONsummary.txt")[0]
+    Directory demultiplexed_fastqs = "demultiplexed_fastqs"
+  }
 
-  tag "$pair_id"
-  label 'process_low'
-  conda 'envs/cutadapt-env.yml'
-
-    input:
-    file fwd_primers
-    file rev_primers
-    tuple val(pair_id), file(reads)
-    val cutadapt_minlen
-    val sequencer
-    val allowed_errors
-
-    output:
-    path("*.SAMPLEsummary.txt"), emit: sample_summary
-    path("*.AMPLICONsummary.txt"), emit: amplicon_summary
-    path('demultiplexed_fastqs'), emit: demultiplexed_fastqs
-
-    script:
-    """
-    bash cutadapt_process.sh \
-        -1 ${reads[0]} \
-        -2 ${reads[1]} \
-        -r ${rev_primers} \
-        -f ${fwd_primers} \
-        -m ${cutadapt_minlen} \
-        -s ${sequencer} \
-        -e ${allowed_errors} \
-        -c ${task.cpus} \
-        -o demultiplexed_fastqs
-    """
+  runtime {
+    docker: docker_name
+  }
 }
