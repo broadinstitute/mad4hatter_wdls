@@ -15,10 +15,11 @@ task mask_reference_homopolymers {
   Rscript /bin/mask_homopolymers.R \
       --refseq-fasta ~{refseq_fasta} \
       --homopolymer_threshold ~{homopolymer_threshold}
+      --fout "refseq.homopolymer.fasta.mask"
   >>>
 
   output {
-      File masked_fasta = "*.mask"
+      File masked_fasta = "refseq.homopolymer.fasta.mask"
   }
 
   runtime {

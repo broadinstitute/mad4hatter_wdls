@@ -12,7 +12,7 @@ task mask_sequences {
 
   command <<<
   Rscript /bin/mask_sequences.R \
-      --masks ~{masks} \
+      --masks ~{sep="," masks} \
       --alignments ~{alignments} \
       --n-cores ~{cpus}
   >>>
