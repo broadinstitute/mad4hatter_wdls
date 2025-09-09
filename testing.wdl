@@ -12,7 +12,7 @@ workflow TestWdl {
     }
 
     # Testing task
-    call AlignToRef.align_to_reference as align_to_ref{
+    call AlignToRef.align_to_reference as align_to_ref {
         input:
             docker_image = docker_image,
             clusters = clusters,
