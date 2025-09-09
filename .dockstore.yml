@@ -1,8 +1,8 @@
 version: 1.2
 workflows:
-  - name: TestingWdl
+  - name: /TestingWdl
     subclass: WDL
-    primaryDescriptorPath: testing.wdl
-    readMePath: testing.README.md
+    primaryDescriptorPath: /testing.wdl
+    readMePath: /testing.README.md
     testParameterFiles:
-      - testing.wdl
+      - /testing.wdl
