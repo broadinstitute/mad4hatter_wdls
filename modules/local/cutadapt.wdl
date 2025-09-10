@@ -29,9 +29,9 @@ task cutadapt {
   >>>
 
   output {
-    File sample_summary = glob("*.SAMPLEsummary.txt")[0]
-    File amplicon_summary = glob("*.AMPLICONsummary.txt")[0]
-    Directory demultiplexed_fastqs = "demultiplexed_fastqs"
+    File sample_summary_ch = glob("*.SAMPLEsummary.txt")[0]
+    File amplicon_summary_ch = glob("*.AMPLICONsummary.txt")[0]
+    Directory demux_fastqs_ch = "demultiplexed_fastqs"
   }
 
   runtime {

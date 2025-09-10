@@ -29,11 +29,4 @@ workflow postproc_only {
       results_ch = denoise_amplicons_2.results_ch,
       docker_string = docker_string
   }
-
-  output {
-    File results = denoise_amplicons_2.results_ch
-    File reference = denoise_amplicons_2.reference_ch
-    File aligned_asv_table = denoise_amplicons_2.aligned_asv_table
-    File allele_table = build_alleletable.allele_table
-  }
 }
