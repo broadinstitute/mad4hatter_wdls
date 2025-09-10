@@ -1,61 +1,89 @@
-# TODO: convert to wdl
+version 1.0
 
-/*
- * WORKFLOW - DENOISE_AMPLICONS_2
- *
- * This workflow uses is comprised of multiple postprocessing steps to reduce noise with masking,
- * and identify difference in the ASVs given a reference
- */
+import "../modules/local/align_to_reference.wdl" as align_to_reference
+import "../subworkflows/local/mask_low_complexity_regions.wdl" as mask_low_complexity_regions
+import "../subworkflows/local/prepare_reference_sequences.wdl" as prepare_reference_sequences
+import "../modules/local/build_pseudocigar.wdl" as build_pseudocigar
+import "../modules/local/filter_asvs.wdl" as filter_asvs
+import "../modules/local/collapse_concatenated_reads.wdl" as collapse_concatenated_reads
 
-
-include { ALIGN_TO_REFERENCE } from '../modules/local/align_to_reference.nf'
-include { MASK_LOW_COMPLEXITY_REGIONS } from '../subworkflows/local/mask_low_complexity_regions.nf'
-include { PREPARE_REFERENCE_SEQUENCES } from '../subworkflows/local/prepare_reference_sequences.nf'
-include { BUILD_PSEUDOCIGAR } from '../modules/local/build_pseudocigar.nf'
-include { FILTER_ASVS } from '../modules/local/filter_asvs.nf'
-include { COLLAPSE_CONCATENATED_READS } from '../modules/local/collapse_concatenated_reads.nf'
-
-workflow DENOISE_AMPLICONS_2 {
-
-  take:
-  amplicon_info
-  denoise_ch
-
-  main:
-
-  // custom trimming
-  denoise_ch = params.just_concatenate ?
-    COLLAPSE_CONCATENATED_READS(denoise_ch) : denoise_ch
-
-  // create the reference if the user has not provided one (but has a genome), otherwise use the user file
-  def reference = (params.refseq_fasta == null) ? PREPARE_REFERENCE_SEQUENCES(amplicon_info).reference_ch : params.refseq_fasta
-
-  // use the denoised sequences and align them to the reference
-  ALIGN_TO_REFERENCE(
-    denoise_ch,
-    reference,
-    amplicon_info
-  )
-
-  FILTER_ASVS(
-    ALIGN_TO_REFERENCE.out.alignments
-  )
-  alignment_table_ch = ALIGN_TO_REFERENCE.out.alignments
-
-  if (params.masked_fasta == null && (params.mask_tandem_repeats || params.mask_homopolymers)) {
-    MASK_LOW_COMPLEXITY_REGIONS(
-      reference,
-      FILTER_ASVS.out.filtered_alignments_ch
-    )
-    alignment_table_ch = MASK_LOW_COMPLEXITY_REGIONS.out.masked_alignments
+workflow denoise_amplicons_2 {
+  input {
+    File amplicon_info
+    File denoise_ch
+    Boolean just_concatenate
+    File? refseq_fasta
+    File? masked_fasta
+    Boolean mask_tandem_repeats
+    Boolean mask_homopolymers
+    String docker_string = "my_docker"
   }
 
-  BUILD_PSEUDOCIGAR(
-    alignment_table_ch
-  )
+  # Process denoise_ch if just_concatenate is true
+  if (just_concatenate) {
+    call collapse_concatenated_reads.collapse_concatenated_reads {
+      input:
+        denoise_ch = denoise_ch,
+        docker_string = docker_string
+    }
+  }
 
-  emit:
-  results_ch = BUILD_PSEUDOCIGAR.out.pseudocigar
-  reference_ch = reference
-  aligned_asv_table = alignment_table_ch
+  # Use the appropriate denoise input based on just_concatenate
+  File denoise_input = select_first([collapse_concatenated_reads.collapsed_reads, denoise_ch])
+
+  # Create reference or use provided one
+  if (!defined(refseq_fasta)) {
+    call prepare_reference_sequences.prepare_reference_sequences {
+      input:
+        amplicon_info = amplicon_info,
+        docker_string = docker_string
+    }
+  }
+
+  # Use the appropriate reference
+  File reference = select_first([refseq_fasta, prepare_reference_sequences.reference_ch])
+
+  # Align denoised sequences to reference
+  call align_to_reference.align_to_reference {
+    input:
+      denoise_ch = denoise_input,
+      reference = reference,
+      amplicon_info = amplicon_info,
+      docker_string = docker_string
+  }
+
+  # Filter ASVs
+  call filter_asvs.filter_asvs {
+    input:
+      alignments = align_to_reference.alignments,
+      docker_string = docker_string
+  }
+
+  # Set initial alignment table
+  File alignment_table = align_to_reference.alignments
+
+  # Mask low complexity regions if needed
+  if (!defined(masked_fasta) && (mask_tandem_repeats || mask_homopolymers)) {
+    call mask_low_complexity_regions.mask_low_complexity_regions {
+      input:
+        reference = reference,
+        filtered_alignments = filter_asvs.filtered_alignments_ch,
+        docker_string = docker_string
+    }
+    # Update alignment table if masking was done
+    alignment_table = mask_low_complexity_regions.masked_alignments
+  }
+
+  # Build pseudocigar
+  call build_pseudocigar.build_pseudocigar {
+    input:
+      alignment_table = alignment_table,
+      docker_string = docker_string
+  }
+
+  output {
+    File results_ch = build_pseudocigar.pseudocigar
+    File reference_ch = reference
+    File aligned_asv_table = alignment_table
+  }
 }

@@ -1,33 +1,32 @@
-# TODO: convert to wdl
+version 1.0
 
-/*
- * WORKFLOW - DENOISE_AMPLICONS_1
- *
- * This workflow uses DADA2 to denoise amplicons
- */
+import "../modules/local/dada2_analysis.wdl" as dada2_analysis
 
+workflow denoise_amplicons_1 {
+  input {
+    File amplicon_info
+    Array[File] demultiplexed_fastqs
+    String dada2_pool
+    Int band_size
+    Float omega_a
+    Int maxEE
+    Boolean just_concatenate
+    String docker_image = "your_docker_image"
+  }
 
-include { DADA2_ANALYSIS } from '../modules/local/dada2_analysis.nf'
+  call dada2_analysis.dada2_analysis {
+    input:
+      demultiplexed_fastqs = demultiplexed_fastqs,
+      amplicon_info = amplicon_info,
+      dada2_pool = dada2_pool,
+      band_size = band_size,
+      omega_a = omega_a,
+      maxEE = maxEE,
+      just_concatenate = just_concatenate,
+      docker_image = docker_image
+  }
 
-workflow DENOISE_AMPLICONS_1 {
-
-  take:
-  amplicon_info
-  demultiplexed_fastqs
-
-  main:
-
-  // This module takes all amplicon-demultiplexed fastqs and runs DADA2
-  DADA2_ANALYSIS(
-    demultiplexed_fastqs.collect(),
-    amplicon_info,
-    params.dada2_pool,
-    params.band_size,
-    params.omega_a,
-    params.maxEE,
-    params.just_concatenate
-  )
-
-  emit:
-  denoise_ch = DADA2_ANALYSIS.out.dada2_clusters
+  output {
+    File dada2_clusters = dada2_analysis.dada2_clusters
+  }
 }

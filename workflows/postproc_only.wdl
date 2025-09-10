@@ -1,43 +1,32 @@
-# TODO: convert to wdl
+version 1.0
 
-/*
- * WORKFLOW - POSTPROC_ONLY
- *
- * This workflow uses is comprised of multiple postprocessing steps to reduce noise with masking,
- * and identify difference in the ASVs given a reference.
- */
+import "./denoise_amplicons_2.wdl" as denoise_amplicons_2
+import "../modules/local/build_alleletable.wdl" as build_alleletable
 
-include { DENOISE_AMPLICONS_2 } from './denoise_amplicons_2.nf'
-include { BUILD_ALLELETABLE } from '../modules/local/build_alleletable.nf'
+workflow postproc_only {
+  input {
+    File amplicon_info
+    File denoised_asvs
+    String docker_string = "my_docker"
+  }
 
-workflow POSTPROC_ONLY {
+  # Call the denoise_amplicons_2 workflow
+  call denoise_amplicons_2.denoise_amplicons_2 {
+    input:
+      amplicon_info = amplicon_info,
+      denoise_ch = denoised_asvs,
+      just_concatenate = false,
+      mask_tandem_repeats = true,
+      mask_homopolymers = true,
+      docker_string = docker_string
+  }
 
-    take:
-    amplicon_info
-    denoised_asvs
-
-    main:
-    // Read in denoised asv file provided by the user
-    File denoised_asvs_file = new File(denoised_asvs).absoluteFile
-    if(!denoised_asvs_file.exists()) {
-        exit 1, "The specified denoised_asvs file '${denoised_asvs}' does not exist."
-    }
-
-    // Add debugging steps as this is user input
-    log.debug("Denoised ASVs path: ${denoised_asvs}")
-    log.debug("Absolute path: ${denoised_asvs_file.absolutePath}")
-    log.debug("Does it exist? ${denoised_asvs_file.exists()}")
-
-    // Create the Nextflow Channel
-    denoise_ch = Channel.fromPath(denoised_asvs_file)
-
-    // Run postprocessing only workflow
-    DENOISE_AMPLICONS_2(amplicon_info, denoise_ch)
-
-    // Allele table creation
-    BUILD_ALLELETABLE(
-      amplicon_info,
-      denoise_ch,
-      DENOISE_AMPLICONS_2.out.results_ch
-    )
+  # Call the build_alleletable task
+  call build_alleletable.build_alleletable {
+    input:
+      amplicon_info = amplicon_info,
+      denoise_ch = denoised_asvs,
+      results_ch = denoise_amplicons_2.results_ch,
+      docker_string = docker_string
+  }
 }

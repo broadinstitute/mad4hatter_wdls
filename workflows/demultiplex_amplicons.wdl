@@ -1,28 +1,44 @@
-# TODO: convert to wdl
+version 1.0
 
-include { CREATE_PRIMER_FILES } from '../modules/local/create_primer_files.nf'
-include { CUTADAPT } from '../modules/local/cutadapt.nf'
-include { QUALITY_REPORT } from '../modules/local/quality_report.nf'
+import "../modules/local/create_primer_files.wdl" as create_primer_files
+import "../modules/local/cutadapt.wdl" as cutadapt
+# This was imported but not used in the original Nexflow workflow
+#import "../modules/local/quality_report.wdl" as quality_report
 
-workflow DEMULTIPLEX_AMPLICONS {
+workflow demultiplex_amplicons {
+  input {
+    File amplicon_info
+    Array[Pair[String, Pair[File, File]]] read_pairs
+    Int cutadapt_minlen
+    String sequencer
+    Float allowed_errors
+    String docker_name = "your_docker_image"
+  }
 
-  take:
-  amplicon_info
-  read_pairs
+  call create_primer_files.create_primer_files {
+    input:
+      amplicon_info = amplicon_info,
+      docker_name = docker_name
+  }
 
-  main:
-  CREATE_PRIMER_FILES(amplicon_info)
-  CUTADAPT(
-    CREATE_PRIMER_FILES.out.fwd_primers,
-    CREATE_PRIMER_FILES.out.rev_primers,
-    read_pairs,
-    params.cutadapt_minlen,
-    params.sequencer,
-    params.allowed_errors
-  )
+  scatter (read_pair in read_pairs) {
+    call cutadapt.cutadapt {
+      input:
+        fwd_primers = create_primer_files.fwd_primers,
+        rev_primers = create_primer_files.rev_primers,
+        reads_1 = read_pair.right.left,
+        reads_2 = read_pair.right.right,
+        pair_id = read_pair.left,
+        cutadapt_minlen = cutadapt_minlen,
+        sequencer = sequencer,
+        allowed_errors = allowed_errors,
+        docker_name = docker_name
+    }
+  }
 
-  emit:
-  sample_summary_ch = CUTADAPT.out.sample_summary
-  amplicon_summary_ch = CUTADAPT.out.amplicon_summary
-  demux_fastqs_ch = CUTADAPT.out.demultiplexed_fastqs
+  output {
+    Array[File] sample_summary_ch = cutadapt.sample_summary_ch
+    Array[File] amplicon_summary_ch = cutadapt.amplicon_summary_ch
+    Array[Directory] demux_fastqs_ch = cutadapt.demux_fastqs_ch
+  }
 }
