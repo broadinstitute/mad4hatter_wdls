@@ -5,10 +5,9 @@ task mask_reference_tandem_repeats {
       File refseq_fasta
       Int min_score
       Int max_period
+      # TODO: Fill in docker image here when available
+      String docker_image = ""
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   set -euo pipefail

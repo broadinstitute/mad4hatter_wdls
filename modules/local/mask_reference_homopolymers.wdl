@@ -4,10 +4,9 @@ task mask_reference_homopolymers {
   input {
       File refseq_fasta
       Int homopolymer_threshold
+      # TODO: Fill in docker image here when available
+      String docker_image = ""
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   set -euo pipefail

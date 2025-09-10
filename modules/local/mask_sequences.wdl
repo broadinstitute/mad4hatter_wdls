@@ -5,10 +5,9 @@ task mask_sequences {
       Array[File] masks
       File alignments
       Int cpus = 1
+      # TODO: Fill in docker image here when available
+      String docker_image = ""
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   Rscript /bin/mask_sequences.R \

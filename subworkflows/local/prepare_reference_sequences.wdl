@@ -1,39 +1,45 @@
-# TODO: Convert to WDL
+version 1.0
 
-include { CREATE_REFERENCE_FROM_GENOMES } from '../../modules/local/create_reference_from_genomes.nf'
-include { CONCATENATE_TARGETED_REFERENCE } from '../../workflows/process_inputs.nf'
+# This workflow allows users to optionally create a reference from genomes or use a default
+import "../modules/local/create_reference_from_genomes.wdl" as create_reference_from_genomes
+import "../workflows/process_inputs.wdl" as process_inputs
 
-workflow PREPARE_REFERENCE_SEQUENCES {
-  take:
-  amplicon_info
+workflow prepare_reference_sequences {
+  input {
+    File amplicon_info
+    File? genome
 
-  main:
-  if (params.genome) {
-    def genome = null
-    // Read in genome file provided by the user
-    File genome_file = new File(params.genome).absoluteFile
-    if(!genome_file.exists()) {
-        exit 1, log.error("The specified denoised_asvs file '${params.denoised_asvs}' does not exist.")
-    }
+    # Defaults from the original Nextflow script
+    # The WDL engine handles these boolean checks
+    Boolean mask_tandem_repeats = true
+    Int trf_min_score = 25
+    Int trf_max_period = 3
+    Boolean mask_homopolymers = true
+    Int homopolymer_threshold = 5
 
-    // Add debugging steps as this is user input
-    log.debug("Genome path: ${params.genome}")
-    log.debug("Absolute path: ${genome_file.absolutePath}")
-    log.debug("Does it exist? ${genome_file.exists()}")
-
-    // Create the Nextflow Channel
-    genome = Channel.fromPath(genome_file)
-
-    CREATE_REFERENCE_FROM_GENOMES(
-      genome,
-      amplicon_info,
-      "reference.fasta" // TODO: update this to include pool names
-    )
-  } else {
-    CONCATENATE_TARGETED_REFERENCE()
+    String docker_image = ""
   }
-  emit:
-  reference_ch = (params.genome == null) ?
-    CONCATENATE_TARGETED_REFERENCE.out.reference_fasta :
-    CREATE_REFERENCE_FROM_GENOMES.out.reference_fasta
+
+  if (defined(genome)) {
+    call create_reference_from_genomes.create_reference_from_genomes {
+      input:
+        genome = genome,
+        amplicon_info = amplicon_info,
+        refseq_fasta = "reference.fasta",
+        docker_name = docker_image,
+    }
+  }
+  # TODO concatenate_targeted_reference in process_inputs.wdl is not converted to WDL yet and currently doesn't
+  # take an inputs. This may have to be updated if that changes at all
+  if (!defined(genome)) {
+    call process_inputs.concatenate_targeted_reference {
+    }
+  }
+
+  output {
+    File reference_fasta = select_first([
+      concatenate_targeted_reference.reference_fasta,
+      create_reference_from_genomes.reference_fasta
+    ])
+  }
 }

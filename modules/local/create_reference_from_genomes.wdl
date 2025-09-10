@@ -6,7 +6,7 @@ task create_reference_from_genomes {
     File amplicon_info
     String refseq_fasta
     # TODO: Should this be used in runtime?
-    Int n_cores
+    Int n_cores = 1
     String docker_name = "your_docker_image"
   }
 
