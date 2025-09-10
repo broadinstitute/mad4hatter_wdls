@@ -1,0 +1,34 @@
+# This workflow validates all pipeline WDL files using the 'womtool' tool
+
+name: WomtoolCheck
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate_wdl:
+    runs-on: ubuntu-latest
+    name: Validate all WDL using womtool
+    steps:
+      - name: Check for util changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            wdls:
+              - modules/local/*.wdl
+              - subworkflows/local/*.wdl
+              - workflows/*.wdl
+              - .dockstore.yml
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: actions/checkout@v4
+      - name: Run womtool
+        if: steps.changes.outputs.wdls == 'true'
+        run: |
+          ./scripts/validate_wdls.sh
