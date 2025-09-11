@@ -1,59 +1,56 @@
-# TODO: convert to wdl
+version 1.0
 
-nextflow.enable.dsl=2
-
-include { BUILD_AMPLICON_INFO } from '../modules/local/build_resources.nf'
-include { BUILD_TARGETED_REFERENCE } from '../modules/local/build_resources.nf'
+import "../modules/local/build_resources.wdl" as build_resources
+import "../modules/local/quality_control.wdl" as quality_control
 
 
-workflow GENERATE_AMPLICON_INFO {
-    // Check if pools parameter is provided
-    if (params.pools == null) {
-        error "Please specify the pools using --pools"
-    }
-    // Split the pools parameter into a list
-    def selectedPools = params.pools.toString().split(',')
+workflow generate_amplicon_info {
+  input {
+    Array[String] pools
+    Map[String, String] pool_options
+    String project_dir
+  }
 
-    // List resource paths
-    def amplicon_info_paths = []
+  # Resolve paths for each pool
+  Array[String] amplicon_info_paths = [for pool in pools: project_dir + "/" + pool_options[pool] + ".amplicon_info_path"]
+  # TODO I don't think this is correct - need to check with Kathryn about where params.pool_options is coming from
+  String amplicon_info_paths_str = sep(" ", amplicon_info_paths)
+  String selected_pools_str = sep(" ", pools)
 
-    for (pool in selectedPools) {
-        def paths = params.pool_options[pool.trim()]
-        if (paths == null) {
-            error "Pool '${pool}' not found in configuration."
-        }
-        amplicon_info_paths.add("$projectDir/$paths.amplicon_info_path")
-    }
-    def amplicon_info_paths_str = amplicon_info_paths.join(' ')
-    def selectedPools_str = selectedPools.join(' ')
+  call build_resources.build_amplicon_info {
+    input:
+      pools = selected_pools_str,
+      amplicon_info_paths = amplicon_info_paths_str,
+      amplicon_info_output = "amplicon_info.tsv"
+  }
 
-    BUILD_AMPLICON_INFO(selectedPools_str, amplicon_info_paths_str, "amplicon_info.tsv")
+  output {
+    File amplicon_info_ch = build_amplicon_info.amplicon_info
+  }
 
-    // Emit the amplicon_info channel
-    emit: amplicon_info_ch = BUILD_AMPLICON_INFO.out.amplicon_info
 }
 
-workflow CONCATENATE_TARGETED_REFERENCE {
-    // Check if pools parameter is provided
-    if (params.pools == null) {
-        error "Please specify the pools using --pools"
-    }
-    // Split the pools parameter into a list
-    def selectedPools = params.pools.toString().split(',')
+workflow concatenate_targeted_reference {
+  input {
+    Array[String] pools
+    Map[String, String] pool_options
+    String project_dir
+  }
 
-    // List resource paths
-    def targeted_reference_paths = []
+  # TODO I don't think this is correct - need to check with Kathryn about where params.pool_options is coming from
+  Array[String] targeted_reference_paths = [
+    for pool in pools: project_dir + "/" + pool_options[pool] + ".targeted_reference_path"
+  ]
 
-    for (pool in selectedPools) {
-        def paths = params.pool_options[pool.trim()]
-        if (paths == null) {
-            error "Pool '${pool}' not found in configuration."
-        }
-        targeted_reference_paths.add("$projectDir/$paths.targeted_reference_path")
-    }
-    def targeted_reference_paths_str = targeted_reference_paths.join(' ')
-    BUILD_TARGETED_REFERENCE(targeted_reference_paths_str, "reference.fasta")
+  String targeted_reference_paths_str = sep(" ", targeted_reference_paths)
 
-    // Emit the amplicon_info channel
-    emit: reference_fasta = BUILD_TARGETED_REFERENCE.out.reference_fasta
+  call build_resources.build_targeted_reference {
+    input:
+      reference_input_paths = targeted_reference_paths_str,
+      reference_output_path = "reference.fasta"
+  }
+
+  output {
+    File reference_fasta = build_targeted_reference.reference_fasta
+  }
 }
