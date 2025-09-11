@@ -3,17 +3,21 @@ version 1.0
 import "../modules/local/build_resources.wdl" as build_resources
 import "../modules/local/quality_control.wdl" as quality_control
 
+struct PoolConfig {
+  String amplicon_info_path
+  String targeted_reference_path
+}
 
 workflow generate_amplicon_info {
   input {
     Array[String] pools
-    Map[String, String] pool_options
     String project_dir
   }
 
-  # Resolve paths for each pool
-  Array[String] amplicon_info_paths = [for pool in pools: project_dir + "/" + pool_options[pool] + ".amplicon_info_path"]
-  # TODO I don't think this is correct - need to check with Kathryn about where params.pool_options is coming from
+  # TODO: This need to get added to the docker and update path?
+  Map[String, PoolConfig] pool_options = read_json("../conf/pool_config.json")
+
+  Array[String] amplicon_info_paths = [for pool in pools: "${project_dir}/${read_pool_configs.pool_options[pool].amplicon_info_path}"]
   String amplicon_info_paths_str = sep(" ", amplicon_info_paths)
   String selected_pools_str = sep(" ", pools)
 
@@ -27,20 +31,19 @@ workflow generate_amplicon_info {
   output {
     File amplicon_info_ch = build_amplicon_info.amplicon_info
   }
-
 }
 
 workflow concatenate_targeted_reference {
   input {
     Array[String] pools
-    Map[String, String] pool_options
     String project_dir
   }
 
-  # TODO I don't think this is correct - need to check with Kathryn about where params.pool_options is coming from
-  Array[String] targeted_reference_paths = [
-    for pool in pools: project_dir + "/" + pool_options[pool] + ".targeted_reference_path"
-  ]
+  # TODO: This need to get added to the docker and update path?
+  Map[String, PoolConfig] pool_options = read_json("../conf/pool_config.json")
+
+  Array[String] targeted_reference_paths = [for pool in pools: "${project_dir}/${read_pool_configs.pool_options[pool].targeted_reference_path}"]
+  String targeted_reference_paths_str = sep(" ", targeted_reference_paths)
 
   String targeted_reference_paths_str = sep(" ", targeted_reference_paths)
 
