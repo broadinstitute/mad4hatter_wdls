@@ -17,6 +17,15 @@ workflow generate_amplicon_info {
   # TODO: This need to get added to the docker and update path?
   Map[String, PoolConfig] pool_options = read_json("../conf/pool_config.json")
 
+  # Check each pool exists in pool_options
+  scatter (pool in pools) {
+    Boolean pool_exists = defined(read_pool_configs.pool_options[pool])
+    if (!pool_exists) {
+      call error_with_message {
+        input: message = "Pool '${pool}' not found in configuration."
+      }
+    }
+
   Array[String] amplicon_info_paths = [for pool in pools: "${project_dir}/${read_pool_configs.pool_options[pool].amplicon_info_path}"]
   String amplicon_info_paths_str = sep(" ", amplicon_info_paths)
   String selected_pools_str = sep(" ", pools)
@@ -41,6 +50,15 @@ workflow concatenate_targeted_reference {
 
   # TODO: This need to get added to the docker and update path?
   Map[String, PoolConfig] pool_options = read_json("../conf/pool_config.json")
+
+  # Check each pool exists in pool_options
+  scatter (pool in pools) {
+    Boolean pool_exists = defined(read_pool_configs.pool_options[pool])
+    if (!pool_exists) {
+      call error_with_message {
+        input: message = "Pool '${pool}' not found in configuration."
+      }
+    }
 
   Array[String] targeted_reference_paths = [for pool in pools: "${project_dir}/${read_pool_configs.pool_options[pool].targeted_reference_path}"]
   String targeted_reference_paths_str = sep(" ", targeted_reference_paths)
