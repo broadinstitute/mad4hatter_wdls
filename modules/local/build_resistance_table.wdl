@@ -7,7 +7,7 @@ task build_resistance_table {
     File resmarkers
     File refseq
     #TODO: Should this be used in runtime?
-    Int n_cores
+    Int n_cores = 1
     String docker_name = "your_docker_image"
   }
 

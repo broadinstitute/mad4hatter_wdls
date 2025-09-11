@@ -9,9 +9,9 @@ workflow demultiplex_amplicons {
   input {
     File amplicon_info
     Array[Pair[String, Pair[File, File]]] read_pairs
-    Int cutadapt_minlen
-    String sequencer
-    Float allowed_errors
+    Int cutadapt_minlen = 100
+    String? sequencer = ""
+    Float allowed_errors = 0
     String docker_name = "your_docker_image"
   }
 

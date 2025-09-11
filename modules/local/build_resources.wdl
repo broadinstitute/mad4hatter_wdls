@@ -2,8 +2,8 @@ version 1.0
 
 task build_amplicon_info {
   input {
-    File pools
-    File amplicon_info_paths
+    Array[String] pools
+    Array[String] amplicon_info_paths
     File amplicon_info_output
     String docker_name = "your_docker_image"
   }

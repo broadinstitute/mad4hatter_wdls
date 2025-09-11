@@ -2,8 +2,8 @@ version 1.0
 
 task pre_process_coverage {
   input {
-    Directory sample_coverages
-    Directory amplicon_coverages
+    Array[File] sample_coverages
+    Array[File] amplicon_coverages
   }
 
   # TODO: Fill in docker image here when available
@@ -19,12 +19,12 @@ task pre_process_coverage {
   echo -e "SampleID\\tStage\\tReads" > sample_coverage.txt
   echo -e "SampleID\\tLocus\\tReads" > amplicon_coverage.txt
 
-  for file in \$(ls $sample_coverages)
+  for file in $sample_coverages
   do
       add_sample_name_column \$file >> sample_coverage.txt
   done
 
-  for file in \$(ls $amplicon_coverages)
+  for file in $amplicon_coverages
   do
       add_sample_name_column \$file >> amplicon_coverage.txt
   done
