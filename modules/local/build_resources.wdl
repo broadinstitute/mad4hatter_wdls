@@ -49,6 +49,8 @@ task build_targeted_reference {
 task build_resmarker_info {
   input {
     File amplicon_info
+    #TODO: This file is https://github.com/EPPIcenter/mad4hatter/blob/update_dockerfile/panel_information/principal_resistance_marker_info_table.tsv
+    #TODO: It should be added to updated docker file and can be removed from inputs
     File principal_resmarkers
     File resmarker_info_output_path
     String docker_name = "your_docker_image"
