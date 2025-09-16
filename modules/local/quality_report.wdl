@@ -30,6 +30,7 @@ task quality_report {
   output {
     File sample_coverage_out = "sample_coverage.txt"
     File amplicon_coverage_out = "amplicon_coverage.txt"
+    Directory quality_report = "quality_report"
   }
 
   runtime {
