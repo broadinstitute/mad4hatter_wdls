@@ -1,52 +1,43 @@
-# TODO: convert to wdl
+version 1.0
 
-// workflows/quality_control.nf
+import "../modules/local/preprocess_coverage.wdl" as preprocess_coverage
+import "../modules/local/postprocess_coverage.wdl" as postprocess_coverage
+import "../modules/local/quality_report.wdl" as quality_report
 
-include { PREPROCESS_COVERAGE } from '../modules/local/preprocess_coverage.nf'
-include { POSTPROCESS_COVERAGE } from '../modules/local/postprocess_coverage.nf'
-include { QUALITY_REPORT } from '../modules/local/quality_report.nf'
 
-workflow QUALITY_CONTROL {
+workflow quality_control {
+    input {
+        File amplicon_info
+        Array[File] sample_coverage_files
+        Array[File] amplicon_coverage_files
+        File? alleledata
+        File? clusters
+    }
 
-    // Define inputs
-    take:
-    amplicon_info
-    sample_coverage_files
-    amplicon_coverage_files
-    alleledata
-    clusters
+    call preprocess_coverage.pre_process_coverage {
+        input:
+            sample_coverages = sample_coverage_files,
+            amplicon_coverages = amplicon_coverage_files
+    }
 
-    main:
+    if (defined(alleledata) && defined(clusters)) {
+        call postprocess_coverage.post_process_coverage {
+            input:
+                alleledata = alleledata,
+                clusters = clusters,
+                sample_coverage = pre_process_coverage.sample_coverage,
+                amplicon_coverage = pre_process_coverage.amplicon_coverage
+        }
+    }
 
-    // Assuming 'sampleFiles' and 'ampliconFiles' are your channels for individual files
-    sample_combined = sample_coverage_files.collect()
-    amplicon_combined = amplicon_coverage_files.collect()
+    File final_sample_coverage = select_first([post_process_coverage.postprocess_sample_coverage, pre_process_coverage.sample_coverage])
+    File final_amplicon_coverage = select_first([post_process_coverage.postprocess_amplicon_coverage, pre_process_coverage.amplicon_coverage])
 
-    // Initial Preprocessing
-    PREPROCESS_COVERAGE(
-        sample_combined,
-        amplicon_combined
-    )
+    call quality_report.quality_report {
+        input:
+            sample_coverage = final_sample_coverage,
+            amplicon_coverage = final_amplicon_coverage,
+            amplicon_info = amplicon_info
 
-    // If postprocessing coverage is provided, run the postprocessing workflow
-    def postprocessing = (alleledata && clusters)
-    sample_coverage_ch = postprocessing ?
-        POSTPROCESS_COVERAGE(
-            alleledata,
-            clusters,
-            PREPROCESS_COVERAGE.out.sample_coverage,
-            PREPROCESS_COVERAGE.out.amplicon_coverage
-        ).postprocess_sample_coverage :
-        PREPROCESS_COVERAGE.out.sample_coverage
-
-    amplicon_coverage_ch = postprocessing ?
-        POSTPROCESS_COVERAGE.out.postprocess_amplicon_coverage :
-        PREPROCESS_COVERAGE.out.amplicon_coverage
-
-    // Reporting
-    QUALITY_REPORT(
-        sample_coverage_ch,
-        amplicon_coverage_ch,
-        amplicon_info
-    )
+    }
 }
