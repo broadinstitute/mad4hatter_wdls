@@ -6,8 +6,8 @@ task align_to_reference {
     File refseq_fasta
     File amplicon_info
     #TODO: Should this be used in runtime?
-    Int n_cores = 1
-    String docker_name = "your_docker_image"
+    Int n_cores = 6
+    String docker_name
   }
 
   command <<<
