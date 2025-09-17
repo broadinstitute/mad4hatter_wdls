@@ -9,7 +9,7 @@ task build_alleletable {
   }
 
   command <<<
-    Rscript /bin/build_alleletable.R \
+    Rscript /opt/mad4hatter/bin/build_alleletable.R \
       --amplicon-info ~{amplicon_info} \
       --denoised-asvs ~{denoised_asvs} \
       --processed-asvs ~{processed_asvs}
