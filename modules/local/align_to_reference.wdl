@@ -11,7 +11,7 @@ task align_to_reference {
   }
 
   command <<<
-    Rscript /bin/align_to_reference.R \
+    Rscript /opt/mad4hatter/bin/align_to_reference.R \
       --clusters ~{clusters} \
       --refseq-fasta ~{refseq_fasta} \
       --amplicon-table ~{amplicon_info} \
