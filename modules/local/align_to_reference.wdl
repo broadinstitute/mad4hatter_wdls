@@ -6,7 +6,7 @@ task align_to_reference {
     File refseq_fasta
     File amplicon_info
     #TODO: Should this be used in runtime?
-    Int n_cores = 6
+    Int n_cores = 1
     String docker_name
   }
 
@@ -24,6 +24,5 @@ task align_to_reference {
 
   runtime {
     docker: docker_name
-    cpu: 2
   }
 }
