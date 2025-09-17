@@ -5,7 +5,7 @@ task build_alleletable {
     File amplicon_info
     File denoised_asvs
     File processed_asvs
-    String docker_name = "your_docker_image"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -20,6 +20,6 @@ task build_alleletable {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }
