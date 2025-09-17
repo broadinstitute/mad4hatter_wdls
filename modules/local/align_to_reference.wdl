@@ -24,5 +24,6 @@ task align_to_reference {
 
   runtime {
     docker: docker_name
+    cpu: 2
   }
 }
