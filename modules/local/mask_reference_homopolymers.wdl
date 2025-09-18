@@ -14,11 +14,10 @@ task mask_reference_homopolymers {
   Rscript /opt/mad4hatter/bin/mask_homopolymers.R \
       --refseq-fasta ~{refseq_fasta} \
       --homopolymer_threshold ~{homopolymer_threshold}
-      --fout "refseq.homopolymer.fasta.mask"
   >>>
 
   output {
-      File masked_fasta = "refseq.homopolymer.fasta.mask"
+      File masked_fasta = glob("*.mask")[0]
   }
 
   runtime {
