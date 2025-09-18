@@ -27,13 +27,13 @@ task build_amplicon_info {
 task build_targeted_reference {
   input {
     Array[File] reference_input_paths
-    String reference_output_path = "reference.fasta"
+    String? reference_output_path = "reference.fasta"
     String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
     python3 /opt/mad4hatter/bin/merge_fasta.py \
-      --reference_paths ~{reference_input_paths} \
+      --reference_paths ~{sep=' ' reference_input_paths} \
       --reference_output_path ~{reference_output_path}
   >>>
 
@@ -50,7 +50,7 @@ task build_resmarker_info {
   input {
     File amplicon_info
     File principal_resmarkers
-    String resmarker_info_output_path = "resmarker_info.tsv"
+    String? resmarker_info_output_path = "resmarker_info.tsv"
     String docker_name = "eppicenter/mad4hatter:dev"
   }
 
