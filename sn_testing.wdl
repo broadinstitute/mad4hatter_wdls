@@ -1,26 +1,29 @@
 version 1.0
 
-import "modules/local/mask_sequences.wdl" as mask_sequences
+import "modules/local/post_process_coverage.wdl" as post_process_coverage
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        Array[File] masks
+        File alleledata
+        File clusters
+        File sample_coverage
+        File amplicon_coverage
         String docker_image = "eppicenter/mad4hatter:dev"
-        File alignments
-        Int cpus = 1
     }
 
     # Testing task
-    call mask_sequences.mask_sequences as mask_sequences {
+    call post_process_coverage.post_process_coverage as post_process_coverage {
         input:
-            docker_image = docker_image,
-            masks = masks,
-            alignments = alignments,
-            cpus = cpus
+            alleledata = alleledata,
+            clusters = clusters,
+            sample_coverage = sample_coverage,
+            amplicon_coverage = amplicon_coverage,
+            docker_image = docker_image
     }
 
     output {
-        File masked_alignments = mask_sequences.masked_alignments
+        File postprocess_sample_coverage = post_process_coverage.postprocess_sample_coverage
+        File postprocess_amplicon_coverage = post_process_coverage.postprocess_amplicon_coverage
     }
 }

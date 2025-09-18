@@ -4,10 +4,8 @@ task pre_process_coverage {
   input {
     Array[File] sample_coverages
     Array[File] amplicon_coverages
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   set -euo pipefail
@@ -38,6 +36,7 @@ task pre_process_coverage {
 
   runtime {
       docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 

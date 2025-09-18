@@ -6,10 +6,8 @@ task post_process_coverage {
     File clusters
     File sample_coverage
     File amplicon_coverage
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   set -euo pipefail
@@ -29,6 +27,7 @@ task post_process_coverage {
 
   runtime {
       docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }
