@@ -11,7 +11,7 @@ workflow BuildResourcesTest {
     }
 
     # Testing task
-    call BuildResourcesTest.build_resmarker_info {
+    call BuildResources.build_resmarker_info {
         input:
             amplicon_info = amplicon_info,
             principal_resmarkers = principal_resmarkers,
