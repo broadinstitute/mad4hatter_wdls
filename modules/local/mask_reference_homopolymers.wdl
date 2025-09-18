@@ -11,7 +11,7 @@ task mask_reference_homopolymers {
   command <<<
   set -euo pipefail
 
-  Rscript /bin/mask_homopolymers.R \
+  Rscript /opt/mad4hatter/bin/mask_homopolymers.R \
       --refseq-fasta ~{refseq_fasta} \
       --homopolymer_threshold ~{homopolymer_threshold}
       --fout "refseq.homopolymer.fasta.mask"

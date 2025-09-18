@@ -10,7 +10,7 @@ task mask_sequences {
   }
 
   command <<<
-  Rscript /bin/mask_sequences.R \
+  Rscript /opt/mad4hatter/bin/mask_sequences.R \
       --masks ~{sep=" " masks} \
       --alignments ~{alignments} \
       --n-cores ~{cpus}

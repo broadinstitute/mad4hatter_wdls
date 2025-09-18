@@ -14,7 +14,7 @@ task post_process_coverage {
   command <<<
   set -euo pipefail
 
-  Rscript /bin/asv_coverage.R \
+  Rscript /opt/mad4hatter/bin/asv_coverage.R \
     --alleledata ~{alleledata} \
     --clusters ~{clusters} \
     --sample-coverage ~{sample_coverage} \

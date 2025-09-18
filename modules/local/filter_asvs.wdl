@@ -14,7 +14,7 @@ task filter_asvs {
   command <<<
   set -euo pipefail
 
-  bash /bin/filter_asv_process.sh \
+  bash /opt/mad4hatter/bin/filter_asv_process.sh \
     -i ~{alignments} \
     -o filtered.alignments.txt \
     -t ~{alignment_threshold}

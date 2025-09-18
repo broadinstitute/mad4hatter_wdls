@@ -25,7 +25,7 @@ task dada2_analysis {
     CONCATENATE_FLAG="--concat-non-overlaps"
   fi
 
-  Rscript /bin/dada_overlaps.R \
+  Rscript /opt/mad4hatter/bin/dada_overlaps.R \
     --trimmed-path ~{demultiplexed_fastqs} \
     --ampliconFILE ~{amplicon_info} \
     --pool ~{dada2_pool} \

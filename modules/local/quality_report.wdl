@@ -19,7 +19,7 @@ task quality_report {
 
   test -d quality_report || mkdir quality_report
 
-  Rscript /bin/cutadapt_summaryplots.R \
+  Rscript /opt/mad4hatter/bin/cutadapt_summaryplots.R \
     amplicon_coverage.txt \
     sample_coverage.txt \
     ~{amplicon_info} \
