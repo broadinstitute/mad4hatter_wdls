@@ -6,6 +6,7 @@ import "modules/local/build_pseudocigar.wdl" as BuildPseudocigar
 workflow BuildPseudocigarTest {
     input {
         File alignments
+        Int ncores
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 
@@ -13,6 +14,7 @@ workflow BuildPseudocigarTest {
     call BuildPseudocigar.build_pseudocigar {
         input:
             alignments = alignments,
+            ncores = ncores,
             docker_name = docker_image
     }
 
