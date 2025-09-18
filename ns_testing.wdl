@@ -1,26 +1,22 @@
 version 1.0
 
-import "modules/local/build_alleletable.wdl" as BuildAlleleTable
+import "modules/local/build_pseudocigar.wdl" as BuildPseudocigar
 
 # Can be used for testing subworkflows and modules
-workflow BuildAlleleTableTest {
+workflow BuildPseudocigarTest {
     input {
-        File amplicon_info
-        File denoised_asvs
-        File processed_asvs
+        File alignments
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call BuildAlleleTable.build_alleletable {
+    call BuildPseudocigar.build_pseudocigar {
         input:
-            amplicon_info = amplicon_info,
-            denoised_asvs = denoised_asvs,
-            processed_asvs = processed_asvs,
-            docker_image = docker_image
+            alignments = alignments,
+            docker_name = docker_image
     }
 
     output {
-        File alleledata = build_alleletable.alleledata
+        File pseudocigar = build_pseudocigar.pseudocigar
     }
 }

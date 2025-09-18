@@ -3,11 +3,11 @@ version 1.0
 task build_pseudocigar {
   input {
     File alignments
-    String docker_name = "your_docker_image"
+    String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    Rscript /bin/build_pseudocigar.R \
+    Rscript /opt/mad4hatter/bin/build_pseudocigar.R \
       --alignments ~{alignments}
   >>>
 
