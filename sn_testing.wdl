@@ -1,29 +1,25 @@
 version 1.0
 
-import "modules/local/postprocess_coverage.wdl" as postprocess_coverage
+import "modules/local/preprocess_coverage.wdl" as preprocess_coverage
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        File alleledata
-        File clusters
-        File sample_coverage
-        File amplicon_coverage
+        Array[File] sample_coverages
+        Array[File] amplicon_coverages
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call postprocess_coverage.postprocess_coverage as postprocess_coverage {
+    call preprocess_coverage.preprocess_coverage as preprocess_coverage {
         input:
-            alleledata = alleledata,
-            clusters = clusters,
-            sample_coverage = sample_coverage,
-            amplicon_coverage = amplicon_coverage,
+            sample_coverages = sample_coverages,
+            amplicon_coverages = amplicon_coverages,
             docker_image = docker_image
     }
 
     output {
-        File postprocess_sample_coverage = postprocess_coverage.postprocess_sample_coverage
-        File postprocess_amplicon_coverage = postprocess_coverage.postprocess_amplicon_coverage
+        File sample_coverage = preprocess_coverage.sample_coverage
+        File amplicon_coverage = preprocess_coverage.amplicon_coverage
     }
 }

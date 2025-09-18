@@ -1,6 +1,6 @@
 version 1.0
 
-task pre_process_coverage {
+task preprocess_coverage {
   input {
     Array[File] sample_coverages
     Array[File] amplicon_coverages
