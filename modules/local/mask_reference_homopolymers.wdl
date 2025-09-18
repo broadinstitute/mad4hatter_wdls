@@ -4,7 +4,6 @@ task mask_reference_homopolymers {
   input {
       File refseq_fasta
       Int homopolymer_threshold
-      # TODO: Fill in docker image here when available
       String docker_image = "eppicenter/mad4hatter:dev"
   }
 
@@ -21,8 +20,8 @@ task mask_reference_homopolymers {
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }

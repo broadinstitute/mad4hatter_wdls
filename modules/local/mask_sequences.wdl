@@ -21,8 +21,7 @@ task mask_sequences {
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
       memory: "8G"
   }
 }

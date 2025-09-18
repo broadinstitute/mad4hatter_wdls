@@ -5,8 +5,7 @@ task mask_reference_tandem_repeats {
       File refseq_fasta
       Int min_score
       Int max_period
-      # TODO: Fill in docker image here when available
-      String docker_image = ""
+      String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -24,8 +23,8 @@ task mask_reference_tandem_repeats {
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }

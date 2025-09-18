@@ -37,8 +37,7 @@ task pre_process_coverage {
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
       memory: "8G"
   }
 
