@@ -5,8 +5,7 @@ task mask_sequences {
       Array[File] masks
       File alignments
       Int cpus = 1
-      # TODO: Fill in docker image here when available
-      String docker_image = ""
+      String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -22,6 +21,7 @@ task mask_sequences {
 
   runtime {
       docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }

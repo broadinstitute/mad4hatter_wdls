@@ -1,26 +1,26 @@
 version 1.0
 
-import "modules/local/mask_reference_tandem_repeats.wdl" as MaskReferenceTandemRepeats
+import "modules/local/mask_sequences.wdl" as mask_sequences
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        File refseq_fasta
+        Array[File] masks
         String docker_image = "eppicenter/mad4hatter:dev"
-        Int min_score
-        Int max_period
+        File alignments
+        Int cpus = 1
     }
 
     # Testing task
-    call MaskReferenceTandemRepeats.mask_reference_tandem_repeats as mask_reference_tandem_repeats {
+    call mask_sequences.mask_sequences as mask_sequences {
         input:
             docker_image = docker_image,
-            refseq_fasta = refseq_fasta,
-            min_score = min_score,
-            max_period = max_period
+            masks = masks,
+            alignments = alignments,
+            cpus = cpus
     }
 
     output {
-        File masked_fasta = mask_reference_tandem_repeats.masked_fasta
+        File masked_alignments = mask_sequences.masked_alignments
     }
 }

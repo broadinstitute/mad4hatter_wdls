@@ -12,9 +12,6 @@ task mask_reference_tandem_repeats {
   set -euo pipefail
 
   trf ~{refseq_fasta} 2 7 7 80 10 ~{min_score} ~{max_period} -h -m
-
-  # Capture the generated .mask file
-  MASK_FILE=$(ls *.mask)
   >>>
 
   output {
