@@ -3,11 +3,11 @@ version 1.0
 task collapse_concatenated_reads {
   input {
     File clusters
-    String docker_name = "your_docker_image"
+    String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    Rscript /bin/collapse_concatenated_reads.R \
+    Rscript /opt/mad4hatter/bin/collapse_concatenated_reads.R \
       --clusters ~{clusters}
   >>>
 
