@@ -7,7 +7,7 @@ task create_primer_files {
   }
 
   command <<<
-    bash /bin/create_primer_files.sh -a ~{amplicon_info} \
+    bash /opt/mad4hatter/bin/create_primer_files.sh -a ~{amplicon_info} \
       -f fwd_primers.fasta \
       -r rev_primers.fasta
   >>>
