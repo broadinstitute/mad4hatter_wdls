@@ -1,22 +1,24 @@
 version 1.0
 
-import "modules/local/filter_asvs.wdl" as FilterAsvs
+import "modules/local/mask_reference_homopolymers.wdl" as MaskReferenceHomopolymers
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        File alignments
+        File refseq_fasta
         String docker_image = "eppicenter/mad4hatter:dev"
+        Int homopolymer_threshold
     }
 
     # Testing task
-    call FilterAsvs.filter_asvs as filter_asvs {
+    call MaskReferenceHomopolymers.mask_reference_homopolymers as mask_reference_homopolymers {
         input:
             docker_image = docker_image,
-            alignments = alignments
+            refseq_fasta = refseq_fasta,
+            homopolymer_threshold = homopolymer_threshold
     }
 
     output {
-        File filtered_alignments_ch = filter_asvs.filtered_alignments_ch
+        File masked_fasta = mask_reference_homopolymers.masked_fasta
     }
 }

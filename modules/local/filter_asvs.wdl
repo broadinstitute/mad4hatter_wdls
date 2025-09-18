@@ -26,7 +26,7 @@ task filter_asvs {
 
   runtime {
     docker: "~{docker_image}"
-    cpu: 1
+    #TODO: Should we hardcode this?
     memory: "8G"
   }
 }
