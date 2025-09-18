@@ -10,8 +10,8 @@ task build_amplicon_info {
 
   command <<<
     python3 /opt/mad4hatter/bin/build_amplicon_info.py \
-      --pools ~{pools} \
-      --amplicon_info_paths ~{amplicon_info_paths} \
+      --pools ~{sep=' ' pools} \
+      --amplicon_info_paths ~{sep=' ' amplicon_info_paths} \
       --amplicon_info_output_path ~{amplicon_info_output}
   >>>
 
