@@ -4,8 +4,8 @@ task build_amplicon_info {
   input {
     Array[String] pools
     Array[String] amplicon_info_paths
-    File amplicon_info_output
-    String docker_name = "your_docker_image"
+    String? amplicon_info_output = "amplicon_info.tsv"
+    String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<

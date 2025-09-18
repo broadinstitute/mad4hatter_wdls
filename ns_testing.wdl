@@ -5,16 +5,18 @@ import "modules/local/build_resources.wdl" as BuildResources
 # Can be used for testing subworkflows and modules
 workflow BuildResourcesTest {
     input {
-        Array[File] reference_input_paths
+        Array[String] pools
+        Array[String] amplicon_info_paths
     }
 
     # Testing task
-    call BuildResources.build_targeted_reference {
+    call BuildResources.build_amplicon_info {
         input:
-            reference_input_paths = reference_input_paths
+            pools = pools,
+            amplicon_info_paths = amplicon_info_paths
     }
 
     output {
-        File reference_fasta = build_targeted_reference.reference_fasta
+        File amplicon_info = build_amplicon_info.amplicon_info
     }
 }
