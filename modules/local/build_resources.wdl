@@ -9,7 +9,7 @@ task build_amplicon_info {
   }
 
   command <<<
-    python3 /bin/build_amplicon_info.py \
+    python3 /opt/mad4hatter/bin/build_amplicon_info.py \
       --pools ~{pools} \
       --amplicon_info_paths ~{amplicon_info_paths} \
       --amplicon_info_output_path ~{amplicon_info_output}
@@ -26,13 +26,13 @@ task build_amplicon_info {
 
 task build_targeted_reference {
   input {
-    File reference_input_paths
-    File reference_output_path
-    String docker_name = "your_docker_image"
+    Array[File] reference_input_paths
+    String reference_output_path = "reference.fasta"
+    String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    python3 /bin/merge_fasta.py \
+    python3 /opt/mad4hatter/bin/merge_fasta.py \
       --reference_paths ~{reference_input_paths} \
       --reference_output_path ~{reference_output_path}
   >>>
@@ -62,7 +62,7 @@ task build_resmarker_info {
   >>>
 
   output {
-    File resmarker_info = "resmarker_info.tsv"
+    File resmarker_info = "~{resmarker_info_output_path}"
   }
 
   runtime {

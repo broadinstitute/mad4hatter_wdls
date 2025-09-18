@@ -5,20 +5,16 @@ import "modules/local/build_resources.wdl" as BuildResources
 # Can be used for testing subworkflows and modules
 workflow BuildResourcesTest {
     input {
-        File amplicon_info
-        File principal_resmarkers
-        String docker_name = "eppicenter/mad4hatter:dev"
+        Array[File] reference_input_paths
     }
 
     # Testing task
-    call BuildResources.build_resmarker_info {
+    call BuildResources.build_targeted_reference {
         input:
-            amplicon_info = amplicon_info,
-            principal_resmarkers = principal_resmarkers,
-            docker_name = docker_name
+            reference_input_paths = reference_input_paths
     }
 
     output {
-        File resmarker_info = build_resmarker_info.resmarker_info
+        File reference_fasta = build_targeted_reference.reference_fasta
     }
 }
