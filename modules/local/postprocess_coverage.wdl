@@ -1,6 +1,6 @@
 version 1.0
 
-task post_process_coverage {
+task postprocess_coverage {
   input {
     File alleledata
     File clusters

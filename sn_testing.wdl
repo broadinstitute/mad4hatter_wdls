@@ -1,6 +1,6 @@
 version 1.0
 
-import "modules/local/post_process_coverage.wdl" as post_process_coverage
+import "modules/local/postprocess_coverage.wdl" as postprocess_coverage
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
@@ -13,7 +13,7 @@ workflow TestWdl {
     }
 
     # Testing task
-    call post_process_coverage.post_process_coverage as post_process_coverage {
+    call postprocess_coverage.postprocess_coverage as postprocess_coverage {
         input:
             alleledata = alleledata,
             clusters = clusters,
@@ -23,7 +23,7 @@ workflow TestWdl {
     }
 
     output {
-        File postprocess_sample_coverage = post_process_coverage.postprocess_sample_coverage
-        File postprocess_amplicon_coverage = post_process_coverage.postprocess_amplicon_coverage
+        File postprocess_sample_coverage = postprocess_coverage.postprocess_sample_coverage
+        File postprocess_amplicon_coverage = postprocess_coverage.postprocess_amplicon_coverage
     }
 }
