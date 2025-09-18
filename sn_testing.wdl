@@ -1,26 +1,22 @@
 version 1.0
 
-import "modules/local/align_to_reference.wdl" as AlignToRef
+import "modules/local/filter_asvs.wdl" as FilterAsvs
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        File clusters
-        File refseq_fasta
-        File amplicon_info
-        String docker_image = ""
+        File alignments
+        String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call AlignToRef.align_to_reference as align_to_ref {
+    call FilterAsvs.filter_asvs as filter_asvs {
         input:
             docker_image = docker_image,
-            clusters = clusters,
-            refseq_fasta = refseq_fasta,
-            amplicon_info = amplicon_info
+            alignments = alignments
     }
 
     output {
-        File alignments = align_to_ref.alignments
+        File filtered_alignments_ch = filter_asvs.filtered_alignments_ch
     }
 }

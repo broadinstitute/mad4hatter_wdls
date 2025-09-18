@@ -8,8 +8,7 @@ task filter_asvs {
 
   # Pulled default value from https://github.com/EPPIcenter/mad4hatter/blob/0fdf688d8bef6b1407de66ed2644a2d26635015d/nextflow.config#L32
   Int alignment_threshold = 60
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
+  String docker_image = "eppicenter/mad4hatter:dev"
 
   command <<<
   set -euo pipefail
