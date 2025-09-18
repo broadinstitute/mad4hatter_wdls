@@ -15,7 +15,6 @@ task mask_reference_tandem_repeats {
 
   # Capture the generated .mask file
   MASK_FILE=$(ls *.mask)
-  mv "${MASK_FILE}" reference.fasta.2.7.7.80.10.~{min_score}.~{max_period}.mask
   >>>
 
   output {
