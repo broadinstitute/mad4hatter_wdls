@@ -6,13 +6,12 @@ task build_resistance_table {
     File alignment_data
     File resmarkers
     File refseq
-    #TODO: Should this be used in runtime?
-    Int n_cores = 1
-    String docker_name = "your_docker_image"
+    Int n_cores = 4
+    String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    python3 /bin/resistance_marker_module.py \
+    python3 /opt/mad4hatter/bin/resistance_marker_module.py \
       --allele_data_path ~{alleledata} \
       --aligned_asv_table_path ~{alignment_data} \
       --res_markers_info_path ~{resmarkers} \

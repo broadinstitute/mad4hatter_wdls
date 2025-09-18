@@ -1,24 +1,33 @@
 version 1.0
 
-import "modules/local/build_pseudocigar.wdl" as BuildPseudocigar
+import "modules/local/build_resistance_table.wdl" as BuildResistanceTable
 
 # Can be used for testing subworkflows and modules
-workflow BuildPseudocigarTest {
+workflow BuildResistanceTableTest {
     input {
-        File alignments
-        Int ncores
-        String docker_image = "eppicenter/mad4hatter:dev"
+        File alleledata
+        File alignment_data
+        File resmarkers
+        File refseq
+        Int n_cores = 4
+        String docker_name = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call BuildPseudocigar.build_pseudocigar {
+    call BuildResistanceTable.build_resistance_table {
         input:
-            alignments = alignments,
-            ncores = ncores,
-            docker_name = docker_image
+            alleledata = alleledata,
+            alignment_data = alignment_data,
+            resmarkers = resmarkers,
+            refseq = refseq,
+            n_cores = n_cores,
+            docker_name = docker_name
     }
 
     output {
-        File pseudocigar = build_pseudocigar.pseudocigar
+        File resmarkers = build_resistance_table.resmarkers
+        File resmarkers_by_locus = build_resistance_table.resmarkers_by_locus
+        File microhaps = build_resistance_table.microhaps
+        File new_mutations = build_resistance_table.new_mutations
     }
 }
