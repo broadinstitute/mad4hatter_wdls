@@ -25,7 +25,7 @@ workflow BuildResistanceTableTest {
     }
 
     output {
-        File resmarkers = build_resistance_table.resmarkers
+        File resmarkers_output = build_resistance_table.resmarkers_output
         File resmarkers_by_locus = build_resistance_table.resmarkers_by_locus
         File microhaps = build_resistance_table.microhaps
         File new_mutations = build_resistance_table.new_mutations
