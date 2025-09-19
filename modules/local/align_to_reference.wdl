@@ -5,8 +5,7 @@ task align_to_reference {
     File clusters
     File refseq_fasta
     File amplicon_info
-    #TODO: Should this be used in runtime?
-    Int n_cores = 6
+    Int n_cores = 1
     String docker_name = "eppicenter/mad4hatter:dev"
   }
 
@@ -24,8 +23,5 @@ task align_to_reference {
 
   runtime {
     docker: docker_name
-    cpu: n_cores
-    disks: "local-disk 1000 SSD"
-    memory: "40 GiB"
   }
 }
