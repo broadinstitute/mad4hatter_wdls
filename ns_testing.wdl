@@ -11,7 +11,7 @@ workflow AlignToReferenceTest {
     }
 
     # Testing task
-    call AlignToReferenceTest.align_to_reference {
+    call AlignToReference.align_to_reference {
         input:
             clusters = clusters,
             refseq_fasta = refseq_fasta,
