@@ -1,9 +1,9 @@
-version 1.0
+version 1.2
 
 # Denoise the demultiplexed amplicon fastq
 task dada2_analysis {
   input {
-    Array[File] demultiplexed_fastqs
+    Directory demultiplexed_dirs
     File amplicon_info
     String dada2_pool
     Int band_size
@@ -23,16 +23,16 @@ task dada2_analysis {
   fi
 
   # Extract unique directories from the input files
-  DIRS=""
-  for file in ~{sep=" " demultiplexed_fastqs}; do
-    dir=$(dirname "$file")
-    DIRS="$DIRS $dir"
-  done
+  #DIRS=""
+  #for file in ~{sep=" " demultiplexed_fastqs}; do
+  #  dir=$(dirname "$file")
+  #  DIRS="$DIRS $dir"
+  #done
   # Get unique directories
-  UNIQUE_DIRS=$(echo $DIRS | tr ' ' '\n' | sort -u | tr '\n' ' ')
+  #UNIQUE_DIRS=$(echo $DIRS | tr ' ' '\n' | sort -u | tr '\n' ' ')
 
   Rscript /opt/mad4hatter/bin/dada_overlaps.R \
-    --trimmed-path "$UNIQUE_DIRS" \
+    --trimmed-path ~{sep=" " demultiplexed_dirs} \
     --ampliconFILE ~{amplicon_info} \
     --pool ~{dada2_pool} \
     --band-size ~{band_size} \
