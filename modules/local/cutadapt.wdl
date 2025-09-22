@@ -9,10 +9,10 @@ task cutadapt {
     String pair_id
     Int cutadapt_minlen
     String sequencer
-    Float allowed_errors
+    Int allowed_errors
     #TODO: Should this be used in runtime?
-    Int cpus = 1
-    String docker_image = "your_docker_image"
+    Int cores = 1
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -24,14 +24,14 @@ task cutadapt {
       -m ~{cutadapt_minlen} \
       -s ~{sequencer} \
       -e ~{allowed_errors} \
-      -c ~{cpus} \
+      -c ~{cores} \
       -o demultiplexed_fastqs
   >>>
 
   output {
-    File sample_summary_ch = glob("*.SAMPLEsummary.txt")[0]
-    File amplicon_summary_ch = glob("*.AMPLICONsummary.txt")[0]
-    Directory demux_fastqs_ch = "demultiplexed_fastqs"
+    File sample_summary = glob("*.SAMPLEsummary.txt")[0]
+    File amplicon_summary = glob("*.AMPLICONsummary.txt")[0]
+    Directory demultiplexed_fastqs = "demultiplexed_fastqs"
   }
 
   runtime {
