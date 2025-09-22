@@ -18,15 +18,15 @@ task preprocess_coverage {
   echo -e "SampleID\\tStage\\tReads" > sample_coverage.txt
   echo -e "SampleID\\tLocus\\tReads" > amplicon_coverage.txt
 
+  echo "Processing sample files" >&2
   for file in ~{sep=" " sample_coverages}
   do
-      echo "Processing $file" >&2
       add_sample_name_column $file >> sample_coverage.txt
   done
 
+  echo "Processing amplicon files" >&2
   for file in ~{sep=" " amplicon_coverages}
   do
-      echo "Processing $file" >&2
       add_sample_name_column $file >> amplicon_coverage.txt
   done
 
