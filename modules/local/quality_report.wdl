@@ -28,7 +28,7 @@ task quality_report {
   output {
     File sample_coverage_out = "sample_coverage.txt"
     File amplicon_coverage_out = "amplicon_coverage.txt"
-    Array[File] quality_report = glob("quality_report/.*")
+    Array[File] quality_reports = glob("quality_report/.*")
   }
 
   runtime {
