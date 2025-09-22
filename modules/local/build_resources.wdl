@@ -3,7 +3,7 @@ version 1.0
 task build_amplicon_info {
   input {
     Array[String] pools
-    Array[String] amplicon_info_paths
+    Array[File] amplicon_info_paths
     String? amplicon_info_output = "amplicon_info.tsv"
     String docker_name = "eppicenter/mad4hatter:dev"
   }

@@ -1,24 +1,22 @@
 version 1.0
 
-import "modules/local/align_to_reference.wdl" as AlignToReference
+import "modules/local/build_resouces.wdl" as BuildResources
 
 # Can be used for testing subworkflows and modules
-workflow AlignToReferenceTest {
+workflow BuildResourcesTest {
     input {
-        File clusters
-        File refseq_fasta
-        File amplicon_info
+        Array[String] pools
+        Array[File] amplicon_info_paths
     }
 
     # Testing task
-    call AlignToReference.align_to_reference {
+    call BuildResources.build_amplicon_info {
         input:
-            clusters = clusters,
-            refseq_fasta = refseq_fasta,
-            amplicon_info = amplicon_info
+            pools = pools,
+            amplicon_info_paths = amplicon_info_paths
     }
 
     output {
-        File alignments = align_to_reference.alignments
+        File amplicon_info = build_amplicon_info.amplicon_info
     }
 }
