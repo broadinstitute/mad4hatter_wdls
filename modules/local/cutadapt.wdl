@@ -15,7 +15,7 @@ task cutadapt {
   }
 
   command <<<
-    bash /bin/cutadapt_process.sh \
+    bash /opt/mad4hatter/bin/cutadapt_process.sh \
       -1 ~{reads_1} \
       -2 ~{reads_2} \
       -r ~{rev_primers} \
