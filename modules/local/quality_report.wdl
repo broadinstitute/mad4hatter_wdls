@@ -36,6 +36,5 @@ task quality_report {
     #TODO: Should we hardcode this?
     memory: "8G"
   }
-
 }
 
