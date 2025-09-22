@@ -11,7 +11,8 @@ task preprocess_coverage {
   set -euo pipefail
 
   add_sample_name_column() {
-    awk -v fname=\$(basename "\$1" | sed -e 's/.SAMPLEsummary.txt//g' -e 's/.AMPLICONsummary.txt//g') -v OFS="\\t" '{print fname, \$0}' "\$1"
+      fname=$(basename "$1" | sed -e 's/.SAMPLEsummary.txt//g' -e 's/.AMPLICONsummary.txt//g')
+      awk -v fname="$fname" -v OFS="\t" '{print fname, $0}' "$1"
   }
 
   echo -e "SampleID\\tStage\\tReads" > sample_coverage.txt
