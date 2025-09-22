@@ -13,8 +13,7 @@ task dada2_analysis {
     Boolean just_concatenate
 
     Int cpus = 1
-    # TODO: Fill in docker image here when available
-    String docker_image = ""
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -26,7 +25,7 @@ task dada2_analysis {
   fi
 
   Rscript /opt/mad4hatter/bin/dada_overlaps.R \
-    --trimmed-path ~{demultiplexed_fastqs} \
+    --trimmed-path ~{sep=" " prefix(demultiplexed_fastqs, " dirname ")} \
     --ampliconFILE ~{amplicon_info} \
     --pool ~{dada2_pool} \
     --band-size ~{band_size} \

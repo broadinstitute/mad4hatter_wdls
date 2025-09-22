@@ -1,28 +1,36 @@
 version 1.0
 
-import "modules/local/quality_report.wdl" as quality_report
+import "modules/local/dada2_analysis.wdl" as dada2_analysis
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        File sample_coverage
-        File amplicon_coverage
+        Array[File] demultiplexed_fastqs
         File amplicon_info
+        String dada2_pool
+        Int band_size
+        Float omega_a
+        Int maxEE
+        Boolean just_concatenate
+        Int cpus = 1
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call quality_report.quality_report as quality_report {
+    call dada2_analysis.dada2_analysis as dada2_analysis {
         input:
-            sample_coverage = sample_coverage,
-            amplicon_coverage = amplicon_coverage,
+            demultiplexed_fastqs = demultiplexed_fastqs,
             amplicon_info = amplicon_info,
+            dada2_pool = dada2_pool,
+            omega_a = omega_a,
+            band_size = band_size,
+            maxEE = maxEE,
+            just_concatenate = just_concatenate,
+            cpus = cpus,
             docker_image = docker_image
     }
 
     output {
-        File sample_coverage_out = quality_report.sample_coverage_out
-        File amplicon_coverage_out = quality_report.amplicon_coverage_out
-        Array[File] quality_reports = quality_report.quality_reports
+        File dada2_clusters = dada2_analysis.dada2_clusters
     }
 }
