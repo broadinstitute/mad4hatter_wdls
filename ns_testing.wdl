@@ -9,7 +9,6 @@ workflow CutAdaptTest {
         File rev_primers
         File reads_1
         File reads_2
-        String pair_id
         Int cutadapt_minlen
         String sequencer
         Int allowed_errors
@@ -22,7 +21,6 @@ workflow CutAdaptTest {
             rev_primers = rev_primers,
             reads_1 = reads_1,
             reads_2 = reads_2,
-            pair_id = pair_id,
             cutadapt_minlen = cutadapt_minlen,
             sequencer = sequencer,
             allowed_errors = allowed_errors

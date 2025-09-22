@@ -6,7 +6,6 @@ task cutadapt {
     File rev_primers
     File reads_1
     File reads_2
-    String pair_id
     Int cutadapt_minlen
     String sequencer
     Int allowed_errors
