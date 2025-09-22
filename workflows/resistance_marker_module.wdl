@@ -13,6 +13,7 @@ workflow resistance_marker_module {
         File reference
         File resmarker_info
         String? resmarker_info
+        String docker_image
     }
 
     if (!defined(resmarker_info))  {
@@ -30,8 +31,7 @@ workflow resistance_marker_module {
             alignment_data = alignment_data,
             resmarkers = select_first([resmarker_info, build_resmarker_info.resmarker_info]),
             refseq = reference,
-            # TODO fill out docker_name when available
-            docker_name = ""
+            docker_image = docker_image
     }
 
 }

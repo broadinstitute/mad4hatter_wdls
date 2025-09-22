@@ -5,7 +5,7 @@ task build_amplicon_info {
     Array[String] pools
     Array[File] amplicon_info_paths
     String? amplicon_info_output = "amplicon_info.tsv"
-    String docker_name = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -20,7 +20,7 @@ task build_amplicon_info {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }
 

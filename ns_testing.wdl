@@ -1,6 +1,6 @@
 version 1.0
 
-import "modules/local/build_resouces.wdl" as BuildResources
+import "modules/local/build_resources.wdl" as BuildResources
 
 # Can be used for testing subworkflows and modules
 workflow BuildResourcesTest {

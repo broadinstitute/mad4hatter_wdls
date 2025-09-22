@@ -26,7 +26,7 @@ workflow prepare_reference_sequences {
         genome = genome,
         amplicon_info = amplicon_info,
         refseq_fasta = "reference.fasta",
-        docker_name = docker_image,
+        docker_image = docker_image,
     }
   }
   # TODO concatenate_targeted_reference in process_inputs.wdl is not converted to WDL yet and currently doesn't

@@ -12,7 +12,7 @@ task cutadapt {
     Float allowed_errors
     #TODO: Should this be used in runtime?
     Int cpus = 1
-    String docker_name = "your_docker_image"
+    String docker_image = "your_docker_image"
   }
 
   command <<<
@@ -35,6 +35,6 @@ task cutadapt {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }

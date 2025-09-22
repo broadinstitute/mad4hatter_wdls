@@ -12,6 +12,7 @@ workflow generate_amplicon_info {
   input {
     Array[String] pools
     String project_dir
+    String docker_image
   }
 
   # TODO: This need to get added to the docker and update path?
@@ -34,7 +35,8 @@ workflow generate_amplicon_info {
     input:
       pools = selected_pools_str,
       amplicon_info_paths = amplicon_info_paths_str,
-      amplicon_info_output = "amplicon_info.tsv"
+      amplicon_info_output = "amplicon_info.tsv",
+      docker_image = docker_image
   }
 
   output {
@@ -68,7 +70,8 @@ workflow concatenate_targeted_reference {
   call build_resources.build_targeted_reference {
     input:
       reference_input_paths = targeted_reference_paths_str,
-      reference_output_path = "reference.fasta"
+      reference_output_path = "reference.fasta",
+      docker_image = docker_image
   }
 
   output {

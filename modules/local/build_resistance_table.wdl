@@ -7,7 +7,7 @@ task build_resistance_table {
     File resmarkers
     File refseq
     Int n_cores = 4
-    String docker_name = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -27,6 +27,6 @@ task build_resistance_table {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }
