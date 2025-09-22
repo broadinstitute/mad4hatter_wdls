@@ -23,6 +23,6 @@ workflow TestWdl {
     output {
         File sample_coverage_out = quality_report.sample_coverage_out
         File amplicon_coverage_out = quality_report.amplicon_coverage_out
-        Directory quality_report = quality_report.quality_report
+        Array[File] quality_report = quality_report.quality_report
     }
 }
