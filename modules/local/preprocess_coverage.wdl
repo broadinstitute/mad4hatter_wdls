@@ -20,12 +20,14 @@ task preprocess_coverage {
 
   for file in ~{sep=" " sample_coverages}
   do
-      add_sample_name_column \$file >> sample_coverage.txt
+      echo "Processing $file" >&2
+      add_sample_name_column $file >> sample_coverage.txt
   done
 
   for file in ~{sep=" " amplicon_coverages}
   do
-      add_sample_name_column \$file >> amplicon_coverage.txt
+      echo "Processing $file" >&2
+      add_sample_name_column $file >> amplicon_coverage.txt
   done
 
   >>>
