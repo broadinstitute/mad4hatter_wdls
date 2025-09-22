@@ -39,6 +39,6 @@ workflow demultiplex_amplicons {
   output {
     Array[File] sample_summary_ch = cutadapt.sample_summary
     Array[File] amplicon_summary_ch = cutadapt.amplicon_summary
-    Array[Directory] demux_fastqs_ch = cutadapt.demultiplexed_fastqs
+    Array[File] demux_fastqs_ch = cutadapt.demultiplexed_fastqs
   }
 }
