@@ -3,12 +3,14 @@ version 1.0
 task build_pseudocigar {
   input {
     File alignments
-    String docker_name = "your_docker_image"
+    Int ncores = 1
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    Rscript /bin/build_pseudocigar.R \
-      --alignments ~{alignments}
+    Rscript /opt/mad4hatter/bin/build_pseudocigar.R \
+      --alignments ~{alignments} \
+      --ncores ~{ncores}
   >>>
 
   output {
@@ -16,6 +18,6 @@ task build_pseudocigar {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }

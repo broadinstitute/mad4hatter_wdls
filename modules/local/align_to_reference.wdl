@@ -5,13 +5,12 @@ task align_to_reference {
     File clusters
     File refseq_fasta
     File amplicon_info
-    #TODO: Should this be used in runtime?
     Int n_cores = 1
-    String docker_name = "your_docker_image"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    Rscript /bin/align_to_reference.R \
+    Rscript /opt/mad4hatter/bin/align_to_reference.R \
       --clusters ~{clusters} \
       --refseq-fasta ~{refseq_fasta} \
       --amplicon-table ~{amplicon_info} \
@@ -23,6 +22,6 @@ task align_to_reference {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }

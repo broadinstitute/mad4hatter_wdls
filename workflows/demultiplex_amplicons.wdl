@@ -12,13 +12,13 @@ workflow demultiplex_amplicons {
     Int cutadapt_minlen = 100
     String? sequencer = ""
     Float allowed_errors = 0
-    String docker_name = "your_docker_image"
+    String docker_image = "your_docker_image"
   }
 
   call create_primer_files.create_primer_files {
     input:
       amplicon_info = amplicon_info,
-      docker_name = docker_name
+      docker_image = docker_image
   }
 
   scatter (read_pair in read_pairs) {
@@ -32,13 +32,13 @@ workflow demultiplex_amplicons {
         cutadapt_minlen = cutadapt_minlen,
         sequencer = sequencer,
         allowed_errors = allowed_errors,
-        docker_name = docker_name
+        docker_image = docker_image
     }
   }
 
   output {
-    Array[File] sample_summary_ch = cutadapt.sample_summary_ch
-    Array[File] amplicon_summary_ch = cutadapt.amplicon_summary_ch
-    Array[Directory] demux_fastqs_ch = cutadapt.demux_fastqs_ch
+    Array[File] sample_summary_ch = cutadapt.sample_summary
+    Array[File] amplicon_summary_ch = cutadapt.amplicon_summary
+    Array[File] demux_fastqs_ch = cutadapt.demultiplexed_fastqs
   }
 }

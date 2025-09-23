@@ -7,7 +7,7 @@ workflow postproc_only {
   input {
     File amplicon_info
     File denoised_asvs
-    String docker_string = "my_docker"
+    String docker_image = "my_docker"
   }
 
   # Call the denoise_amplicons_2 workflow
@@ -18,7 +18,7 @@ workflow postproc_only {
       just_concatenate = false,
       mask_tandem_repeats = true,
       mask_homopolymers = true,
-      docker_string = docker_string
+      docker_string = docker_image
   }
 
   # Call the build_alleletable task
@@ -27,6 +27,6 @@ workflow postproc_only {
       amplicon_info = amplicon_info,
       denoise_ch = denoised_asvs,
       results_ch = denoise_amplicons_2.results_ch,
-      docker_string = docker_string
+      docker_image = docker_image
   }
 }

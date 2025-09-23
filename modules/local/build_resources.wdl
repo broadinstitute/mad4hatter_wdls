@@ -3,15 +3,15 @@ version 1.0
 task build_amplicon_info {
   input {
     Array[String] pools
-    Array[String] amplicon_info_paths
-    File amplicon_info_output
-    String docker_name = "your_docker_image"
+    Array[File] amplicon_info_paths
+    String? amplicon_info_output = "amplicon_info.tsv"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    python3 /bin/build_amplicon_info.py \
-      --pools ~{pools} \
-      --amplicon_info_paths ~{amplicon_info_paths} \
+    python3 /opt/mad4hatter/bin/build_amplicon_info.py \
+      --pools ~{sep=' ' pools} \
+      --amplicon_info_paths ~{sep=' ' amplicon_info_paths} \
       --amplicon_info_output_path ~{amplicon_info_output}
   >>>
 
@@ -20,20 +20,20 @@ task build_amplicon_info {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }
 
 task build_targeted_reference {
   input {
-    File reference_input_paths
-    File reference_output_path
-    String docker_name = "your_docker_image"
+    Array[File] reference_input_paths
+    String? reference_output_path = "reference.fasta"
+    String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    python3 /bin/merge_fasta.py \
-      --reference_paths ~{reference_input_paths} \
+    python3 /opt/mad4hatter/bin/merge_fasta.py \
+      --reference_paths ~{sep=' ' reference_input_paths} \
       --reference_output_path ~{reference_output_path}
   >>>
 
@@ -49,15 +49,15 @@ task build_targeted_reference {
 task build_resmarker_info {
   input {
     File amplicon_info
-    #TODO: This file is https://github.com/EPPIcenter/mad4hatter/blob/update_dockerfile/panel_information/principal_resistance_marker_info_table.tsv
-    #TODO: It should be added to updated docker file and we should ensure path is correct
-    File principal_resmarkers = "principal_resistance_marker_info_table.tsv"
-    File resmarker_info_output_path
-    String docker_name = "your_docker_image"
+    # TODO: This file is located here: https://github.com/EPPIcenter/mad4hatter/blob/update_dockerfile/panel_information/principal_resistance_marker_info_table.tsv
+    # TODO: It should be added to updated docker file and we should ensure path is correct (currently located in theworkspace bucket)
+    File principal_resmarkers
+    String? resmarker_info_output_path = "resmarker_info.tsv"
+    String docker_name = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    python3 /bin/build_resmarker_info.py \
+    python3 /opt/mad4hatter/bin/build_resmarker_info.py \
       --amplicon_info ~{amplicon_info} \
       --principal_resmarkers ~{principal_resmarkers} \
       --resmarker_info_output_path ~{resmarker_info_output_path}

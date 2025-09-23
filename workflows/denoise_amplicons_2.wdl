@@ -16,7 +16,7 @@ workflow denoise_amplicons_2 {
     File? masked_fasta
     Boolean mask_tandem_repeats
     Boolean mask_homopolymers
-    String docker_string = "my_docker"
+    String docker_image = "my_docker"
   }
 
   # Process denoise_ch if just_concatenate is true
@@ -24,7 +24,7 @@ workflow denoise_amplicons_2 {
     call collapse_concatenated_reads.collapse_concatenated_reads {
       input:
         denoise_ch = denoise_ch,
-        docker_string = docker_string
+        docker_image = docker_image
     }
   }
 
@@ -36,7 +36,7 @@ workflow denoise_amplicons_2 {
     call prepare_reference_sequences.prepare_reference_sequences {
       input:
         amplicon_info = amplicon_info,
-        docker_string = docker_string
+        docker_string = docker_image
     }
   }
 
@@ -49,14 +49,14 @@ workflow denoise_amplicons_2 {
       denoise_ch = denoise_input,
       reference = reference,
       amplicon_info = amplicon_info,
-      docker_string = docker_string
+      docker_image = docker_image
   }
 
   # Filter ASVs
   call filter_asvs.filter_asvs {
     input:
       alignments = align_to_reference.alignments,
-      docker_string = docker_string
+      docker_string = docker_image
   }
 
   # Set initial alignment table
@@ -68,7 +68,7 @@ workflow denoise_amplicons_2 {
       input:
         reference = reference,
         filtered_alignments = filter_asvs.filtered_alignments_ch,
-        docker_string = docker_string
+        docker_string = docker_image
     }
     # Update alignment table if masking was done
     alignment_table = mask_low_complexity_regions.masked_alignments
@@ -78,7 +78,7 @@ workflow denoise_amplicons_2 {
   call build_pseudocigar.build_pseudocigar {
     input:
       alignment_table = alignment_table,
-      docker_string = docker_string
+      docker_image = docker_image
   }
 
   output {

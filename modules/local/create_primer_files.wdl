@@ -3,11 +3,11 @@ version 1.0
 task create_primer_files {
   input {
     File amplicon_info
-    String docker_name = "your_docker_image"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    bash /bin/create_primer_files.sh -a ~{amplicon_info} \
+    bash /opt/mad4hatter/bin/create_primer_files.sh -a ~{amplicon_info} \
       -f fwd_primers.fasta \
       -r rev_primers.fasta
   >>>
@@ -18,6 +18,6 @@ task create_primer_files {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }
