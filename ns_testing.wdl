@@ -16,12 +16,6 @@ workflow MaskLowComplexityRegionsTesting {
     }
 
     output {
-<<<<<<< Updated upstream
-        File sample_summary = cutadapt.sample_summary
-        File amplicon_summary = cutadapt.amplicon_summary
-        Array[File] demultiplexed_fastqs = cutadapt.demultiplexed_fastqs
-=======
         File masked_alignments = mask_low_complexity_regions.masked_alignments
->>>>>>> Stashed changes
     }
 }
