@@ -9,12 +9,13 @@ task cutadapt {
     Int cutadapt_minlen
     String sequencer
     Int allowed_errors
-    #TODO: Should this be used in runtime?
     Int cores = 1
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
+    OUTPUT_DIR="demultiplexed_fastqs"
+
     bash /opt/mad4hatter/bin/cutadapt_process.sh \
       -1 ~{reads_1} \
       -2 ~{reads_2} \
@@ -24,16 +25,20 @@ task cutadapt {
       -s ~{sequencer} \
       -e ~{allowed_errors} \
       -c ~{cores} \
-      -o demultiplexed_fastqs
+      -o $OUTPUT_DIR
+
+    echo "Creating tarball of fastq files"
+    tar -czf fastqs.tar.gz -C "$OUTPUT_DIR" $(basename -a $OUTPUT_DIR/*.fastq.gz)
   >>>
 
   output {
     File sample_summary = glob("*.SAMPLEsummary.txt")[0]
     File amplicon_summary = glob("*.AMPLICONsummary.txt")[0]
-    Array[File] demultiplexed_fastqs = glob("demultiplexed_fastqs/*")
+    File demultiplexed_fastqs = "fastqs.tar.gz"
   }
 
   runtime {
     docker: docker_image
+    cpu: cores
   }
 }
