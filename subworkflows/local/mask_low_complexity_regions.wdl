@@ -1,11 +1,11 @@
 version 1.0
 
-# This workflow allows users to optionally mask homopolymers and / or tandem repeats
 import "../modules/local/mask_reference_tandem_repeats.wd" as mask_reference_tandem_repeats
 import "../modules/local/mask_reference_homopolymers.wdl" as mask_reference_homopolymers
 import "../modules/local/mask_sequences.wdl" as mask_sequences
 
 
+# This workflow allows users to optionally mask homopolymers and / or tandem repeats
 workflow mask_low_complexity_regions {
   input {
     File reference
@@ -16,9 +16,7 @@ workflow mask_low_complexity_regions {
     Boolean mask_homopolymers = true
     Int homopolymer_threshold = 5
     File alignments
-
-    # TODO: Fill in docker image here when available
-    String docker_image = ""
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   if (mask_tandem_repeats) {
@@ -39,7 +37,6 @@ workflow mask_low_complexity_regions {
         docker_image = docker_image
     }
   }
-
 
   # Collect whichever masked references exist
   Array[File] masked_references = select_all([

@@ -1,34 +1,27 @@
 version 1.0
 
-import "modules/local/cutadapt.wdl" as CutAdapt
+import "subworkflows/local/mask_low_complexity_regions.wdl" as mask_low_complexity_regions
 
 # Can be used for testing subworkflows and modules
-workflow CutAdaptTest {
+workflow MaskLowComplexityRegionsTesting {
     input {
-        File fwd_primers
-        File rev_primers
-        File reads_1
-        File reads_2
-        Int cutadapt_minlen
-        String sequencer
-        Int allowed_errors
+        File reference
+        File alignments
     }
 
-    # Testing task
-    call CutAdapt.cutadapt {
+    call mask_low_complexity_regions.mask_low_complexity_regions {
         input:
-            fwd_primers = fwd_primers,
-            rev_primers = rev_primers,
-            reads_1 = reads_1,
-            reads_2 = reads_2,
-            cutadapt_minlen = cutadapt_minlen,
-            sequencer = sequencer,
-            allowed_errors = allowed_errors
+            reference = reference,
+            alignments = alignments
     }
 
     output {
+<<<<<<< Updated upstream
         File sample_summary = cutadapt.sample_summary
         File amplicon_summary = cutadapt.amplicon_summary
         Array[File] demultiplexed_fastqs = cutadapt.demultiplexed_fastqs
+=======
+        File masked_alignments = mask_low_complexity_regions.masked_alignments
+>>>>>>> Stashed changes
     }
 }
