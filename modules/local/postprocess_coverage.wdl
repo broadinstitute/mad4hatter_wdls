@@ -1,20 +1,18 @@
 version 1.0
 
-task post_process_coverage {
+task postprocess_coverage {
   input {
     File alleledata
     File clusters
     File sample_coverage
     File amplicon_coverage
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   set -euo pipefail
 
-  Rscript /bin/asv_coverage.R \
+  Rscript /opt/mad4hatter/bin/asv_coverage.R \
     --alleledata ~{alleledata} \
     --clusters ~{clusters} \
     --sample-coverage ~{sample_coverage} \
@@ -28,8 +26,8 @@ task post_process_coverage {
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }

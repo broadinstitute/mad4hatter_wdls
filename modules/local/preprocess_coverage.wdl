@@ -1,32 +1,33 @@
 version 1.0
 
-task pre_process_coverage {
+task preprocess_coverage {
   input {
     Array[File] sample_coverages
     Array[File] amplicon_coverages
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   set -euo pipefail
 
   add_sample_name_column() {
-    awk -v fname=\$(basename "\$1" | sed -e 's/.SAMPLEsummary.txt//g' -e 's/.AMPLICONsummary.txt//g') -v OFS="\\t" '{print fname, \$0}' "\$1"
+      fname=$(basename "$1" | sed -e 's/.SAMPLEsummary.txt//g' -e 's/.AMPLICONsummary.txt//g')
+      awk -v fname="$fname" -v OFS="\t" '{print fname, $0}' "$1"
   }
 
   echo -e "SampleID\\tStage\\tReads" > sample_coverage.txt
   echo -e "SampleID\\tLocus\\tReads" > amplicon_coverage.txt
 
-  for file in $sample_coverages
+  echo "Processing sample files" >&2
+  for file in ~{sep=" " sample_coverages}
   do
-      add_sample_name_column \$file >> sample_coverage.txt
+      add_sample_name_column $file >> sample_coverage.txt
   done
 
-  for file in $amplicon_coverages
+  echo "Processing amplicon files" >&2
+  for file in ~{sep=" " amplicon_coverages}
   do
-      add_sample_name_column \$file >> amplicon_coverage.txt
+      add_sample_name_column $file >> amplicon_coverage.txt
   done
 
   >>>
@@ -37,8 +38,8 @@ task pre_process_coverage {
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 

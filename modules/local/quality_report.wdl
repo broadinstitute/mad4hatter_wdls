@@ -5,10 +5,8 @@ task quality_report {
     File sample_coverage
     File amplicon_coverage
     File amplicon_info
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
-
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
 
   command <<<
   set -euo pipefail
@@ -19,7 +17,7 @@ task quality_report {
 
   test -d quality_report || mkdir quality_report
 
-  Rscript /bin/cutadapt_summaryplots.R \
+  Rscript /opt/mad4hatter/bin/cutadapt_summaryplots.R \
     amplicon_coverage.txt \
     sample_coverage.txt \
     ~{amplicon_info} \
@@ -30,14 +28,13 @@ task quality_report {
   output {
     File sample_coverage_out = "sample_coverage.txt"
     File amplicon_coverage_out = "amplicon_coverage.txt"
-    Directory quality_report = "quality_report"
+    Array[File] quality_reports = glob("quality_report/*")
   }
 
   runtime {
-    docker: "~{docker_image}"
-    cpu: 1
+    docker: docker_image
+    #TODO: Should we hardcode this?
     memory: "8G"
   }
-
 }
 

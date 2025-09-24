@@ -4,26 +4,24 @@ task mask_reference_homopolymers {
   input {
       File refseq_fasta
       Int homopolymer_threshold
-      # TODO: Fill in docker image here when available
-      String docker_image = ""
+      String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
   set -euo pipefail
 
-  Rscript /bin/mask_homopolymers.R \
+  Rscript /opt/mad4hatter/bin/mask_homopolymers.R \
       --refseq-fasta ~{refseq_fasta} \
       --homopolymer_threshold ~{homopolymer_threshold}
-      --fout "refseq.homopolymer.fasta.mask"
   >>>
 
   output {
-      File masked_fasta = "refseq.homopolymer.fasta.mask"
+      File masked_fasta = glob("*.mask")[0]
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }

@@ -5,12 +5,11 @@ task mask_sequences {
       Array[File] masks
       File alignments
       Int cpus = 1
-      # TODO: Fill in docker image here when available
-      String docker_image = ""
+      String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-  Rscript /bin/mask_sequences.R \
+  Rscript /opt/mad4hatter/bin/mask_sequences.R \
       --masks ~{sep=" " masks} \
       --alignments ~{alignments} \
       --n-cores ~{cpus}
@@ -21,8 +20,8 @@ task mask_sequences {
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }

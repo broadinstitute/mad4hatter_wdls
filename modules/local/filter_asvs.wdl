@@ -4,17 +4,17 @@ version 1.0
 task filter_asvs {
   input {
     File alignments
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   # Pulled default value from https://github.com/EPPIcenter/mad4hatter/blob/0fdf688d8bef6b1407de66ed2644a2d26635015d/nextflow.config#L32
   Int alignment_threshold = 60
-  # TODO: Fill in docker image here when available
-  String docker_image = ""
+
 
   command <<<
   set -euo pipefail
 
-  bash /bin/filter_asv_process.sh \
+  bash /opt/mad4hatter/bin/filter_asv_process.sh \
     -i ~{alignments} \
     -o filtered.alignments.txt \
     -t ~{alignment_threshold}
@@ -25,8 +25,8 @@ task filter_asvs {
   }
 
   runtime {
-    docker: "~{docker_image}"
-    cpu: 1
+    docker: docker_image
+    #TODO: Should we hardcode this?
     memory: "8G"
   }
 }

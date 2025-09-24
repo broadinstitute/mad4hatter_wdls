@@ -5,27 +5,22 @@ task mask_reference_tandem_repeats {
       File refseq_fasta
       Int min_score
       Int max_period
-      # TODO: Fill in docker image here when available
-      String docker_image = ""
+      String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
   set -euo pipefail
 
   trf ~{refseq_fasta} 2 7 7 80 10 ~{min_score} ~{max_period} -h -m
-
-  # Capture the generated .mask file
-  MASK_FILE=$(ls *.mask)
-  mv "${MASK_FILE}" refseq.mask
   >>>
 
   output {
-      File masked_fasta = "refseq.mask"
+      File masked_fasta = "reference.fasta.2.7.7.80.10.~{min_score}.~{max_period}.mask"
   }
 
   runtime {
-      docker: "~{docker_image}"
-      cpu: 1
+      docker: docker_image
+      #TODO: Should we hardcode this?
       memory: "8G"
   }
 }
