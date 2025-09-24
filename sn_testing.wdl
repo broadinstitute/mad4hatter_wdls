@@ -1,11 +1,11 @@
-version 1.2
+version 1.0
 
 import "modules/local/dada2_analysis.wdl" as dada2_analysis
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        Directory demultiplexed_dirs
+        Array[File] demultiplexed_dir_tars
         File amplicon_info
         String dada2_pool
         Int band_size
@@ -19,7 +19,7 @@ workflow TestWdl {
     # Testing task
     call dada2_analysis.dada2_analysis as dada2_analysis {
         input:
-            demultiplexed_dirs = demultiplexed_dirs,
+            demultiplexed_dir_tars = demultiplexed_dir_tars,
             amplicon_info = amplicon_info,
             dada2_pool = dada2_pool,
             omega_a = omega_a,
