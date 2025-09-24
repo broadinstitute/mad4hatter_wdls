@@ -29,6 +29,6 @@ workflow CutAdaptTest {
     output {
         File sample_summary = cutadapt.sample_summary
         File amplicon_summary = cutadapt.amplicon_summary
-        Array[File] demultiplexed_fastqs = cutadapt.demultiplexed_fastqs
+        File demultiplexed_fastqs = cutadapt.demultiplexed_fastqs
     }
 }
