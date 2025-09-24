@@ -29,7 +29,7 @@ task dada2_analysis {
   for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
     dir_name=$(basename "$tar_file" .tar.gz)
     mkdir -p "extracted_dirs/$dir_name"
-    tar -xf "$tar_file" -C "extracted_dirs/$dir_name"
+    tar -xf "$tar_file" --no-xattrs -C "extracted_dirs/$dir_name"
     # Remove tar file after successful extraction
     rm "$tar_file"
 
