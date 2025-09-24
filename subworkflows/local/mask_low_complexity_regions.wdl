@@ -1,8 +1,8 @@
 version 1.0
 
-import "modules/local/mask_reference_tandem_repeats.wdl" as mask_reference_tandem_repeats
-import "modules/local/mask_reference_homopolymers.wdl" as mask_reference_homopolymers
-import "modules/local/mask_sequences.wdl" as mask_sequences
+import "../../modules/local/mask_reference_tandem_repeats.wdl" as mask_reference_tandem_repeats
+import "../../modules/local/mask_reference_homopolymers.wdl" as mask_reference_homopolymers
+import "../../modules/local/mask_sequences.wdl" as mask_sequences
 
 
 # This workflow allows users to optionally mask homopolymers and / or tandem repeats
