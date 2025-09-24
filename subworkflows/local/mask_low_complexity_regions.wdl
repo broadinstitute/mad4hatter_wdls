@@ -1,6 +1,6 @@
 version 1.0
 
-import "../modules/local/mask_reference_tandem_repeats.wd" as mask_reference_tandem_repeats
+import "../modules/local/mask_reference_tandem_repeats.wdl" as mask_reference_tandem_repeats
 import "../modules/local/mask_reference_homopolymers.wdl" as mask_reference_homopolymers
 import "../modules/local/mask_sequences.wdl" as mask_sequences
 
