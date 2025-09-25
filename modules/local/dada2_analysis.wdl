@@ -26,6 +26,7 @@ task dada2_analysis {
 
   # Untar all the directories and collect the paths to the directories containing fastq files
   touch unique_dirs.txt
+  echo "Looping through tar files to extract fastq.gz files"
   for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
     dir_name=$(basename "$tar_file" .tar.gz)
     mkdir -p "extracted_dirs/$dir_name"
@@ -36,7 +37,7 @@ task dada2_analysis {
     # Find all directories containing fastq.gz files anywhere in the extracted content
     find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" -exec dirname {} \; >> unique_dirs.txt
   done
-
+  echo "Finished extracting all tar files."
   # Create a sorted unique list of directories
   DIRS=$(sort -u unique_dirs.txt | tr '\n' ' ')
 
