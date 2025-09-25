@@ -9,7 +9,7 @@ workflow demultiplex_amplicons {
     Array[Pair[File, File]] read_pairs
     Int cutadapt_minlen = 100
     String? sequencer = ""
-    Float allowed_errors = 0
+    Int allowed_errors = 0
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 
