@@ -25,8 +25,8 @@ workflow TestWdl {
     }
 
     output {
-        Array[File] sample_summary_ch = demultiplex_amplicons.sample_summary
-        Array[File] amplicon_summary_ch = demultiplex_amplicons.amplicon_summary
-        Array[File] demux_fastqs_ch = demultiplex_amplicons.demultiplexed_fastqs
+        Array[File] sample_summary_ch = demultiplex_amplicons.sample_summary_ch
+        Array[File] amplicon_summary_ch = demultiplex_amplicons.amplicon_summary_ch
+        Array[File] demux_fastqs_ch = demultiplex_amplicons.demux_fastqs_ch
     }
 }
