@@ -59,9 +59,6 @@ workflow denoise_amplicons_2 {
       docker_string = docker_image
   }
 
-  # Set initial alignment table
-  File alignment_table = align_to_reference.alignments
-
   # Mask low complexity regions if needed
   if (!defined(masked_fasta) && (mask_tandem_repeats || mask_homopolymers)) {
     call mask_low_complexity_regions.mask_low_complexity_regions {
@@ -70,9 +67,10 @@ workflow denoise_amplicons_2 {
         filtered_alignments = filter_asvs.filtered_alignments_ch,
         docker_string = docker_image
     }
-    # Update alignment table if masking was done
-    alignment_table = mask_low_complexity_regions.masked_alignments
   }
+
+  # Set initial alignment table. Update if masked_fasta is provided
+  File alignment_table = select_first([mask_low_complexity_regions.masked_alignments, align_to_reference.alignments])
 
   # Build pseudocigar
   call build_pseudocigar.build_pseudocigar {

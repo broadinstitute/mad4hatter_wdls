@@ -33,8 +33,8 @@ task dada2_analysis {
     # Remove tar file after successful extraction
     rm "$tar_file"
 
-    # Find all directories named demultiplexed_fastqs in the extracted content
-    fastq_dirs=$(find "extracted_dirs/$dir_name" -type d -name "demultiplexed_fastqs")
+    # Find all directories containing fastq.gz files anywhere in the extracted content
+    fastq_dirs=$(find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" -exec dirname {} \; | sort | uniq)
     for dir in $fastq_dirs; do
       DIRS="$DIRS $dir"
     done
