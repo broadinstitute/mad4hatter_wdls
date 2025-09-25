@@ -36,10 +36,10 @@ workflow prepare_reference_sequences {
   }
 
   # TODO: Test out this path after create_reference_from_genomes inputs are provided
-  File defined_genome_path = select_first([genome])
-  File defined_amplicon_info = select_first([amplicon_info])
-
   if (defined(genome)) {
+    File defined_genome_path = select_first([genome])
+    File defined_amplicon_info = select_first([amplicon_info])
+
     call create_reference_from_genomes.create_reference_from_genomes {
       input:
         genome = defined_genome_path,
@@ -49,9 +49,8 @@ workflow prepare_reference_sequences {
     }
   }
 
-  Array[File] defined_reference_input_paths = select_first([reference_input_paths])
-
   if (!defined(genome)) {
+    Array[File] defined_reference_input_paths = select_first([reference_input_paths])
     call process_inputs.concatenate_targeted_reference {
       input:
         reference_input_paths = defined_reference_input_paths,
