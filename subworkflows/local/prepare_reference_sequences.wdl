@@ -35,7 +35,7 @@ workflow prepare_reference_sequences {
       }
   }
 
-  # TODO: Test out this path after create_reference_from_genomes inputs are provided
+  # TODO: Test out this path after create_reference_from_genomes inputs are provided as part of POD-2902
   if (defined(genome)) {
     File defined_genome_path = select_first([genome])
     File defined_amplicon_info = select_first([amplicon_info])
