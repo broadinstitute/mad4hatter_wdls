@@ -1,34 +1,34 @@
 version 1.0
 
-import "workflows/demultiplex_amplicons.wdl" as demultiplex_amplicons
+import "workflows/denoise_amplicons_1.wdl" as denoise_amplicons_1
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
         File amplicon_info
-        Array[File] left_fastqs
-        Array[File] right_fastqs
-        Int cutadapt_minlen = 100
-        String? sequencer = ""
-        Int allowed_errors = 0
+        Array[File] demultiplexed_dir_tars
+        String dada2_pool
+        Int band_size
+        Float omega_a
+        Int maxEE
+        Boolean just_concatenate
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call demultiplex_amplicons.demultiplex_amplicons as demultiplex_amplicons {
+    call denoise_amplicons_1.denoise_amplicons_1 {
         input:
             amplicon_info = amplicon_info,
-            left_fastqs = left_fastqs,
-            right_fastqs = right_fastqs,
-            cutadapt_minlen = cutadapt_minlen,
-            sequencer = sequencer,
-            allowed_errors = allowed_errors,
+            demultiplexed_dir_tars = demultiplexed_dir_tars,
+            dada2_pool = dada2_pool,
+            band_size = band_size,
+            omega_a = omega_a,
+            maxEE = maxEE,
+            just_concatenate = just_concatenate,
             docker_image = docker_image
     }
 
     output {
-        Array[File] sample_summary_ch = demultiplex_amplicons.sample_summary_ch
-        Array[File] amplicon_summary_ch = demultiplex_amplicons.amplicon_summary_ch
-        Array[File] demux_fastqs_ch = demultiplex_amplicons.demux_fastqs_ch
+        File dada2_clusters = denoise_amplicons_1.dada2_clusters
     }
 }
