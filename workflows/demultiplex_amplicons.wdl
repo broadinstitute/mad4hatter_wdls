@@ -2,17 +2,15 @@ version 1.0
 
 import "../modules/local/create_primer_files.wdl" as create_primer_files
 import "../modules/local/cutadapt.wdl" as cutadapt
-# This was imported but not used in the original Nexflow workflow
-#import "../modules/local/quality_report.wdl" as quality_report
 
 workflow demultiplex_amplicons {
   input {
     File amplicon_info
-    Array[Pair[String, Pair[File, File]]] read_pairs
+    Array[Pair[File, File]] read_pairs
     Int cutadapt_minlen = 100
     String? sequencer = ""
     Float allowed_errors = 0
-    String docker_image = "your_docker_image"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   call create_primer_files.create_primer_files {
