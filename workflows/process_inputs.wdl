@@ -6,7 +6,6 @@ workflow generate_amplicon_info {
   input {
     Array[File] amplicon_info
     Array[String] pools
-    String project_dir
     String docker_image
   }
 
