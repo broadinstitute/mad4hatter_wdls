@@ -30,7 +30,7 @@ workflow concatenate_targeted_reference {
 
   call build_resources.build_targeted_reference {
     input:
-      reference_input_paths = reference_input_paths,
+      reference_input_paths = select_first([reference_input_paths]),
       docker_image = docker_image
   }
 
