@@ -24,9 +24,8 @@ workflow demultiplex_amplicons {
       input:
         fwd_primers = create_primer_files.fwd_primers,
         rev_primers = create_primer_files.rev_primers,
-        reads_1 = read_pair.right.left,
-        reads_2 = read_pair.right.right,
-        pair_id = read_pair.left,
+        reads_1 = read_pair.left,
+        reads_2 = read_pair.right,
         cutadapt_minlen = cutadapt_minlen,
         sequencer = sequencer,
         allowed_errors = allowed_errors,
