@@ -12,26 +12,30 @@ workflow quality_control {
         Array[File] amplicon_coverage_files
         File? alleledata
         File? clusters
+        String docker_image = "eppicenter/mad4hatter:dev"
     }
 
-    call preprocess_coverage.pre_process_coverage {
+    # Initial Preprocessing
+    call preprocess_coverage.preprocess_coverage {
         input:
             sample_coverages = sample_coverage_files,
-            amplicon_coverages = amplicon_coverage_files
+            amplicon_coverages = amplicon_coverage_files,
+            docker_image = docker_image
     }
 
+    # If postprocessing coverage is provided, run the postprocessing workflow
     if (defined(alleledata) && defined(clusters)) {
-        call postprocess_coverage.post_process_coverage {
+        call postprocess_coverage.postprocess_coverage {
             input:
                 alleledata = alleledata,
                 clusters = clusters,
-                sample_coverage = pre_process_coverage.sample_coverage,
-                amplicon_coverage = pre_process_coverage.amplicon_coverage
+                sample_coverage = preprocess_coverage.sample_coverage,
+                amplicon_coverage = preprocess_coverage.amplicon_coverage
         }
     }
 
-    File final_sample_coverage = select_first([post_process_coverage.postprocess_sample_coverage, pre_process_coverage.sample_coverage])
-    File final_amplicon_coverage = select_first([post_process_coverage.postprocess_amplicon_coverage, pre_process_coverage.amplicon_coverage])
+    File final_sample_coverage = select_first([postprocess_coverage.postprocess_sample_coverage, preprocess_coverage.sample_coverage])
+    File final_amplicon_coverage = select_first([postprocess_coverage.postprocess_amplicon_coverage, preprocess_coverage.amplicon_coverage])
 
     call quality_report.quality_report {
         input:
@@ -39,5 +43,11 @@ workflow quality_control {
             amplicon_coverage = final_amplicon_coverage,
             amplicon_info = amplicon_info
 
+    }
+
+    output {
+        File sample_coverage_out = quality_report.sample_coverage_out
+        File amplicon_coverage_out = quality_report.amplicon_coverage_out
+        Array[File] quality_reports = quality_report.quality_reports
     }
 }

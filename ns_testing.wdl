@@ -1,23 +1,31 @@
 version 1.0
 
-import "subworkflows/local/prepare_reference_sequences.wdl" as prepare_reference_sequences
+import "workflows/resistance_marker_module.wdl" as ResistanceMarkerModule
 
 # Can be used for testing subworkflows and modules
-workflow PrepareReferenceSequencesTesting {
+workflow ResistanceMarkerModuleTest {
     input {
-        File? amplicon_info
-        File? genome
-        Array[File]? reference_input_paths
+        File amplicon_info
+        File allele_data
+        File alignment_data
+        File reference
+        File? resmarkers_amplicon
     }
 
-    call prepare_reference_sequences.prepare_reference_sequences {
+    # Testing task
+    call ResistanceMarkerModule.resistance_marker_module {
         input:
             amplicon_info = amplicon_info,
-            genome = genome,
-            reference_input_paths = reference_input_paths
+            allele_data = allele_data,
+            alignment_data = alignment_data,
+            reference = reference,
+            resmarkers_amplicon = resmarkers_amplicon
     }
 
     output {
-        File reference_fasta = prepare_reference_sequences.reference_fasta
+        File resmarkers_output = resistance_marker_module.resmarkers_output
+        File resmarkers_by_locus = resistance_marker_module.resmarkers_by_locus
+        File microhaps = resistance_marker_module.microhaps
+        File new_mutations = resistance_marker_module.new_mutations
     }
 }
