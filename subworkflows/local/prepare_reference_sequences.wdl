@@ -39,7 +39,7 @@ workflow prepare_reference_sequences {
   if (!defined(genome)) {
     call process_inputs.concatenate_targeted_reference {
       input:
-        reference_input_paths = reference_input_paths,
+        reference_input_paths = select_first([reference_input_paths]),
         docker_image = docker_image
     }
   }
