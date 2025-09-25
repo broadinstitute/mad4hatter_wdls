@@ -25,10 +25,13 @@ workflow quality_control {
 
     # If postprocessing coverage is provided, run the postprocessing workflow
     if (defined(alleledata) && defined(clusters)) {
+        File defined_alleledata = select_first([alleledata])
+        File defined_clusters = select_first([clusters])
+
         call postprocess_coverage.postprocess_coverage {
             input:
-                alleledata = alleledata,
-                clusters = clusters,
+                alleledata = defined_alleledata,
+                clusters = defined_clusters,
                 sample_coverage = preprocess_coverage.sample_coverage,
                 amplicon_coverage = preprocess_coverage.amplicon_coverage
         }
