@@ -7,7 +7,7 @@ import "../../modules/local/error_with_message.wdl" as error_with_message
 
 workflow prepare_reference_sequences {
   input {
-    File amplicon_info
+    File? amplicon_info
     File? genome
     Array[File]? reference_input_paths
     Boolean mask_tandem_repeats = true
@@ -19,6 +19,7 @@ workflow prepare_reference_sequences {
   }
 
   Boolean invalid = (defined(genome) && defined(reference_input_paths)) || (!defined(genome) && !defined(reference_input_paths))
+  Boolean invalid_amplicon = defined(genome) && !defined(amplicon_info)
 
   if (invalid) {
     call error_with_message.ErrorWithMessage {
@@ -27,13 +28,22 @@ workflow prepare_reference_sequences {
     }
   }
 
+  if (invalid_amplicon) {
+      call error_with_message.ErrorWithMessage as ErrorMessageInvalidAmplicon {
+      input:
+          message = "Error: 'amplicon_info' must be provided when 'genome' is provided."
+      }
+  }
+
   # TODO: Test out this path after create_reference_from_genomes inputs are provided
   File defined_genome_path = select_first([genome])
+  File defined_amplicon_info = select_first([amplicon_info])
+
   if (defined(genome)) {
     call create_reference_from_genomes.create_reference_from_genomes {
       input:
         genome = defined_genome_path,
-        amplicon_info = amplicon_info,
+        amplicon_info = defined_amplicon_info,
         refseq_fasta = "reference.fasta",
         docker_image = docker_image,
     }
