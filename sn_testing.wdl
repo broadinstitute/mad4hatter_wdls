@@ -6,7 +6,8 @@ import "workflows/demultiplex_amplicons.wdl" as demultiplex_amplicons
 workflow TestWdl {
     input {
         File amplicon_info
-        Array[Pair[File, File]] read_pairs
+        Array[File] left_fastqs
+        Array[File] right_fastqs
         Int cutadapt_minlen = 100
         String? sequencer = ""
         Int allowed_errors = 0
@@ -17,7 +18,8 @@ workflow TestWdl {
     call demultiplex_amplicons.demultiplex_amplicons as demultiplex_amplicons {
         input:
             amplicon_info = amplicon_info,
-            read_pairs = read_pairs,
+            left_fastqs = left_fastqs,
+            right_fastqs = right_fastqs,
             cutadapt_minlen = cutadapt_minlen,
             sequencer = sequencer,
             allowed_errors = allowed_errors,

@@ -6,12 +6,15 @@ import "../modules/local/cutadapt.wdl" as cutadapt
 workflow demultiplex_amplicons {
   input {
     File amplicon_info
-    Array[Pair[File, File]] read_pairs
+    Array[File] left_fastqs
+    Array[File] right_fastqs
     Int cutadapt_minlen = 100
     String sequencer = ""
     Int allowed_errors = 0
     String docker_image = "eppicenter/mad4hatter:dev"
   }
+
+  Array[Pair[File, File]] read_pairs = zip(left_fastqs, right_fastqs)
 
   call create_primer_files.create_primer_files {
     input:
