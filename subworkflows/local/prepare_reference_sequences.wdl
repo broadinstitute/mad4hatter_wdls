@@ -50,6 +50,7 @@ workflow prepare_reference_sequences {
   }
 
   Array[File] defined_reference_input_paths = select_first([reference_input_paths])
+
   if (!defined(genome)) {
     call process_inputs.concatenate_targeted_reference {
       input:

@@ -5,7 +5,7 @@ import "subworkflows/local/prepare_reference_sequences.wdl" as prepare_reference
 # Can be used for testing subworkflows and modules
 workflow PrepareReferenceSequencesTesting {
     input {
-        File amplicon_info
+        File? amplicon_info
         File? genome
         Array[File]? reference_input_paths
     }
