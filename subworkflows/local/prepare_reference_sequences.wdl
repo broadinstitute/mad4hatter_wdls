@@ -18,10 +18,19 @@ workflow prepare_reference_sequences {
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 
+  # Case 1: both provided → fail
   if (defined(genome) && defined(reference_input_paths)) {
     call error_with_message.ErrorWithMessage {
       input:
       message = "Error: Cannot accept both 'genome' and 'reference_input_paths'. Please provide only one."
+    }
+  }
+
+  # Case 2: neither provided → fail
+  if (!defined(genome) && !defined(reference_input_paths)) {
+    call error_with_message.ErrorWithMessage {
+      input:
+        message = "Error: You must provide either 'genome' OR 'reference_input_paths'."
     }
   }
 
@@ -37,9 +46,10 @@ workflow prepare_reference_sequences {
   }
 
   if (!defined(genome)) {
+    Array[File] defined_paths = select_first([reference_input_paths])
     call process_inputs.concatenate_targeted_reference {
       input:
-        reference_input_paths = select_first([reference_input_paths]),
+        reference_input_paths = defined_paths,
         docker_image = docker_image
     }
   }
