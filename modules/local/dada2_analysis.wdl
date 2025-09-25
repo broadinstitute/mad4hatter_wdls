@@ -34,7 +34,7 @@ task dada2_analysis {
     rm "$tar_file"
 
     # Find all directories containing fastq.gz files anywhere in the extracted content
-    fastq_dirs=$(find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" -exec dirname {} \; | sort | uniq)
+    fastq_dirs=$(find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" -exec dirname {} \; | sort -u)
     for dir in $fastq_dirs; do
       DIRS="$DIRS $dir"
     done
