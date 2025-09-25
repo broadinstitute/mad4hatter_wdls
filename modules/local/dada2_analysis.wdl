@@ -41,6 +41,19 @@ task dada2_analysis {
   # Create a sorted unique list of directories
   DIRS=$(sort -u unique_dirs.txt | tr '\n' ' ')
 
+  # After finding directories but before running R script
+  echo "Creating uniquely named symbolic links to all fastq files..."
+  mkdir -p uniquely_named_fastqs
+
+  # Create unique links to all fastq files
+  while read dir; do
+    dir_hash=$(echo "$dir" | md5sum | cut -c1-8)
+    for fastq in "$dir"/*.fastq.gz; do
+      base=$(basename "$fastq")
+      ln -s "$(realpath $fastq)" "uniquely_named_fastqs/${dir_hash}_${base}"
+    done
+  done < unique_dirs.txt
+
   Rscript /opt/mad4hatter/bin/dada_overlaps.R \
     --trimmed-path $DIRS \
     --ampliconFILE ~{amplicon_info} \
