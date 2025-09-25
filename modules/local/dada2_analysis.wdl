@@ -25,7 +25,7 @@ task dada2_analysis {
   mkdir -p extracted_dirs
 
   # Untar all the directories and collect the paths to the directories containing fastq files
-  DIRS=""
+  touch unique_dirs.txt
   for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
     dir_name=$(basename "$tar_file" .tar.gz)
     mkdir -p "extracted_dirs/$dir_name"
@@ -34,11 +34,11 @@ task dada2_analysis {
     rm "$tar_file"
 
     # Find all directories containing fastq.gz files anywhere in the extracted content
-    fastq_dirs=$(find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" -exec dirname {} \; | sort -u)
-    for dir in $fastq_dirs; do
-      DIRS="$DIRS $dir"
-    done
+    find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" -exec dirname {} \; >> unique_dirs.txt
   done
+
+  # Create a sorted unique list of directories
+  DIRS=$(sort -u unique_dirs.txt | tr '\n' ' ')
 
   Rscript /opt/mad4hatter/bin/dada_overlaps.R \
     --trimmed-path $DIRS \
