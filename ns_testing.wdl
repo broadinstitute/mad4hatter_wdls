@@ -1,21 +1,23 @@
 version 1.0
 
-import "subworkflows/local/mask_low_complexity_regions.wdl" as mask_low_complexity_regions
+import "subworkflows/local/prepare_reference_sequences.wdl" as prepare_reference_sequences
 
 # Can be used for testing subworkflows and modules
-workflow MaskLowComplexityRegionsTesting {
+workflow PrepareReferenceSequencesTesting {
     input {
-        File reference
-        File alignments
+        File amplicon_info
+        File? genome
+        Array[File]? reference_input_paths
     }
 
-    call mask_low_complexity_regions.mask_low_complexity_regions {
+    call prepare_reference_sequences.prepare_reference_sequences {
         input:
-            reference = reference,
-            alignments = alignments
+            amplicon_info = amplicon_info,
+            genome = genome,
+            reference_input_paths = reference_input_paths
     }
 
     output {
-        File masked_alignments = mask_low_complexity_regions.masked_alignments
+        File reference_fasta = prepare_reference_sequences.reference_fasta
     }
 }
