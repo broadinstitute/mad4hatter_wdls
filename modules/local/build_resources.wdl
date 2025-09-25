@@ -28,7 +28,7 @@ task build_targeted_reference {
   input {
     Array[File] reference_input_paths
     String? reference_output_path = "reference.fasta"
-    String docker_name = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -42,7 +42,7 @@ task build_targeted_reference {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }
 
@@ -53,7 +53,7 @@ task build_resmarker_info {
     # TODO: It should be added to updated docker file and we should ensure path is correct (currently located in theworkspace bucket)
     File principal_resmarkers
     String? resmarker_info_output_path = "resmarker_info.tsv"
-    String docker_name = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
@@ -68,6 +68,6 @@ task build_resmarker_info {
   }
 
   runtime {
-    docker: docker_name
+    docker: docker_image
   }
 }

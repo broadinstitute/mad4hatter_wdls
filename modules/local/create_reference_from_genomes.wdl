@@ -5,13 +5,12 @@ task create_reference_from_genomes {
     File genome
     File amplicon_info
     String refseq_fasta
-    # TODO: Should this be used in runtime?
     Int n_cores = 1
-    String docker_image = "your_docker_image"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   command <<<
-    Rscript /bin/create_reference_from_genomes.R \
+    Rscript /opt/mad4hatter/bin/create_reference_from_genomes.R \
       --ampliconFILE ~{amplicon_info} \
       --genome ~{genome} \
       --output ~{refseq_fasta} \
@@ -24,5 +23,6 @@ task create_reference_from_genomes {
 
   runtime {
     docker: docker_image
+    cpu: n_cores
   }
 }

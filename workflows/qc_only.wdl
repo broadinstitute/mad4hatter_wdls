@@ -8,6 +8,7 @@ workflow qc_only {
     input {
         File amplicon_info
         File reads
+        String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     call demultiplex_amplicons.demultiplex_amplicons {
@@ -15,8 +16,7 @@ workflow qc_only {
             amplicon_info = amplicon_info,
             # TODO figure out what read_pairs should be here
             read_pairs = "",
-            # TODO fill in docker name when avaiable
-            docker_name = ""
+            docker_image = docker_image
     }
 
     call quality_control.quality_control {

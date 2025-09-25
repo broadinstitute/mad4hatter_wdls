@@ -1,34 +1,23 @@
 version 1.0
 
-import "modules/local/cutadapt.wdl" as CutAdapt
+import "subworkflows/local/prepare_reference_sequences.wdl" as prepare_reference_sequences
 
 # Can be used for testing subworkflows and modules
-workflow CutAdaptTest {
+workflow PrepareReferenceSequencesTesting {
     input {
-        File fwd_primers
-        File rev_primers
-        File reads_1
-        File reads_2
-        Int cutadapt_minlen
-        String sequencer
-        Int allowed_errors
+        File? amplicon_info
+        File? genome
+        Array[File]? reference_input_paths
     }
 
-    # Testing task
-    call CutAdapt.cutadapt {
+    call prepare_reference_sequences.prepare_reference_sequences {
         input:
-            fwd_primers = fwd_primers,
-            rev_primers = rev_primers,
-            reads_1 = reads_1,
-            reads_2 = reads_2,
-            cutadapt_minlen = cutadapt_minlen,
-            sequencer = sequencer,
-            allowed_errors = allowed_errors
+            amplicon_info = amplicon_info,
+            genome = genome,
+            reference_input_paths = reference_input_paths
     }
 
     output {
-        File sample_summary = cutadapt.sample_summary
-        File amplicon_summary = cutadapt.amplicon_summary
-        File demultiplexed_fastqs = cutadapt.demultiplexed_fastqs
+        File reference_fasta = prepare_reference_sequences.reference_fasta
     }
 }

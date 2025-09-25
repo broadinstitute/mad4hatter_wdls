@@ -1,38 +1,60 @@
 version 1.0
 
 # This workflow allows users to optionally create a reference from genomes or use a default
-import "../modules/local/create_reference_from_genomes.wdl" as create_reference_from_genomes
-import "../workflows/process_inputs.wdl" as process_inputs
+import "../../modules/local/create_reference_from_genomes.wdl" as create_reference_from_genomes
+import "../../workflows/process_inputs.wdl" as process_inputs
+import "../../modules/local/error_with_message.wdl" as error_with_message
 
 workflow prepare_reference_sequences {
   input {
-    File amplicon_info
+    File? amplicon_info
     File? genome
-
-    # Defaults from the original Nextflow script
-    # The WDL engine handles these boolean checks
+    Array[File]? reference_input_paths
     Boolean mask_tandem_repeats = true
     Int trf_min_score = 25
     Int trf_max_period = 3
     Boolean mask_homopolymers = true
     Int homopolymer_threshold = 5
-
-    String docker_image = ""
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
+  Boolean invalid = (defined(genome) && defined(reference_input_paths)) || (!defined(genome) && !defined(reference_input_paths))
+  Boolean invalid_amplicon = defined(genome) && !defined(amplicon_info)
+
+  if (invalid) {
+    call error_with_message.ErrorWithMessage {
+      input:
+        message = "Error: Exactly one of 'genome' or 'reference_input_paths' must be provided."
+    }
+  }
+
+  if (invalid_amplicon) {
+      call error_with_message.ErrorWithMessage as ErrorMessageInvalidAmplicon {
+      input:
+          message = "Error: 'amplicon_info' must be provided when 'genome' is provided."
+      }
+  }
+
+  # TODO: Test out this path after create_reference_from_genomes inputs are provided as part of POD-2902
   if (defined(genome)) {
+    File defined_genome_path = select_first([genome])
+    File defined_amplicon_info = select_first([amplicon_info])
+
     call create_reference_from_genomes.create_reference_from_genomes {
       input:
-        genome = genome,
-        amplicon_info = amplicon_info,
+        genome = defined_genome_path,
+        amplicon_info = defined_amplicon_info,
         refseq_fasta = "reference.fasta",
         docker_image = docker_image,
     }
   }
-  # TODO concatenate_targeted_reference in process_inputs.wdl is not converted to WDL yet and currently doesn't
-  # take an inputs. This may have to be updated if that changes at all
+
   if (!defined(genome)) {
+    Array[File] defined_reference_input_paths = select_first([reference_input_paths])
     call process_inputs.concatenate_targeted_reference {
+      input:
+        reference_input_paths = defined_reference_input_paths,
+        docker_image = docker_image
     }
   }
 
