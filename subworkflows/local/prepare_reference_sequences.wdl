@@ -18,38 +18,32 @@ workflow prepare_reference_sequences {
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 
-  # Case 1: both provided → fail
-  if (defined(genome) && defined(reference_input_paths)) {
-    call error_with_message.ErrorWithMessage {
-      input:
-      message = "Error: Cannot accept both 'genome' and 'reference_input_paths'. Please provide only one."
-    }
-  }
+  Boolean invalid = (defined(genome) && defined(reference_input_paths)) || (!defined(genome) && !defined(reference_input_paths))
 
-  # Case 2: neither provided → fail
-  if (!defined(genome) && !defined(reference_input_paths)) {
+  if (invalid) {
     call error_with_message.ErrorWithMessage {
       input:
-        message = "Error: You must provide either 'genome' OR 'reference_input_paths'."
+        message = "Error: Exactly one of 'genome' or 'reference_input_paths' must be provided."
     }
   }
 
   # TODO: Test out this path after create_reference_from_genomes inputs are provided
+  File defined_genome_path = select_first([genome])
   if (defined(genome)) {
     call create_reference_from_genomes.create_reference_from_genomes {
       input:
-        genome = genome,
+        genome = defined_genome_path,
         amplicon_info = amplicon_info,
         refseq_fasta = "reference.fasta",
         docker_image = docker_image,
     }
   }
 
+  Array[File] defined_reference_input_paths = select_first([reference_input_paths])
   if (!defined(genome)) {
-    Array[File] defined_paths = select_first([reference_input_paths])
     call process_inputs.concatenate_targeted_reference {
       input:
-        reference_input_paths = defined_paths,
+        reference_input_paths = defined_reference_input_paths,
         docker_image = docker_image
     }
   }
