@@ -16,7 +16,7 @@ workflow resistance_marker_module {
     }
 
     # TODO: This file should be added to the docker image, and the path should be updated accordingly
-    File default_resmarkers_amplicon = "gs://fc-7734e0d5-1b38-4787-8847-58dd6dcb001c/resistance_marker_info_table.tsv"
+    File default_resmarkers_amplicon = "gs://fc-7734e0d5-1b38-4787-8847-58dd6dcb001c/principal_resistance_marker_info_table.tsv"
 
     if (!defined(resmarkers_amplicon))  {
         call build_resources.build_resmarker_info {
