@@ -10,44 +10,44 @@ import "../modules/local/collapse_concatenated_reads.wdl" as collapse_concatenat
 workflow denoise_amplicons_2 {
   input {
     File amplicon_info
-    File denoise_ch
+    File clusters
     Boolean just_concatenate
     File? refseq_fasta
     File? masked_fasta
     Boolean mask_tandem_repeats
     Boolean mask_homopolymers
-    String docker_image = "my_docker"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
-  # Process denoise_ch if just_concatenate is true
+  # Process clusters if just_concatenate is true
   if (just_concatenate) {
     call collapse_concatenated_reads.collapse_concatenated_reads {
       input:
-        denoise_ch = denoise_ch,
+        clusters = clusters,
         docker_image = docker_image
     }
   }
 
   # Use the appropriate denoise input based on just_concatenate
-  File denoise_input = select_first([collapse_concatenated_reads.collapsed_reads, denoise_ch])
+  File denoise_input = select_first([collapse_concatenated_reads.clusters_concatenated_collapsed, clusters])
 
   # Create reference or use provided one
   if (!defined(refseq_fasta)) {
     call prepare_reference_sequences.prepare_reference_sequences {
       input:
         amplicon_info = amplicon_info,
-        docker_string = docker_image
+        docker_image = docker_image
     }
   }
 
   # Use the appropriate reference
-  File reference = select_first([refseq_fasta, prepare_reference_sequences.reference_ch])
+  File reference = select_first([refseq_fasta, prepare_reference_sequences.reference_fasta])
 
   # Align denoised sequences to reference
   call align_to_reference.align_to_reference {
     input:
-      denoise_ch = denoise_input,
-      reference = reference,
+      clusters = denoise_input,
+      refseq_fasta = reference,
       amplicon_info = amplicon_info,
       docker_image = docker_image
   }
@@ -56,7 +56,7 @@ workflow denoise_amplicons_2 {
   call filter_asvs.filter_asvs {
     input:
       alignments = align_to_reference.alignments,
-      docker_string = docker_image
+      docker_image = docker_image
   }
 
   # Mask low complexity regions if needed
@@ -64,8 +64,8 @@ workflow denoise_amplicons_2 {
     call mask_low_complexity_regions.mask_low_complexity_regions {
       input:
         reference = reference,
-        filtered_alignments = filter_asvs.filtered_alignments_ch,
-        docker_string = docker_image
+        alignments = filter_asvs.filtered_alignments_ch,
+        docker_image = docker_image
     }
   }
 
@@ -75,7 +75,7 @@ workflow denoise_amplicons_2 {
   # Build pseudocigar
   call build_pseudocigar.build_pseudocigar {
     input:
-      alignment_table = alignment_table,
+      alignments = alignment_table,
       docker_image = docker_image
   }
 

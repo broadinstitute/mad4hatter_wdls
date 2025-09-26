@@ -6,7 +6,7 @@ import "workflows/denoise_amplicons_2.wdl" as denoise_amplicons_2
 workflow TestWdl {
     input {
         File amplicon_info
-        File denoise_ch
+        File clusters
         Boolean just_concatenate
         File? refseq_fasta
         File? masked_fasta
@@ -19,7 +19,7 @@ workflow TestWdl {
     call denoise_amplicons_2.denoise_amplicons_2 {
         input:
             amplicon_info = amplicon_info,
-            denoise_ch = denoise_ch,
+            clusters = clusters,
             refseq_fasta = refseq_fasta,
             masked_fasta = masked_fasta,
             mask_tandem_repeats = mask_tandem_repeats,
