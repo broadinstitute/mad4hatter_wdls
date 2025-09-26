@@ -1,36 +1,26 @@
 version 1.0
 
-import "workflows/denoise_amplicons_2.wdl" as denoise_amplicons_2
+import "workflows/postproc_only.wdl" as postproc_only
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
         File amplicon_info
         File clusters
-        Boolean just_concatenate
-        File? refseq_fasta
-        File? masked_fasta
-        Boolean mask_tandem_repeats
-        Boolean mask_homopolymers
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call denoise_amplicons_2.denoise_amplicons_2 {
+    call postproc_only.postproc_only {
         input:
             amplicon_info = amplicon_info,
             clusters = clusters,
-            refseq_fasta = refseq_fasta,
-            masked_fasta = masked_fasta,
-            mask_tandem_repeats = mask_tandem_repeats,
-            mask_homopolymers = mask_homopolymers,
-            just_concatenate = just_concatenate,
             docker_image = docker_image
     }
 
     output {
-        File results_ch = denoise_amplicons_2.results_ch
-        File reference_ch = denoise_amplicons_2.reference_ch
-        File aligned_asv_table = denoise_amplicons_2.aligned_asv_table
+        File reference_ch = postproc_only.reference_ch
+        File aligned_asv_table = postproc_only.aligned_asv_table
+        File alleledata = postproc_only.alleledata
     }
 }
