@@ -1,31 +1,32 @@
 version 1.0
 
-import "workflows/resistance_marker_module.wdl" as ResistanceMarkerModule
+import "workflows/qc_only.wdl" as QcOnly
 
 # Can be used for testing subworkflows and modules
-workflow ResistanceMarkerModuleTest {
+workflow QcOnlyTest {
     input {
         File amplicon_info
-        File allele_data
-        File alignment_data
-        File reference
-        File? resmarkers_amplicon
+        Array[File] left_fastqs
+        Array[File] right_fastqs
+        String sequencer
+        Int? cutadapt_minlen
+        Int? allowed_errors
     }
 
     # Testing task
-    call ResistanceMarkerModule.resistance_marker_module {
+    call QcOnly.qc_only {
         input:
             amplicon_info = amplicon_info,
-            allele_data = allele_data,
-            alignment_data = alignment_data,
-            reference = reference,
-            resmarkers_amplicon = resmarkers_amplicon
+            left_fastqs = left_fastqs,
+            right_fastqs = right_fastqs,
+            sequencer = sequencer,
+            cutadapt_minlen = cutadapt_minlen,
+            allowed_errors = allowed_errors
     }
 
     output {
-        File resmarkers_output = resistance_marker_module.resmarkers_output
-        File resmarkers_by_locus = resistance_marker_module.resmarkers_by_locus
-        File microhaps = resistance_marker_module.microhaps
-        File new_mutations = resistance_marker_module.new_mutations
+        File sample_coverage_out = qc_only.sample_coverage_out
+        File amplicon_coverage_out = qc_only.amplicon_coverage_out
+        Array[File] quality_reports = qc_only.quality_reports
     }
 }

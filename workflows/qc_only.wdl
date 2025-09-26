@@ -34,5 +34,10 @@ workflow qc_only {
             docker_image = docker_image
     }
 
+    output {
+        File sample_coverage_out = quality_control.sample_coverage_out
+        File amplicon_coverage_out = quality_control.amplicon_coverage_out
+        Array[File] quality_reports = quality_control.quality_reports
+    }
 }
 
