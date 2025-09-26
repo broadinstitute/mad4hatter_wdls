@@ -36,11 +36,10 @@ task dada2_analysis {
     # Remove tar file after successful extraction
     rm "$tar_file"
     tar_counter=$((tar_counter + 1))
-    echo "Extraction complete for $tar_file"
+    echo "Extraction complete"
 
     # Find all directories containing fastq.gz files anywhere in the extracted content
     find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
-    echo "Found and recorded directories with fastq.gz files from $tar_file"
   done
   echo "Finished extracting all tar files."
   # Create a sorted unique list of directories
