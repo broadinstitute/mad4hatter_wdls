@@ -31,7 +31,7 @@ workflow resistance_marker_module {
         input:
             alleledata = allele_data,
             alignment_data = alignment_data,
-            resmarkers = select_first([build_resmarker_info.resmarker_info, default_resmarkers_amplicon]),
+            resmarkers = select_first([build_resmarker_info.resmarker_info, resmarkers_amplicon]),
             refseq = reference,
             docker_image = docker_image
     }
