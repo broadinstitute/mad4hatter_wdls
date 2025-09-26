@@ -27,13 +27,14 @@ task dada2_analysis {
   # Untar all the directories and collect the paths to the directories containing fastq files
   touch fastq_dirs.txt
   echo "Looping through tar files to extract fastq.gz files"
-  tar_counter = 0
+  tar_counter=0
   for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
     dir_name=$(basename "$tar_file" .tar.gz)_$tar_counter
     mkdir -p "extracted_dirs/$dir_name"
     tar -xf "$tar_file" --no-xattrs -C "extracted_dirs/$dir_name"
     # Remove tar file after successful extraction
     rm "$tar_file"
+    let tar_counter++
 
     # Find all directories containing fastq.gz files anywhere in the extracted content
     #find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
