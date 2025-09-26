@@ -18,21 +18,21 @@ workflow postproc_only {
       just_concatenate = false,
       mask_tandem_repeats = true,
       mask_homopolymers = true,
-      docker_string = docker_image
+      docker_image = docker_image
   }
 
   # Call the build_alleletable task
   call build_alleletable.build_alleletable {
     input:
       amplicon_info = amplicon_info,
-      denoise_ch = clusters,
-      results_ch = denoise_amplicons_2.results_ch,
+      denoised_asvs = clusters,
+      processed_asvs = denoise_amplicons_2.results_ch,
       docker_image = docker_image
   }
 
   output {
-    File reference_ch = denoise_amplicons_2.reference
-    File aligned_asv_table = denoise_amplicons_2.alignment_table
+    File reference_ch = denoise_amplicons_2.reference_ch
+    File aligned_asv_table = denoise_amplicons_2.aligned_asv_table
     File alleledata = build_alleletable.alleledata
   }
 }
