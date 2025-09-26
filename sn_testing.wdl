@@ -1,36 +1,34 @@
 version 1.0
 
-import "modules/local/dada2_analysis.wdl" as dada2_analysis
+import "workflows/denoise_amplicons_1.wdl" as denoise_amplicons_1
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        Array[File] demultiplexed_dir_tars
         File amplicon_info
+        Array[File] demultiplexed_dir_tars
         String dada2_pool
         Int band_size
         Float omega_a
         Int maxEE
         Boolean just_concatenate
-        Int cpus = 1
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 
     # Testing task
-    call dada2_analysis.dada2_analysis as dada2_analysis {
+    call denoise_amplicons_1.denoise_amplicons_1 {
         input:
-            demultiplexed_dir_tars = demultiplexed_dir_tars,
             amplicon_info = amplicon_info,
+            demultiplexed_dir_tars = demultiplexed_dir_tars,
             dada2_pool = dada2_pool,
-            omega_a = omega_a,
             band_size = band_size,
+            omega_a = omega_a,
             maxEE = maxEE,
             just_concatenate = just_concatenate,
-            cpus = cpus,
             docker_image = docker_image
     }
 
     output {
-        File dada2_clusters = dada2_analysis.dada2_clusters
+        File dada2_clusters = denoise_amplicons_1.dada2_clusters
     }
 }

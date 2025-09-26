@@ -5,18 +5,18 @@ import "../modules/local/dada2_analysis.wdl" as dada2_analysis
 workflow denoise_amplicons_1 {
   input {
     File amplicon_info
-    Array[File] demultiplexed_fastqs
+    Array[File] demultiplexed_dir_tars
     String dada2_pool
     Int band_size
     Float omega_a
     Int maxEE
     Boolean just_concatenate
-    String docker_image = "your_docker_image"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   call dada2_analysis.dada2_analysis {
     input:
-      demultiplexed_fastqs = demultiplexed_fastqs,
+      demultiplexed_dir_tars = demultiplexed_dir_tars,
       amplicon_info = amplicon_info,
       dada2_pool = dada2_pool,
       band_size = band_size,
