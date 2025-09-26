@@ -31,22 +31,24 @@ task dada2_analysis {
   for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
     dir_name=$(basename "$tar_file" .tar.gz)_$tar_counter
     mkdir -p "extracted_dirs/$dir_name"
+    echo "Extracting $tar_file to extracted_dirs/$dir_name"
     tar -xf "$tar_file" --no-xattrs -C "extracted_dirs/$dir_name"
     # Remove tar file after successful extraction
     rm "$tar_file"
     let tar_counter++
 
     # Find all directories containing fastq.gz files anywhere in the extracted content
-    #find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
+    find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
   done
   echo "Finished extracting all tar files."
   # Create a sorted unique list of directories
-  #DIRS=$(sort -u fastq_dirs.txt | tr '\n' ' ')
+  DIRS=$(sort -u fastq_dirs.txt | tr '\n' ' ')
 
-  #echo "Directories with fastq files: $DIRS"
+  echo "Directories with fastq files to be processed:"
+  echo $DIRS
 
   Rscript /opt/mad4hatter/bin/dada_overlaps.R \
-    --trimmed-path extracted_dirs \
+    --trimmed-path $DIRS \
     --ampliconFILE ~{amplicon_info} \
     --pool ~{dada2_pool} \
     --band-size ~{band_size} \
