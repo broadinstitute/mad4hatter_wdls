@@ -1,30 +1,31 @@
 version 1.0
 
-import "workflows/quality_control.wdl" as QualityControl
+import "workflows/resistance_marker_module.wdl" as ResistanceMarkerModule
 
 # Can be used for testing subworkflows and modules
-workflow QualityControlTest {
+workflow ResistanceMarkerModuleTest {
     input {
         File amplicon_info
-        Array[File] sample_coverage_files
-        Array[File] amplicon_coverage_files
-        File? alleledata
-        File? clusters
+        File allele_data
+        File alignment_data
+        File reference
+        File? resmarkers_amplicon
     }
 
     # Testing task
-    call QualityControl.quality_control {
+    call ResistanceMarkerModule.resistance_marker_module {
         input:
             amplicon_info = amplicon_info,
-            sample_coverage_files = sample_coverage_files,
-            amplicon_coverage_files = amplicon_coverage_files,
-            alleledata = alleledata,
-            clusters = clusters
+            allele_data = allele_data,
+            alignment_data = alignment_data,
+            reference = reference,
+            resmarkers_amplicon = resmarkers_amplicon
     }
 
     output {
-        File sample_coverage_out = quality_control.sample_coverage_out
-        File amplicon_coverage_out = quality_control.amplicon_coverage_out
-        Array[File] quality_reports = quality_control.quality_reports
+        File resmarkers_output = resistance_marker_module.resmarkers_output
+        File resmarkers_by_locus = resistance_marker_module.resmarkers_by_locus
+        File microhaps = resistance_marker_module.microhaps
+        File new_mutations = resistance_marker_module.new_mutations
     }
 }

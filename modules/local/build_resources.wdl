@@ -69,5 +69,9 @@ task build_resmarker_info {
 
   runtime {
     docker: docker_image
+    memory: "8G"
+    cpu: 1
+    disks: "local-disk 10 HDD"
+
   }
 }
