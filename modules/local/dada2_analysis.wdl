@@ -25,37 +25,27 @@ task dada2_analysis {
   mkdir -p extracted_dirs
 
   # Untar all the directories and collect the paths to the directories containing fastq files
-  touch unique_dirs.txt
+  touch fastq_dirs.txt
   echo "Looping through tar files to extract fastq.gz files"
+  tar_counter = 0
   for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
-    dir_name=$(basename "$tar_file" .tar.gz)
+    dir_name=$(basename "$tar_file" .tar.gz)_$tar_counter
     mkdir -p "extracted_dirs/$dir_name"
     tar -xf "$tar_file" --no-xattrs -C "extracted_dirs/$dir_name"
     # Remove tar file after successful extraction
     rm "$tar_file"
 
     # Find all directories containing fastq.gz files anywhere in the extracted content
-    find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" -exec dirname {} \; >> unique_dirs.txt
+    #find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
   done
   echo "Finished extracting all tar files."
   # Create a sorted unique list of directories
-  DIRS=$(sort -u unique_dirs.txt | tr '\n' ' ')
+  #DIRS=$(sort -u fastq_dirs.txt | tr '\n' ' ')
 
-  # After finding directories but before running R script
-  echo "Creating uniquely named symbolic links to all fastq files..."
-  mkdir -p uniquely_named_fastqs
-
-  # Create unique links to all fastq files
-  while read dir; do
-    dir_hash=$(echo "$dir" | md5sum | cut -c1-8)
-    for fastq in "$dir"/*.fastq.gz; do
-      base=$(basename "$fastq")
-      ln -s "$(realpath $fastq)" "uniquely_named_fastqs/${dir_hash}_${base}"
-    done
-  done < unique_dirs.txt
+  #echo "Directories with fastq files: $DIRS"
 
   Rscript /opt/mad4hatter/bin/dada_overlaps.R \
-    --trimmed-path $DIRS \
+    --trimmed-path extracted_dirs \
     --ampliconFILE ~{amplicon_info} \
     --pool ~{dada2_pool} \
     --band-size ~{band_size} \
