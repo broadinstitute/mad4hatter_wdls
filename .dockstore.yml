@@ -7,12 +7,12 @@ workflows:
     testParameterFiles:
       - /sn_testing.wdl
 
-  - name: SnTestingWdl2
+  - name: main
     subclass: WDL
-    primaryDescriptorPath: /sn_testing_2.wdl
-    readMePath: /testing.README.md
+    primaryDescriptorPath: /main.wdl
+    readMePath: /main.README.md
     testParameterFiles:
-      - /sn_testing_2.wdl
+      - /main.wdl
 
   - name: NsTestingWdl
     subclass: WDL
