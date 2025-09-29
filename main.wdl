@@ -18,7 +18,7 @@ import "workflows/denoise_amplicons_2.wdl" as DenoiseAmplicons2Wf
 import "workflows/resistance_marker_module.wdl" as ResistanceMarkerModuleWf
 import "workflows/quality_control.wdl" as QualityControlWf
 import "workflows/process_inputs.wdl" as ProcessInputsWf
-import "workflows/validate_inputs.wdl" as ValidateInputsWf
+#import "workflows/validate_inputs.wdl" as ValidateInputsWf
 import "workflows/qc_only.wdl" as QcOnlyWf
 import "workflows/postproc_only.wdl" as PostprocOnlyWf
 import "modules/local/build_alleletable.wdl" as BuildAlleletable
@@ -60,27 +60,27 @@ workflow MAD4HatTeR {
     File? refseq_fasta
 
     File clusters
-    Int? cutadapt_minlen = 100
-    Int? allowed_errors = 0
-    Boolean? just_concatenate = false
-    Boolean? mask_tandem_repeats = true
-    Boolean? mask_homopolymers = true
-    File? masked_fasta
+    Int cutadapt_minlen = 100
+    Int allowed_errors = 0
+    Boolean just_concatenate = false
+    Boolean mask_tandem_repeats = true
+    Boolean mask_homopolymers = true
+    File masked_fasta
 
     String docker_image = "mad4hatter:latest"
   }
 
   # Validate inputs first - this ensures all required parameters are present and valid
   #TODO: This does not exist, create or add validation here.
-  call ValidateInputsWf.validate_inputs {
-    input:
-      pools = pools,
-      sequencer = sequencer,
-      workflow_type = workflow_type,
-      read_pairs = read_pairs,
-      denoised_asvs = denoised_asvs,
-      docker_image = docker_image
-  }
+  #call ValidateInputsWf.validate_inputs {
+  #  input:
+  #    pools = pools,
+  #    sequencer = sequencer,
+  #    workflow_type = workflow_type,
+  #    read_pairs = read_pairs,
+  #    denoised_asvs = denoised_asvs,
+  #    docker_image = docker_image
+  #}
 
   # Generate final amplicon info
   call ProcessInputsWf.generate_amplicon_info {
@@ -182,7 +182,7 @@ workflow MAD4HatTeR {
         amplicon_info = generate_amplicon_info.amplicon_info_ch,
         sample_coverage_files = demultiplex_amplicons.sample_summary_ch,
         amplicon_coverage_files = demultiplex_amplicons.amplicon_summary_ch,
-        allele_data = build_alleletable.alleledata,
+        alleledata = build_alleletable.alleledata,
         clusters = denoise_amplicons_1.dada2_clusters,
         docker_image = docker_image
     }
@@ -203,16 +203,20 @@ workflow MAD4HatTeR {
   ## OUTPUT DEFINITIONS
   output {
     # QC workflow outputs
-    File? qc_report = qc_only.qc_report
+    File? sample_coverage_out = qc_only.sample_coverage_out
+    File? quality_control_amplicon_coverage_out = quality_control.amplicon_coverage_out
+    Array[File]? quality_control_quality_reports = quality_control.quality_reports
+    File? quality_control_sample_coverage_out = quality_control.sample_coverage_out
 
     # Post-processing workflow outputs
-    File? postproc_results = postproc_only.final_results
+    File? post_proc_alleledata = postproc_only.alleledata
+    File? post_proc_aligned_asv_table = postproc_only.aligned_asv_table
 
     # Complete workflow outputs
     File? final_allele_table = build_alleletable.alleledata
-    File? quality_report = quality_control.quality_report
-    File? resistance_analysis = resistance_marker_module.resistance_results
-    File? sample_summary = demultiplex_amplicons.sample_summary_ch
-    File? amplicon_summary = demultiplex_amplicons.amplicon_summary_ch
+    File? resmarkers_output = resistance_marker_module.resmarkers_output
+    File? resmarkers_by_locus = resistance_marker_module.resmarkers_by_locus
+    Array[File]? sample_summary = demultiplex_amplicons.sample_summary_ch
+    Array[File]? amplicon_summary = demultiplex_amplicons.amplicon_summary_ch
   }
 }
