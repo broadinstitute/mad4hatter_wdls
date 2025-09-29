@@ -9,8 +9,8 @@ workflow demultiplex_amplicons {
     Array[File] left_fastqs
     Array[File] right_fastqs
     String sequencer
-    Int cutadapt_minlen = 100
-    Int allowed_errors = 0
+    Int cutadapt_minlen
+    Int allowed_errors
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 

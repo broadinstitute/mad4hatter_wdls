@@ -10,8 +10,8 @@ workflow qc_only {
         Array[File] left_fastqs
         Array[File] right_fastqs
         String sequencer
-        Int? cutadapt_minlen
-        Int? allowed_errors
+        Int cutadapt_minlen
+        Int allowed_errors
         String docker_image = "eppicenter/mad4hatter:dev"
     }
 

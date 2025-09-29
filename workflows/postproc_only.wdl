@@ -7,6 +7,9 @@ workflow postproc_only {
   input {
     File amplicon_info
     File clusters
+    Boolean just_concatenate
+    Boolean mask_tandem_repeats
+    Boolean mask_homopolymers
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 
@@ -15,9 +18,9 @@ workflow postproc_only {
     input:
       amplicon_info = amplicon_info,
       clusters = clusters,
-      just_concatenate = false,
-      mask_tandem_repeats = true,
-      mask_homopolymers = true,
+      just_concatenate = just_concatenate,
+      mask_tandem_repeats = mask_tandem_repeats,
+      mask_homopolymers = mask_homopolymers,
       docker_image = docker_image
   }
 
