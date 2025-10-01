@@ -168,6 +168,6 @@ workflow MAD4HatTeR {
     File new_mutations = resistance_marker_module.new_mutations
     File amplicon_info_ch = generate_amplicon_info.amplicon_info_ch
     File reference_fasta = denoise_amplicons_2.reference_ch
-    File resmarker_info = resistance_marker_module.resmarkers_amplicon
+    File resmarkers_file = resistance_marker_module.resmarkers_file
   }
 }
