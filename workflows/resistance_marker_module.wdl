@@ -15,16 +15,14 @@ workflow resistance_marker_module {
         String docker_image
     }
 
-    String default_resmarkers_amplicon = "/opt/mad4hatter/panel_information/principal_resistance_marker_info_table.tsv"
 
-    if (!defined(resmarkers_amplicon))  {
-        call build_resources.build_resmarker_info {
-            input:
-                amplicon_info_ch = amplicon_info_ch,
-                principal_resmarkers = default_resmarkers_amplicon,
-                docker_image = docker_image
-        }
+    call build_resources.build_resmarker_info {
+        input:
+            amplicon_info_ch = amplicon_info_ch,
+            principal_resmarkers = resmarkers_amplicon,
+            docker_image = docker_image
     }
+
 
     call build_resistance_table.build_resistance_table {
         input:
