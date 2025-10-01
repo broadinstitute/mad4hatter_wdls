@@ -23,12 +23,13 @@ workflow resistance_marker_module {
             docker_image = docker_image
     }
 
+    File resmarkers = select_first([build_resmarker_info.resmarker_info, resmarkers_amplicon])
 
     call build_resistance_table.build_resistance_table {
         input:
             alleledata = allele_data,
             alignment_data = alignment_data,
-            resmarkers = select_first([build_resmarker_info.resmarker_info, resmarkers_amplicon]),
+            resmarkers = resmarkers,
             refseq = reference,
             docker_image = docker_image
     }
@@ -38,6 +39,6 @@ workflow resistance_marker_module {
         File resmarkers_by_locus = build_resistance_table.resmarkers_by_locus
         File microhaps = build_resistance_table.microhaps
         File new_mutations = build_resistance_table.new_mutations
+        File resmarkers_file = resmarkers
     }
-
 }

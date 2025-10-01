@@ -9,7 +9,7 @@ workflow denoise_amplicons_1 {
     String dada2_pool
     Int band_size
     Float omega_a
-    Int maxEE
+    Int max_ee
     Boolean just_concatenate
     String docker_image = "eppicenter/mad4hatter:dev"
   }
@@ -21,7 +21,7 @@ workflow denoise_amplicons_1 {
       dada2_pool = dada2_pool,
       band_size = band_size,
       omega_a = omega_a,
-      maxEE = maxEE,
+      max_ee = max_ee,
       just_concatenate = just_concatenate,
       docker_image = docker_image
   }

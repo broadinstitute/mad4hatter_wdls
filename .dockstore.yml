@@ -7,12 +7,12 @@ workflows:
     testParameterFiles:
       - /sn_testing.wdl
 
-  - name: main
+  - name: Mad4Hatter
     subclass: WDL
-    primaryDescriptorPath: /main.wdl
-    readMePath: /main.README.md
+    primaryDescriptorPath: /Mad4Hatter.wdl
+    readMePath: /Mad4Hatter.README.md
     testParameterFiles:
-      - /main.wdl
+      - /Mad4Hatter.wdl
 
   - name: NsTestingWdl
     subclass: WDL
