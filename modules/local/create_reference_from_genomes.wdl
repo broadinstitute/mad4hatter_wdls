@@ -3,7 +3,7 @@ version 1.0
 task create_reference_from_genomes {
   input {
     File genome
-    File amplicon_info
+    File amplicon_info_ch
     String refseq_fasta
     Int n_cores = 1
     String docker_image = "eppicenter/mad4hatter:dev"
@@ -11,7 +11,7 @@ task create_reference_from_genomes {
 
   command <<<
     Rscript /opt/mad4hatter/bin/create_reference_from_genomes.R \
-      --ampliconFILE ~{amplicon_info} \
+      --ampliconFILE ~{amplicon_info_ch} \
       --genome ~{genome} \
       --output ~{refseq_fasta} \
       --ncores ~{n_cores}

@@ -4,7 +4,7 @@ import "../modules/local/dada2_analysis.wdl" as dada2_analysis
 
 workflow denoise_amplicons_1 {
   input {
-    File amplicon_info
+    File amplicon_info_ch
     Array[File] demultiplexed_dir_tars
     String dada2_pool
     Int band_size
@@ -17,7 +17,7 @@ workflow denoise_amplicons_1 {
   call dada2_analysis.dada2_analysis {
     input:
       demultiplexed_dir_tars = demultiplexed_dir_tars,
-      amplicon_info = amplicon_info,
+      amplicon_info_ch = amplicon_info_ch,
       dada2_pool = dada2_pool,
       band_size = band_size,
       omega_a = omega_a,

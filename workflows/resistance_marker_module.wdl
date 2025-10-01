@@ -7,7 +7,7 @@ import "../modules/local/build_resources.wdl" as build_resources
 
 workflow resistance_marker_module {
     input {
-        File amplicon_info
+        File amplicon_info_ch
         File allele_data
         File alignment_data
         File reference
@@ -21,7 +21,7 @@ workflow resistance_marker_module {
     if (!defined(resmarkers_amplicon))  {
         call build_resources.build_resmarker_info {
             input:
-                amplicon_info = amplicon_info,
+                amplicon_info_ch = amplicon_info_ch,
                 principal_resmarkers = default_resmarkers_amplicon,
                 docker_image = docker_image
         }

@@ -5,7 +5,7 @@ import "workflows/postproc_only.wdl" as postproc_only
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        File amplicon_info
+        File amplicon_info_ch
         File clusters
         String docker_image = "eppicenter/mad4hatter:dev"
     }
@@ -13,7 +13,7 @@ workflow TestWdl {
     # Testing task
     call postproc_only.postproc_only {
         input:
-            amplicon_info = amplicon_info,
+            amplicon_info_ch = amplicon_info_ch,
             clusters = clusters,
             docker_image = docker_image
     }

@@ -4,7 +4,7 @@ version 1.0
 task dada2_analysis {
   input {
     Array[File] demultiplexed_dir_tars
-    File amplicon_info
+    File amplicon_info_ch
     String dada2_pool
     Int band_size
     Float omega_a
@@ -50,7 +50,7 @@ task dada2_analysis {
 
   Rscript /opt/mad4hatter/bin/dada_overlaps.R \
     --trimmed-path $DIRS \
-    --ampliconFILE ~{amplicon_info} \
+    --ampliconFILE ~{amplicon_info_ch} \
     --pool ~{dada2_pool} \
     --band-size ~{band_size} \
     --omega-a ~{omega_a} \

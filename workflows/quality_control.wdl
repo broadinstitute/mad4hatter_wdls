@@ -7,7 +7,7 @@ import "../modules/local/quality_report.wdl" as quality_report
 
 workflow quality_control {
     input {
-        File amplicon_info
+        File amplicon_info_ch
         Array[File] sample_coverage_files
         Array[File] amplicon_coverage_files
         File? alleledata
@@ -44,7 +44,7 @@ workflow quality_control {
         input:
             sample_coverage = final_sample_coverage,
             amplicon_coverage = final_amplicon_coverage,
-            amplicon_info = amplicon_info
+            amplicon_info_ch = amplicon_info_ch
 
     }
 
