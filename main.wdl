@@ -65,7 +65,8 @@ workflow MAD4HatTeR {
     Boolean just_concatenate = false
     Boolean mask_tandem_repeats = true
     Boolean mask_homopolymers = true
-    File masked_fasta
+    # TODO: Should this be optional? It is passed to denoise_amplicons_2.wdl where it is optional.
+    File? masked_fasta
 
     String docker_image = "mad4hatter:latest"
   }
