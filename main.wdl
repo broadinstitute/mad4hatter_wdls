@@ -68,7 +68,7 @@ workflow MAD4HatTeR {
     # TODO: Should this be optional? It is passed to denoise_amplicons_2.wdl where it is optional.
     File? masked_fasta
 
-    String docker_image = "mad4hatter:latest"
+    String docker_image = "eppicenter/mad4hatter:dev"
   }
 
   # Validate inputs first - this ensures all required parameters are present and valid
