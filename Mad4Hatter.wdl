@@ -46,7 +46,7 @@ workflow MAD4HatTeR {
     Int band_size = 16
 
     # Limit on number of expected errors within a read during filtering and trimming within DADA2
-    Int maxEE = 3
+    Int max_ee = 3
 
     # Path to targeted reference sequences (optional, auto-generated if not provided)
     File? refseq_fasta
@@ -103,7 +103,7 @@ workflow MAD4HatTeR {
       dada2_pool = dada2_pool,
       band_size = band_size,
       omega_a = omega_a,
-      maxEE = maxEE,
+      max_ee = max_ee,
       just_concatenate = just_concatenate,
       docker_image = docker_image
   }

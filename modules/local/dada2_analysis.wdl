@@ -8,7 +8,7 @@ task dada2_analysis {
     String dada2_pool
     Int band_size
     Float omega_a
-    Int maxEE
+    Int max_ee
     Boolean just_concatenate
     Int cpus = 1
     String docker_image = "eppicenter/mad4hatter:dev"
@@ -54,7 +54,7 @@ task dada2_analysis {
     --pool ~{dada2_pool} \
     --band-size ~{band_size} \
     --omega-a ~{omega_a} \
-    --maxEE ~{maxEE} \
+    --maxEE ~{max_ee} \
     --cores ~{cpus} \
     ~{if just_concatenate then "--concat-non-overlaps" else ""}
   >>>
