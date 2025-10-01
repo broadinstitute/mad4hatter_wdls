@@ -4,7 +4,7 @@ task quality_report {
   input {
     File sample_coverage
     File amplicon_coverage
-    File amplicon_info
+    File amplicon_info_ch
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 
@@ -20,7 +20,7 @@ task quality_report {
   Rscript /opt/mad4hatter/bin/cutadapt_summaryplots.R \
     amplicon_coverage.txt \
     sample_coverage.txt \
-    ~{amplicon_info} \
+    ~{amplicon_info_ch} \
     quality_report
 
   >>>

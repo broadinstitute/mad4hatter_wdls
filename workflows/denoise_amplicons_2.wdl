@@ -9,7 +9,7 @@ import "../modules/local/collapse_concatenated_reads.wdl" as collapse_concatenat
 
 workflow denoise_amplicons_2 {
   input {
-    File amplicon_info
+    File amplicon_info_ch
     File clusters
     Boolean just_concatenate
     File? refseq_fasta
@@ -35,7 +35,7 @@ workflow denoise_amplicons_2 {
   if (!defined(refseq_fasta)) {
     call prepare_reference_sequences.prepare_reference_sequences {
       input:
-        amplicon_info = amplicon_info,
+        amplicon_info_ch = amplicon_info_ch,
         docker_image = docker_image
     }
   }
@@ -48,7 +48,7 @@ workflow denoise_amplicons_2 {
     input:
       clusters = denoise_input,
       refseq_fasta = reference,
-      amplicon_info = amplicon_info,
+      amplicon_info_ch = amplicon_info_ch,
       docker_image = docker_image
   }
 

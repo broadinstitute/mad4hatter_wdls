@@ -5,7 +5,7 @@ import "workflows/denoise_amplicons_1.wdl" as denoise_amplicons_1
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
     input {
-        File amplicon_info
+        File amplicon_info_ch
         Array[File] demultiplexed_dir_tars
         String dada2_pool
         Int band_size
@@ -18,7 +18,7 @@ workflow TestWdl {
     # Testing task
     call denoise_amplicons_1.denoise_amplicons_1 {
         input:
-            amplicon_info = amplicon_info,
+            amplicon_info_ch = amplicon_info_ch,
             demultiplexed_dir_tars = demultiplexed_dir_tars,
             dada2_pool = dada2_pool,
             band_size = band_size,

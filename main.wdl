@@ -41,7 +41,7 @@ workflow MAD4HatTeR {
     String workflow_type = "complete"
 
     # amplicon info files
-    Array[File] amplicon_info
+    Array[File] amplicon_info_files
 
     ## DADA2 PARAMETERS
     # Level of statistical evidence required for DADA2 to infer a new ASV
@@ -87,7 +87,7 @@ workflow MAD4HatTeR {
     input:
       pools = pools,
       docker_image = docker_image,
-      amplicon_info = amplicon_info
+      amplicon_info_files = amplicon_info_files
   }
 
   # Branch workflow execution based on workflow_type parameter
@@ -96,7 +96,7 @@ workflow MAD4HatTeR {
     # Run quality control analysis only - useful for initial data assessment
     call QcOnlyWf.qc_only {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         left_fastqs = left_fastqs,
         right_fastqs = right_fastqs,
         sequencer = sequencer,
@@ -111,7 +111,7 @@ workflow MAD4HatTeR {
     # Run post-processing from pre-existing denoised ASVs
     call PostprocOnlyWf.postproc_only {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         clusters = clusters,
         just_concatenate = just_concatenate,
         mask_tandem_repeats = mask_tandem_repeats,
@@ -128,7 +128,7 @@ workflow MAD4HatTeR {
     # This separates reads by amplicon target and performs initial quality filtering
     call DemultiplexAmpliconsWf.demultiplex_amplicons {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         left_fastqs = left_fastqs,
         right_fastqs = right_fastqs,
         sequencer = sequencer,
@@ -141,7 +141,7 @@ workflow MAD4HatTeR {
     # This performs error correction, dereplication, and initial ASV inference
     call DenoiseAmplicons1Wf.denoise_amplicons_1 {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         demultiplexed_dir_tars = demultiplex_amplicons.demux_fastqs_ch,
         dada2_pool = dada2_pool,
         band_size = band_size,
@@ -155,7 +155,7 @@ workflow MAD4HatTeR {
     # This performs sequence masking, collapses similar ASVs, and creates final ASV table
     call DenoiseAmplicons2Wf.denoise_amplicons_2 {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         clusters = clusters,
         just_concatenate = just_concatenate,
         refseq_fasta = refseq_fasta,
@@ -169,7 +169,7 @@ workflow MAD4HatTeR {
     # This creates the comprehensive allele frequency table combining all samples and amplicons
     call BuildAlleletable.build_alleletable {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         denoised_asvs = denoise_amplicons_1.dada2_clusters,
         processed_asvs = denoise_amplicons_2.results_ch,
         docker_image = docker_image
@@ -179,7 +179,7 @@ workflow MAD4HatTeR {
     # This creates comprehensive QC metrics and visualizations for the entire run
     call QualityControlWf.quality_control {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         sample_coverage_files = demultiplex_amplicons.sample_summary_ch,
         amplicon_coverage_files = demultiplex_amplicons.amplicon_summary_ch,
         alleledata = build_alleletable.alleledata,
@@ -191,7 +191,7 @@ workflow MAD4HatTeR {
     # This identifies and analyzes known resistance markers in the final ASV data
     call ResistanceMarkerModuleWf.resistance_marker_module {
       input:
-        amplicon_info = generate_amplicon_info.amplicon_info_ch,
+        amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
         allele_data = build_alleletable.alleledata,
         alignment_data = denoise_amplicons_2.aligned_asv_table,
         reference = denoise_amplicons_2.reference_ch,

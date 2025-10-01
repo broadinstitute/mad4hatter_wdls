@@ -5,7 +5,7 @@ import "../modules/local/build_alleletable.wdl" as build_alleletable
 
 workflow postproc_only {
   input {
-    File amplicon_info
+    File amplicon_info_ch
     File clusters
     Boolean just_concatenate
     Boolean mask_tandem_repeats
@@ -16,7 +16,7 @@ workflow postproc_only {
   # Call the denoise_amplicons_2 workflow
   call denoise_amplicons_2.denoise_amplicons_2 {
     input:
-      amplicon_info = amplicon_info,
+      amplicon_info_ch = amplicon_info_ch,
       clusters = clusters,
       just_concatenate = just_concatenate,
       mask_tandem_repeats = mask_tandem_repeats,
@@ -27,7 +27,7 @@ workflow postproc_only {
   # Call the build_alleletable task
   call build_alleletable.build_alleletable {
     input:
-      amplicon_info = amplicon_info,
+      amplicon_info_ch = amplicon_info_ch,
       denoised_asvs = clusters,
       processed_asvs = denoise_amplicons_2.results_ch,
       docker_image = docker_image

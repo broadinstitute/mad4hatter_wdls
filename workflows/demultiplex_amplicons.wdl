@@ -5,7 +5,7 @@ import "../modules/local/cutadapt.wdl" as cutadapt
 
 workflow demultiplex_amplicons {
   input {
-    File amplicon_info
+    File amplicon_info_ch
     Array[File] left_fastqs
     Array[File] right_fastqs
     String sequencer
@@ -18,7 +18,7 @@ workflow demultiplex_amplicons {
 
   call create_primer_files.create_primer_files {
     input:
-      amplicon_info = amplicon_info,
+      amplicon_info_ch = amplicon_info_ch,
       docker_image = docker_image
   }
 

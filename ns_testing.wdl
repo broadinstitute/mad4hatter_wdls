@@ -5,7 +5,7 @@ import "workflows/qc_only.wdl" as QcOnly
 # Can be used for testing subworkflows and modules
 workflow QcOnlyTest {
     input {
-        File amplicon_info
+        File amplicon_info_ch
         Array[File] left_fastqs
         Array[File] right_fastqs
         String sequencer
@@ -16,7 +16,7 @@ workflow QcOnlyTest {
     # Testing task
     call QcOnly.qc_only {
         input:
-            amplicon_info = amplicon_info,
+            amplicon_info_ch = amplicon_info_ch,
             left_fastqs = left_fastqs,
             right_fastqs = right_fastqs,
             sequencer = sequencer,

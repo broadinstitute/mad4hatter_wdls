@@ -4,7 +4,7 @@ task align_to_reference {
   input {
     File clusters
     File refseq_fasta
-    File amplicon_info
+    File amplicon_info_ch
     Int n_cores = 1
     String docker_image = "eppicenter/mad4hatter:dev"
   }
@@ -13,7 +13,7 @@ task align_to_reference {
     Rscript /opt/mad4hatter/bin/align_to_reference.R \
       --clusters ~{clusters} \
       --refseq-fasta ~{refseq_fasta} \
-      --amplicon-table ~{amplicon_info} \
+      --amplicon-table ~{amplicon_info_ch} \
       --n-cores ~{n_cores}
   >>>
 
