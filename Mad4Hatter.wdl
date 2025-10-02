@@ -23,12 +23,11 @@ workflow MAD4HatTeR {
     Array[File] left_fastqs # List of left fastqs. Must be in correct order.
     Array[File] right_fastqs # List of right fastqs. Must be in correct order.
     Array[File] amplicon_info_files
-    Float omega_a = 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001# Level of statistical evidence required for DADA2 to infer a new ASV
+    Float omega_a = 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001 # Level of statistical evidence required for DADA2 to infer a new ASV
     String dada2_pool = "pseudo" # Pooling method for DADA2 to process ASVs [Options: pseudo (default), true, false]
     Int band_size = 16 # Limit on the net cumulative number of insertions of one sequence relative to the other in DADA2
     Int max_ee = 3 # Limit on number of expected errors within a read during filtering and trimming within DADA2
     File? refseq_fasta # Path to targeted reference sequences (optional, auto-generated if not provided)
-    File clusters
     Int cutadapt_minlen = 100
     Int allowed_errors = 0
     Boolean just_concatenate = false
@@ -78,7 +77,7 @@ workflow MAD4HatTeR {
   call DenoiseAmplicons2Wf.denoise_amplicons_2 {
     input:
       amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-      clusters = clusters,
+      clusters = denoise_amplicons_1.dada2_clusters,
       just_concatenate = just_concatenate,
       refseq_fasta = refseq_fasta,
       masked_fasta = masked_fasta,
