@@ -1,56 +1,33 @@
 version 1.0
 
-## MAD4HatTeR Main Workflow
-##
-## This is the main workflow for MAD4HatTeR (Malaria Amplicon Deep-sequencing for Haplotype and Target Resistance)
-## pipeline. It processes amplicon sequencing data through demultiplexing, denoising, quality control,
-## and resistance marker analysis.
-
-# Import all required workflows and modules
 import "workflows/demultiplex_amplicons.wdl" as DemultiplexAmpliconsWf
 import "workflows/denoise_amplicons_1.wdl" as DenoiseAmplicons1Wf
 import "workflows/denoise_amplicons_2.wdl" as DenoiseAmplicons2Wf
 import "workflows/resistance_marker_module.wdl" as ResistanceMarkerModuleWf
 import "workflows/quality_control.wdl" as QualityControlWf
 import "workflows/process_inputs.wdl" as ProcessInputsWf
-#import "workflows/validate_inputs.wdl" as ValidateInputsWf
-import "workflows/qc_only.wdl" as QcOnlyWf
-import "workflows/postproc_only.wdl" as PostprocOnlyWf
 import "modules/local/build_alleletable.wdl" as BuildAlleletable
+
+## MAD4HatTeR Main Workflow
+##
+## This is the main workflow for MAD4HatTeR (Malaria Amplicon Deep-sequencing for Haplotype and Target Resistance)
+## pipeline. It processes amplicon sequencing data through demultiplexing, denoising, quality control,
+## and resistance marker analysis.
+
 
 ## Main MAD4HatTeR workflow
 workflow MAD4HatTeR {
   input {
-    ## MANDATORY ARGUMENTS
     Array[String] pools
-
-    # The sequencer used to produce your data [Options: miseq, nextseq]
-    String sequencer
-
-    ## WORKFLOW-SPECIFIC MANDATORY ARGUMENTS
-    # List of fastqs. Must be in correct order.
-    Array[File] left_fastqs
-    Array[File] right_fastqs
-
-    # amplicon info files
+    String sequencer # The sequencer used to produce your data
+    Array[File] left_fastqs # List of left fastqs. Must be in correct order.
+    Array[File] right_fastqs # List of right fastqs. Must be in correct order.
     Array[File] amplicon_info_files
-
-    ## DADA2 PARAMETERS
-    # Level of statistical evidence required for DADA2 to infer a new ASV
-    Float omega_a = 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001
-
-    # Pooling method for DADA2 to process ASVs [Options: pseudo (default), true, false]
-    String dada2_pool = "pseudo"
-
-    # Limit on the net cumulative number of insertions of one sequence relative to the other in DADA2
-    Int band_size = 16
-
-    # Limit on number of expected errors within a read during filtering and trimming within DADA2
-    Int max_ee = 3
-
-    # Path to targeted reference sequences (optional, auto-generated if not provided)
-    File? refseq_fasta
-
+    Float omega_a = 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001# Level of statistical evidence required for DADA2 to infer a new ASV
+    String dada2_pool = "pseudo" # Pooling method for DADA2 to process ASVs [Options: pseudo (default), true, false]
+    Int band_size = 16 # Limit on the net cumulative number of insertions of one sequence relative to the other in DADA2
+    Int max_ee = 3 # Limit on number of expected errors within a read during filtering and trimming within DADA2
+    File? refseq_fasta # Path to targeted reference sequences (optional, auto-generated if not provided)
     File clusters
     Int cutadapt_minlen = 100
     Int allowed_errors = 0
@@ -60,18 +37,6 @@ workflow MAD4HatTeR {
     File? masked_fasta
     String docker_image = "eppicenter/mad4hatter:dev"
   }
-
-  # Validate inputs first - this ensures all required parameters are present and valid
-  #TODO: This does not exist, create or add validation here.
-  #call ValidateInputsWf.validate_inputs {
-  #  input:
-  #    pools = pools,
-  #    sequencer = sequencer,
-  #    workflow_type = workflow_type,
-  #    read_pairs = read_pairs,
-  #    denoised_asvs = denoised_asvs,
-  #    docker_image = docker_image
-  #}
 
   # Generate final amplicon info
   call ProcessInputsWf.generate_amplicon_info {
@@ -155,7 +120,6 @@ workflow MAD4HatTeR {
       docker_image = docker_image
   }
 
-  ## OUTPUT DEFINITIONS
   output {
     File final_allele_table = build_alleletable.alleledata
     File sample_coverage_out = quality_control.sample_coverage_out

@@ -41,7 +41,7 @@ workflow denoise_amplicons_2 {
   }
 
   # Use the appropriate reference
-  File reference = select_first([refseq_fasta, prepare_reference_sequences.reference_fasta])
+  File reference = select_first([prepare_reference_sequences.reference_fasta, refseq_fasta])
 
   # Align denoised sequences to reference
   call align_to_reference.align_to_reference {
