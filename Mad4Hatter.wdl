@@ -51,7 +51,6 @@ workflow MAD4HatTeR {
     # Path to targeted reference sequences (optional, auto-generated if not provided)
     File? refseq_fasta
 
-    File clusters
     Int cutadapt_minlen = 100
     Int allowed_errors = 0
     Boolean just_concatenate = false
@@ -113,7 +112,7 @@ workflow MAD4HatTeR {
   call DenoiseAmplicons2Wf.denoise_amplicons_2 {
     input:
       amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-      clusters = clusters,
+      clusters = denoise_amplicons_1.dada2_clusters,
       just_concatenate = just_concatenate,
       refseq_fasta = refseq_fasta,
       masked_fasta = masked_fasta,
