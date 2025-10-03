@@ -52,8 +52,8 @@ task move_outputs {
       local file=$1
       local filename=$(basename "$file")
       local destination="~{sanitized_output_directory}/$filename"
-
-      gsutil cp "$file" "$destination"
+      echo "Copying $file to $destination"
+      gcloud alpha storage cp "$file" "$destination"
     }
 
     # Copy individual files

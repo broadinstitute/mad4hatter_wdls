@@ -39,15 +39,11 @@ workflow MAD4HatTeR {
     String docker_image = "eppicenter/mad4hatter:dev"
   }
 
-  # Remove trailing slashes from the output directory
-  # This ensures consistent formatting for subsequent checks and operations.
-  String sanitized_output_directory = sub(output_cloud_directory, "/+$", "")
-
   # Use sub() with a regular expression to check for the prefix.
   # This pattern matches the entire string if it starts with "gs://".
   # If the pattern is found, a non-empty string is returned.
   # If the pattern is not found, the original string is returned.
-  String matches_prefix = sub(sanitized_output_directory, "^gs://.*", "MATCH")
+  String matches_prefix = sub(output_cloud_directory, "^gs://.*", "MATCH")
 
   # Use a boolean variable to convert the string result to a boolean.
   # "MATCH" will be true, while any other string will be false.
@@ -146,7 +142,7 @@ workflow MAD4HatTeR {
 
   call MoveOutputs.move_outputs {
     input:
-      output_cloud_directory = sanitized_output_directory,
+      output_cloud_directory = output_cloud_directory,
       amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
       final_allele_table = build_alleletable.alleledata,
       sample_coverage_out = quality_control.sample_coverage_out,
