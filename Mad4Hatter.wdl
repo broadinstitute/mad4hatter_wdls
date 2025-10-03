@@ -7,6 +7,8 @@ import "workflows/resistance_marker_module.wdl" as ResistanceMarkerModuleWf
 import "workflows/quality_control.wdl" as QualityControlWf
 import "workflows/process_inputs.wdl" as ProcessInputsWf
 import "modules/local/build_alleletable.wdl" as BuildAlleletable
+import "modules/local/move_outputs.wdl" as MoveOutputs
+import "modules/local/error_with_message.wdl" as ErrorWithMessage
 
 ## MAD4HatTeR Main Workflow
 ##
@@ -15,7 +17,6 @@ import "modules/local/build_alleletable.wdl" as BuildAlleletable
 ## and resistance marker analysis.
 
 
-## Main MAD4HatTeR workflow
 workflow MAD4HatTeR {
   input {
     Array[String] pools
@@ -34,7 +35,31 @@ workflow MAD4HatTeR {
     Boolean mask_tandem_repeats = true
     Boolean mask_homopolymers = true
     File? masked_fasta
+    String output_cloud_directory
     String docker_image = "eppicenter/mad4hatter:dev"
+  }
+
+  # Remove trailing slashes from the output directory
+  # This ensures consistent formatting for subsequent checks and operations.
+  String sanitized_output_directory = sub(output_cloud_directory, "/+$", "")
+
+  # Use sub() with a regular expression to check for the prefix.
+  # This pattern matches the entire string if it starts with "gs://".
+  # If the pattern is found, a non-empty string is returned.
+  # If the pattern is not found, the original string is returned.
+  String matches_prefix = sub(sanitized_output_directory, "^gs://.*", "MATCH")
+
+  # Use a boolean variable to convert the string result to a boolean.
+  # "MATCH" will be true, while any other string will be false.
+  Boolean starts_with_gs = matches_prefix == "MATCH"
+
+  # Use a conditional call to execute the ErrorWithMessage task
+  # if the condition is false.
+  if (!starts_with_gs) {
+    call ErrorWithMessage.error_with_message {
+      input:
+        message = "ERROR: The output_cloud_directory directory does not start with 'gs://'."
+    }
   }
 
   # Generate final amplicon info
@@ -119,18 +144,46 @@ workflow MAD4HatTeR {
       docker_image = docker_image
   }
 
+  call MoveOutputs.move_outputs {
+    input:
+      output_cloud_directory = sanitized_output_directory,
+      amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
+      final_allele_table = build_alleletable.alleledata,
+      sample_coverage_out = quality_control.sample_coverage_out,
+      amplicon_coverage_out = quality_control.amplicon_coverage_out,
+      amplicon_stats = quality_control.amplicon_stats,
+      length_vs_reads = quality_control.length_vs_reads,
+      qc_plots_html = quality_control.qc_plots_html,
+      qc_plots_rmd = quality_control.qc_plots_rmd,
+      reads_histograms = quality_control.reads_histograms,
+      swarm_plots = quality_control.swarm_plots,
+      dada2_clusters = denoise_amplicons_1.dada2_clusters,
+      resmarkers_output = resistance_marker_module.resmarkers_output,
+      resmarkers_by_locus = resistance_marker_module.resmarkers_by_locus,
+      microhaps = resistance_marker_module.microhaps,
+      new_mutations = resistance_marker_module.new_mutations,
+      reference_fasta = denoise_amplicons_2.reference_ch,
+      resmarkers_file = resistance_marker_module.resmarkers_file,
+  }
+
   output {
-    File final_allele_table = build_alleletable.alleledata
-    File sample_coverage_out = quality_control.sample_coverage_out
-    File amplicon_coverage_out = quality_control.amplicon_coverage_out
-    Array[File] quality_reports = quality_control.quality_reports
-    File dada2_clusters = denoise_amplicons_1.dada2_clusters
-    File resmarkers_output = resistance_marker_module.resmarkers_output
-    File resmarkers_by_locus = resistance_marker_module.resmarkers_by_locus
-    File microhaps = resistance_marker_module.microhaps
-    File new_mutations = resistance_marker_module.new_mutations
-    File amplicon_info_ch = generate_amplicon_info.amplicon_info_ch
-    File reference_fasta = denoise_amplicons_2.reference_ch
-    File resmarkers_file = resistance_marker_module.resmarkers_file
+    # Cloud paths from move_outputs task
+    String final_allele_table_cloud_path = move_outputs.final_allele_table_cloud_path
+    String sample_coverage_cloud_path = move_outputs.sample_coverage_cloud_path
+    String amplicon_coverage_cloud_path = move_outputs.amplicon_coverage_cloud_path
+    String amplicon_stats_cloud_path = move_outputs.amplicon_stats_cloud_path
+    String length_vs_reads_cloud_path = move_outputs.length_vs_reads_cloud_path
+    String qc_plots_html_cloud_path = move_outputs.qc_plots_html_cloud_path
+    String qc_plots_rmd_cloud_path = move_outputs.qc_plots_rmd_cloud_path
+    String reads_histograms_cloud_path = move_outputs.reads_histograms_cloud_path
+    String swarm_plots_cloud_path = move_outputs.swarm_plots_cloud_path
+    String dada2_clusters_cloud_path = move_outputs.dada2_clusters_cloud_path
+    String resmarkers_output_cloud_path = move_outputs.resmarkers_output_cloud_path
+    String resmarkers_by_locus_cloud_path = move_outputs.resmarkers_by_locus_cloud_path
+    String microhaps_cloud_path = move_outputs.microhaps_cloud_path
+    String new_mutations_cloud_path = move_outputs.new_mutations_cloud_path
+    String amplicon_info_cloud_path = move_outputs.amplicon_info_cloud_path
+    String reference_fasta_cloud_path = move_outputs.reference_fasta_cloud_path
+    String resmarkers_file_cloud_path = move_outputs.resmarkers_file_cloud_path
   }
 }

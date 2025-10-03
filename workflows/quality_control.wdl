@@ -51,6 +51,11 @@ workflow quality_control {
     output {
         File sample_coverage_out = quality_report.sample_coverage_out
         File amplicon_coverage_out = quality_report.amplicon_coverage_out
-        Array[File] quality_reports = quality_report.quality_reports
+        File amplicon_stats = quality_report.amplicon_stats
+        File length_vs_reads = quality_report.length_vs_reads
+        File qc_plots_html = quality_report.qc_plots_html
+        File qc_plots_rmd = quality_report.qc_plots_rmd
+        File reads_histograms = quality_report.reads_histograms
+        File swarm_plots = quality_report.swarm_plots
     }
 }
