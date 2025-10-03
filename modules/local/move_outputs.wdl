@@ -42,6 +42,11 @@ task move_outputs {
     echo "Sanitized output directory: ~{sanitized_output_directory}"
     echo "Checking if output directory starts with 'gs://': ~{starts_with_gs}"
 
+    if [ "~{starts_with_gs}" != "true" ]; then
+      echo "ERROR: The output_cloud_directory directory does not start with 'gs://'."
+      exit 1
+    fi
+
     # Function to copy a file and echo its destination path
     copy_file() {
       local file=$1
