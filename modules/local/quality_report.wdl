@@ -28,7 +28,12 @@ task quality_report {
   output {
     File sample_coverage_out = "sample_coverage.txt"
     File amplicon_coverage_out = "amplicon_coverage.txt"
-    Array[File] quality_reports = glob("quality_report/*")
+    File amplicon_stats = "quality_report/amplicon_stats.txt"
+    File length_vs_reads = "quality_report/length_vs_reads.pdf"
+    File qc_plots_html = "quality_report/QCplots.html"
+    File qc_plots_rmd = "quality_report/QCplots.Rmd"
+    File reads_histograms = "quality_report/reads_histograms.pdf"
+    File swarm_plots = "quality_report/swarm_plots.pdf"
   }
 
   runtime {

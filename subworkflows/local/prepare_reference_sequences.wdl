@@ -22,14 +22,14 @@ workflow prepare_reference_sequences {
   Boolean invalid_amplicon = defined(genome) && !defined(amplicon_info_ch)
 
   if (invalid) {
-    call error_with_message.ErrorWithMessage {
+    call error_with_message.error_with_message {
       input:
         message = "Error: Exactly one of 'genome' or 'reference_input_paths' must be provided."
     }
   }
 
   if (invalid_amplicon) {
-      call error_with_message.ErrorWithMessage as ErrorMessageInvalidAmplicon {
+      call error_with_message.error_with_message as ErrorMessageInvalidAmplicon {
       input:
           message = "Error: 'amplicon_info' must be provided when 'genome' is provided."
       }

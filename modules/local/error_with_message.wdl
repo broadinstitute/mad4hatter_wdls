@@ -1,7 +1,7 @@
 version 1.0
 
 # Print given message to stderr and return an error
-task ErrorWithMessage {
+task error_with_message {
   input {
     String message
   }
