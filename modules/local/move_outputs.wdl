@@ -51,7 +51,7 @@ task move_outputs {
     copy_file() {
       local file=$1
       local filename=$(basename "$file")
-      local destination="${output_cloud_directory}/$filename"
+      local destination="~{sanitized_output_directory}/$filename"
 
       gsutil cp "$file" "$destination"
     }
@@ -77,23 +77,23 @@ task move_outputs {
   >>>
 
   output {
-    String final_allele_table_cloud_path = output_cloud_directory + "/" + basename(final_allele_table)
-    String sample_coverage_cloud_path = output_cloud_directory + "/" + basename(sample_coverage_out)
-    String amplicon_coverage_cloud_path = output_cloud_directory + "/" + basename(amplicon_coverage_out)
-    String dada2_clusters_cloud_path = output_cloud_directory + "/" + basename(dada2_clusters)
-    String resmarkers_output_cloud_path = output_cloud_directory + "/" + basename(resmarkers_output)
-    String resmarkers_by_locus_cloud_path = output_cloud_directory + "/" + basename(resmarkers_by_locus)
-    String microhaps_cloud_path = output_cloud_directory + "/" + basename(microhaps)
-    String new_mutations_cloud_path = output_cloud_directory + "/" + basename(new_mutations)
-    String amplicon_info_cloud_path = output_cloud_directory + "/" + basename(amplicon_info_ch)
-    String reference_fasta_cloud_path = output_cloud_directory + "/" + basename(reference_fasta)
-    String resmarkers_file_cloud_path = output_cloud_directory + "/" + basename(resmarkers_file)
-    String amplicon_stats_cloud_path = output_cloud_directory + "/" + basename(amplicon_stats)
-    String length_vs_reads_cloud_path = output_cloud_directory + "/" + basename(length_vs_reads)
-    String qc_plots_html_cloud_path = output_cloud_directory + "/" + basename(qc_plots_html)
-    String qc_plots_rmd_cloud_path = output_cloud_directory + "/" + basename(qc_plots_rmd)
-    String reads_histograms_cloud_path = output_cloud_directory + "/" + basename(reads_histograms)
-    String swarm_plots_cloud_path = output_cloud_directory + "/" + basename(swarm_plots)
+    String final_allele_table_cloud_path = sanitized_output_directory + "/" + basename(final_allele_table)
+    String sample_coverage_cloud_path = sanitized_output_directory + "/" + basename(sample_coverage_out)
+    String amplicon_coverage_cloud_path = sanitized_output_directory + "/" + basename(amplicon_coverage_out)
+    String dada2_clusters_cloud_path = sanitized_output_directory + "/" + basename(dada2_clusters)
+    String resmarkers_output_cloud_path = sanitized_output_directory + "/" + basename(resmarkers_output)
+    String resmarkers_by_locus_cloud_path = sanitized_output_directory + "/" + basename(resmarkers_by_locus)
+    String microhaps_cloud_path = sanitized_output_directory + "/" + basename(microhaps)
+    String new_mutations_cloud_path = sanitized_output_directory + "/" + basename(new_mutations)
+    String amplicon_info_cloud_path = sanitized_output_directory + "/" + basename(amplicon_info_ch)
+    String reference_fasta_cloud_path = sanitized_output_directory + "/" + basename(reference_fasta)
+    String resmarkers_file_cloud_path = sanitized_output_directory + "/" + basename(resmarkers_file)
+    String amplicon_stats_cloud_path = sanitized_output_directory + "/" + basename(amplicon_stats)
+    String length_vs_reads_cloud_path = sanitized_output_directory + "/" + basename(length_vs_reads)
+    String qc_plots_html_cloud_path = sanitized_output_directory + "/" + basename(qc_plots_html)
+    String qc_plots_rmd_cloud_path = sanitized_output_directory + "/" + basename(qc_plots_rmd)
+    String reads_histograms_cloud_path = sanitized_output_directory + "/" + basename(reads_histograms)
+    String swarm_plots_cloud_path = sanitized_output_directory + "/" + basename(swarm_plots)
   }
 
   runtime {
