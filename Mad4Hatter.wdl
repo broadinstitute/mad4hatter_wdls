@@ -36,7 +36,7 @@ workflow MAD4HatTeR {
     Boolean mask_homopolymers = true
     File? masked_fasta
     String output_cloud_directory
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   # Use sub() with a regular expression to check for the prefix.
