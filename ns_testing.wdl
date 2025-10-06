@@ -1,26 +1,26 @@
 version 1.0
 
-import "modules/local/create_reference_from_genomes.wdl" as CreateReference
+import "subworkflows/local/prepare_reference_sequences.wdl" as PrepareReferenceSequences
 
 # Can be used for testing subworkflows and modules
-workflow CreateReferenceTest {
+workflow PrepareReferenceSequencesTest {
     input {
-        File genome
-        File amplicon_info_ch
-        String refseq_fasta
+        File? amplicon_info_ch
+        File? genome
+        Array[File]? reference_input_paths
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
     # Testing task
-    call CreateReference.create_reference_from_genomes {
+    call PrepareReferenceSequences.prepare_reference_sequences {
         input:
-            genome = genome,
             amplicon_info_ch = amplicon_info_ch,
-            refseq_fasta = refseq_fasta,
+            genome = genome,
+            reference_input_paths = reference_input_paths,
             docker_image = docker_image
     }
 
     output {
-        File reference_fasta = create_reference_from_genomes.reference_fasta
+        File reference_fasta = prepare_reference_sequences.reference_fasta
     }
 }
