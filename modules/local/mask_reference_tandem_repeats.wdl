@@ -5,6 +5,7 @@ task mask_reference_tandem_repeats {
       File refseq_fasta
       Int min_score
       Int max_period
+      Int disk_size = 1000
       String docker_image = "eppicenter/mad4hatter:develop"
   }
 
@@ -20,7 +21,9 @@ task mask_reference_tandem_repeats {
 
   runtime {
       docker: docker_image
-      #TODO: Should we hardcode this?
-      memory: "8G"
+      # TODO: Should we hardcode this?
+      memory: "10G"
+      disks: "local-disk " + disk_size + " HDD"
+      cpu: 2
   }
 }
