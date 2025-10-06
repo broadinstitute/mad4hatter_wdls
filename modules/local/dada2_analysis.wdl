@@ -15,8 +15,8 @@ task dada2_analysis {
   }
 
   Int estimated_compression_ratio = 5  # Typical compression ratio for genomic data
-  Int disk_size_gb = ceil(estimated_compression_ratio * size(demultiplexed_dir_tars, "GB")) + 20
-  Int memory_gb = 8
+  Int disk_size_gb = ceil(estimated_compression_ratio * size(demultiplexed_dir_tars, "GB")) + 50
+  Int memory_gb = 16
 
   command <<<
   set -euo pipefail
