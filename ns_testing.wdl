@@ -1,6 +1,6 @@
 version 1.0
 
-import "modules/create_reference_from_genomes.wdl" as CreateReference
+import "modules/local/create_reference_from_genomes.wdl" as CreateReference
 
 # Can be used for testing subworkflows and modules
 workflow CreateReferenceTest {
