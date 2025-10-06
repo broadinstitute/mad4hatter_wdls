@@ -16,6 +16,7 @@ workflow denoise_amplicons_2 {
     File? masked_fasta
     Boolean mask_tandem_repeats
     Boolean mask_homopolymers
+    File? genome
     String docker_image = "eppicenter/mad4hatter:develop"
   }
 
@@ -36,6 +37,7 @@ workflow denoise_amplicons_2 {
     call prepare_reference_sequences.prepare_reference_sequences {
       input:
         amplicon_info_ch = amplicon_info_ch,
+        genome = genome,
         docker_image = docker_image
     }
   }
