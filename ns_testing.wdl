@@ -10,7 +10,7 @@ workflow ResistanceMarkerTest {
         File alignment_data
         File reference
         File? resmarkers_amplicon
-        String docker_image = "eppicenter/mad4hatter:dev"
+        String docker_image = "eppicenter/mad4hatter:develop"
     }
 
     # Testing task

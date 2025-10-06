@@ -4,7 +4,7 @@ version 1.0
 task filter_asvs {
   input {
     File alignments
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   # Pulled default value from https://github.com/EPPIcenter/mad4hatter/blob/0fdf688d8bef6b1407de66ed2644a2d26635015d/nextflow.config#L32

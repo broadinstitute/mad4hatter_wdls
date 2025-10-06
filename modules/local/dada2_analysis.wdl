@@ -11,7 +11,7 @@ task dada2_analysis {
     Int max_ee
     Boolean just_concatenate
     Int cpus = 1
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   Int estimated_compression_ratio = 5  # Typical compression ratio for genomic data

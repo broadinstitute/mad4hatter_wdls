@@ -6,7 +6,7 @@ task align_to_reference {
     File refseq_fasta
     File amplicon_info_ch
     Int n_cores = 1
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   command <<<

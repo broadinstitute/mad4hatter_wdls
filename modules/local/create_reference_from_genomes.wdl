@@ -6,7 +6,7 @@ task create_reference_from_genomes {
     File amplicon_info_ch
     String refseq_fasta
     Int n_cores = 1
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   # TODO should "PkPfPmPoPv.fasta" be added to the docker image and the path updated accordingly? Or is this always

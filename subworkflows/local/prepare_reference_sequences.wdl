@@ -15,7 +15,7 @@ workflow prepare_reference_sequences {
     Int trf_max_period = 3
     Boolean mask_homopolymers = true
     Int homopolymer_threshold = 5
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   Boolean invalid = (defined(genome) && defined(reference_input_paths)) || (!defined(genome) && !defined(reference_input_paths))

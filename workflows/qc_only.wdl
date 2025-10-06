@@ -12,7 +12,7 @@ workflow qc_only {
         String sequencer
         Int cutadapt_minlen
         Int allowed_errors
-        String docker_image = "eppicenter/mad4hatter:dev"
+        String docker_image = "eppicenter/mad4hatter:develop"
     }
 
     call demultiplex_amplicons.demultiplex_amplicons {

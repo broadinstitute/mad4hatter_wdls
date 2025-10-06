@@ -10,7 +10,7 @@ workflow postproc_only {
     Boolean just_concatenate
     Boolean mask_tandem_repeats
     Boolean mask_homopolymers
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   # Call the denoise_amplicons_2 workflow

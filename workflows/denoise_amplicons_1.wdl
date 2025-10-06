@@ -11,7 +11,7 @@ workflow denoise_amplicons_1 {
     Float omega_a
     Int max_ee
     Boolean just_concatenate
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   call dada2_analysis.dada2_analysis {
