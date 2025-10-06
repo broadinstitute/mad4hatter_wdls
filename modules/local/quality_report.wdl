@@ -5,7 +5,7 @@ task quality_report {
     File sample_coverage
     File amplicon_coverage
     File amplicon_info_ch
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   command <<<

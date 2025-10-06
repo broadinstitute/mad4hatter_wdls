@@ -16,7 +16,7 @@ workflow denoise_amplicons_2 {
     File? masked_fasta
     Boolean mask_tandem_repeats
     Boolean mask_homopolymers
-    String docker_image = "eppicenter/mad4hatter:dev"
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   # Process clusters if just_concatenate is true

@@ -6,7 +6,7 @@ workflow generate_amplicon_info {
   input {
     Array[File] amplicon_info_files
     Array[String] pools
-    String docker_image
+    String docker_image = "eppicenter/mad4hatter:develop"
   }
 
   call build_resources.build_amplicon_info {
