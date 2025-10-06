@@ -11,6 +11,8 @@ workflow postproc_only {
     Boolean mask_tandem_repeats
     Boolean mask_homopolymers
     File? genome
+    File? refseq_fasta
+    File? masked_fasta
     String docker_image = "eppicenter/mad4hatter:develop"
   }
 
@@ -20,6 +22,8 @@ workflow postproc_only {
       amplicon_info_ch = amplicon_info_ch,
       clusters = clusters,
       just_concatenate = just_concatenate,
+      refseq_fasta = refseq_fasta,
+      masked_fasta = masked_fasta,
       mask_tandem_repeats = mask_tandem_repeats,
       mask_homopolymers = mask_homopolymers,
       genome = genome,
