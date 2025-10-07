@@ -20,7 +20,7 @@ task mask_reference_tandem_repeats {
 
   runtime {
       docker: docker_image
-      #TODO: Should we hardcode this?
+      # TODO: Should we hardcode this?
       memory: "8G"
   }
 }

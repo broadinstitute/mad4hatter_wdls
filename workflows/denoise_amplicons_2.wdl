@@ -6,6 +6,7 @@ import "../subworkflows/local/prepare_reference_sequences.wdl" as prepare_refere
 import "../modules/local/build_pseudocigar.wdl" as build_pseudocigar
 import "../modules/local/filter_asvs.wdl" as filter_asvs
 import "../modules/local/collapse_concatenated_reads.wdl" as collapse_concatenated_reads
+import "../modules/local/error_with_message.wdl" as error_with_message
 
 workflow denoise_amplicons_2 {
   input {
@@ -16,7 +17,16 @@ workflow denoise_amplicons_2 {
     File? masked_fasta
     Boolean mask_tandem_repeats
     Boolean mask_homopolymers
+    File? genome
     String docker_image = "eppicenter/mad4hatter:develop"
+  }
+
+  Boolean invalid_args = !defined(refseq_fasta) && !defined(genome)
+  if (invalid_args) {
+    call error_with_message.error_with_message {
+      input:
+        message = "Error: If 'refseq_fasta' is NOT provided, 'genome' MUST be provided."
+    }
   }
 
   # Process clusters if just_concatenate is true
@@ -36,6 +46,7 @@ workflow denoise_amplicons_2 {
     call prepare_reference_sequences.prepare_reference_sequences {
       input:
         amplicon_info_ch = amplicon_info_ch,
+        genome = genome,
         docker_image = docker_image
     }
   }

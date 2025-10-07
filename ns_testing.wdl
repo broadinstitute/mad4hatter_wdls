@@ -1,33 +1,34 @@
 version 1.0
 
-import "workflows/resistance_marker_module.wdl" as ResistanceMarker
+import "workflows/postproc_only.wdl" as PostProcOnly
 
 # Can be used for testing subworkflows and modules
-workflow ResistanceMarkerTest {
+workflow PostProcOnlyTest {
     input {
         File amplicon_info_ch
-        File allele_data
-        File alignment_data
-        File reference
-        File? resmarkers_amplicon
+        File clusters
+        Boolean just_concatenate
+        Boolean mask_tandem_repeats
+        Boolean mask_homopolymers
+        File? genome
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
     # Testing task
-    call ResistanceMarker.resistance_marker_module {
+    call PostProcOnly.postproc_only {
         input:
             amplicon_info_ch = amplicon_info_ch,
-            allele_data = allele_data,
-            alignment_data = alignment_data,
-            reference = reference,
-            resmarkers_amplicon = resmarkers_amplicon,
+            clusters = clusters,
+            just_concatenate = just_concatenate,
+            mask_tandem_repeats = mask_tandem_repeats,
+            mask_homopolymers = mask_homopolymers,
+            genome = genome,
             docker_image = docker_image
     }
 
     output {
-        File resmarkers_output = resistance_marker_module.resmarkers_output
-        File resmarkers_by_locus = resistance_marker_module.resmarkers_by_locus
-        File microhaps = resistance_marker_module.microhaps
-        File new_mutations = resistance_marker_module.new_mutations
+        File reference_ch = postproc_only.reference_ch
+        File aligned_asv_table = postproc_only.aligned_asv_table
+        File alleledata = postproc_only.alleledata
     }
 }

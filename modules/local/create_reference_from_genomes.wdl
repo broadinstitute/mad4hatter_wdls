@@ -4,7 +4,7 @@ task create_reference_from_genomes {
   input {
     File genome
     File amplicon_info_ch
-    String refseq_fasta
+    String refseq_fasta = "reference.fasta"
     Int n_cores = 1
     String docker_image = "eppicenter/mad4hatter:develop"
   }
