@@ -1,32 +1,33 @@
 version 1.0
 
 task build_resistance_table {
-  input {
-    File alleledata
-    File alignment_data
-    File resmarkers
-    File refseq
-    Int n_cores = 4
-    String docker_image = "eppicenter/mad4hatter:develop"
-  }
+    input {
+        File alleledata
+        File alignment_data
+        File resmarkers
+        File refseq
+        Int cpus = 4
+        String docker_image = "eppicenter/mad4hatter:develop"
+    }
 
-  command <<<
-    python3 /opt/mad4hatter/bin/resistance_marker_module.py \
-      --allele_data_path ~{alleledata} \
-      --aligned_asv_table_path ~{alignment_data} \
-      --res_markers_info_path ~{resmarkers} \
-      --refseq_path ~{refseq} \
-      --n-cores ~{n_cores}
-  >>>
+    command <<<
+        python3 /opt/mad4hatter/bin/resistance_marker_module.py \
+            --allele_data_path ~{alleledata} \
+            --aligned_asv_table_path ~{alignment_data} \
+            --res_markers_info_path ~{resmarkers} \
+            --refseq_path ~{refseq} \
+            --n-cores ~{cpus}
+    >>>
 
-  output {
-    File resmarkers_output = "resmarker_table.txt"
-    File resmarkers_by_locus = "resmarker_table_by_locus.txt"
-    File microhaps = "resmarker_microhaplotype_table.txt"
-    File new_mutations = "all_mutations_table.txt"
-  }
+    output {
+        File resmarkers_output = "resmarker_table.txt"
+        File resmarkers_by_locus = "resmarker_table_by_locus.txt"
+        File microhaps = "resmarker_microhaplotype_table.txt"
+        File new_mutations = "all_mutations_table.txt"
+    }
 
-  runtime {
-    docker: docker_image
-  }
+    runtime {
+        docker: docker_image
+        cpu: cpus
+    }
 }

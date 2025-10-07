@@ -1,45 +1,44 @@
 version 1.0
 
 task quality_report {
-  input {
-    File sample_coverage
-    File amplicon_coverage
-    File amplicon_info_ch
-    String docker_image = "eppicenter/mad4hatter:develop"
-  }
+    input {
+        File sample_coverage
+        File amplicon_coverage
+        File amplicon_info_ch
+        String docker_image = "eppicenter/mad4hatter:develop"
+    }
 
-  command <<<
-  set -euo pipefail
+    command <<<
+        set -euo pipefail
 
-  # Rename input files to published versions
-  test -f sample_coverage.txt || mv ~{sample_coverage} sample_coverage.txt
-  test -f amplicon_coverage.txt || mv ~{amplicon_coverage} amplicon_coverage.txt
+        # Rename input files to published versions
+        test -f sample_coverage.txt || mv ~{sample_coverage} sample_coverage.txt
+        test -f amplicon_coverage.txt || mv ~{amplicon_coverage} amplicon_coverage.txt
 
-  test -d quality_report || mkdir quality_report
+        test -d quality_report || mkdir quality_report
 
-  Rscript /opt/mad4hatter/bin/cutadapt_summaryplots.R \
-    amplicon_coverage.txt \
-    sample_coverage.txt \
-    ~{amplicon_info_ch} \
-    quality_report
+        Rscript /opt/mad4hatter/bin/cutadapt_summaryplots.R \
+            amplicon_coverage.txt \
+            sample_coverage.txt \
+            ~{amplicon_info_ch} \
+            quality_report
+    >>>
 
-  >>>
+    output {
+        File sample_coverage_out = "sample_coverage.txt"
+        File amplicon_coverage_out = "amplicon_coverage.txt"
+        File amplicon_stats = "quality_report/amplicon_stats.txt"
+        File length_vs_reads = "quality_report/length_vs_reads.pdf"
+        File qc_plots_html = "quality_report/QCplots.html"
+        File qc_plots_rmd = "quality_report/QCplots.Rmd"
+        File reads_histograms = "quality_report/reads_histograms.pdf"
+        File swarm_plots = "quality_report/swarm_plots.pdf"
+    }
 
-  output {
-    File sample_coverage_out = "sample_coverage.txt"
-    File amplicon_coverage_out = "amplicon_coverage.txt"
-    File amplicon_stats = "quality_report/amplicon_stats.txt"
-    File length_vs_reads = "quality_report/length_vs_reads.pdf"
-    File qc_plots_html = "quality_report/QCplots.html"
-    File qc_plots_rmd = "quality_report/QCplots.Rmd"
-    File reads_histograms = "quality_report/reads_histograms.pdf"
-    File swarm_plots = "quality_report/swarm_plots.pdf"
-  }
-
-  runtime {
-    docker: docker_image
-    #TODO: Should we hardcode this?
-    memory: "8G"
-  }
+    runtime {
+        docker: docker_image
+        #TODO: Should we hardcode this?
+        memory: "8G"
+    }
 }
 
