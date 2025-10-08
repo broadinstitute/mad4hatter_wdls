@@ -21,7 +21,6 @@ task dada2_analysis {
     Int size_amplicon_info = size(amplicon_info_ch, "GB")
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
-    Int disk_size_gb = (ceil(estimated_compression_ratio * tar_files_size + size_amplicon_info + 50)) * dada2_space_multiplier
     Int disk_size_gb = max(ceil((estimated_compression_ratio * tar_files_size + size_amplicon_info + 50)) * dada2_space_multiplier, 500)
     Int memory_gb = 16 * dada2_memory_multiplier
 
