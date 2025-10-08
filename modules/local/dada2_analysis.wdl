@@ -16,10 +16,12 @@ task dada2_analysis {
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
-    Int estimated_compression_ratio = 5  # Typical compression ratio for genomic data
+    # Typical compression ratio for genomic data
+    Int estimated_compression_ratio = 5
     Int size_amplicon_info = size(amplicon_info_ch, "GB")
-    Int tar_files_size = size(demultiplexed_dir_tars, "GB")
-    Int disk_size_gb = (ceil(estimated_compression_ratio * tar_files_size + size_amplicon_info+ 50)) * dada2_space_multiplier
+    # Calculate total size of all tar files in the array
+    Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
+    Int disk_size_gb = (ceil(estimated_compression_ratio * tar_files_size + size_amplicon_info + 50)) * dada2_space_multiplier
     Int memory_gb = 16 * dada2_memory_multiplier
 
     command <<<
