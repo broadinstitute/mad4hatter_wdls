@@ -1,0 +1,46 @@
+version 1.0
+
+import "workflows/qc_only.wdl" as QcOnly
+import "modules/local/move_outputs.wdl" as MoveOutputs
+
+workflow Mad4HatterQcOnly {
+    input {
+        Array[string] pools
+        Array[File] amplicon_info_files
+        Array[File] left_fastqs
+        Array[File] right_fastqs
+        String sequencer
+        Int cutadapt_minlen = 100
+        Int allowed_errors = 0
+        String docker_image = "eppicenter/mad4hatter:develop"
+    }
+
+    call ProcessInputsWf.generate_amplicon_info {
+        input:
+            pools = pools,
+            docker_image = docker_image,
+            amplicon_info_files = amplicon_info_files
+    }
+
+    call QcOnly.qc_only {
+        input:
+            amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
+            left_fastqs = left_fastqs,
+            right_fastqs = right_fastqs,
+            sequencer = sequencer,
+            cutadapt_minlen = cutadapt_minlen,
+            allowed_errors = allowed_errors,
+            docker_image = docker_image
+    }
+
+    output {
+        File sample_coverage_out = qc_only.sample_coverage_out
+        File amplicon_coverage_out = qc_only.amplicon_coverage_out
+        File amplicon_stats = qc_only.amplicon_stats
+        File length_vs_reads = qc_only.length_vs_reads
+        File qc_plots_html = qc_only.qc_plots_html
+        File qc_plots_rmd = qc_only.qc_plots_rmd
+        File reads_histograms = qc_only.reads_histograms
+        File swarm_plots = qc_only.swarm_plots
+    }
+}
