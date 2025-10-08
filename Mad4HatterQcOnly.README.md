@@ -2,7 +2,7 @@
 
 This workflow runs quality control _only_ on the selected samples.
 
-Inputs: 
+### Inputs: 
 
 | Input Name              | Description                                                           | Type          | Required | Default                       |
 |-------------------------|-----------------------------------------------------------------------|---------------|----------|-------------------------------|
@@ -15,4 +15,15 @@ Inputs:
 | **allowed_errors**      | The number of errors allowed to be encountered in cutadapt. Optional. | Int           | No       | 0                             |
 | **docker_image**        | Specifies a custom Docker image to use. Optional.                     | String        | No       | eppicenter/mad4hatter:develop |
 
-Outputs:
+### Outputs:
+
+| Output Name               | Type | 
+|---------------------------|------|
+| **sample_coverage_out**   | File |
+| **amplicon_coverage_out** | File |
+| **amplicon_stats**        | File |
+| **length_vs_reads**       | File |
+| **qc_plots_html**         | File |
+| **qc_plots_rmd**          | File |
+| **reads_histograms**      | File |
+| **swarm_plots**           | File |
