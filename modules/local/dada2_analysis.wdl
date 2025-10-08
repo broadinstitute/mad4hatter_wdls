@@ -18,23 +18,20 @@ task dada2_analysis {
 
     # Typical compression ratio for genomic data
     Int estimated_compression_ratio = 5
-    Int size_amplicon_info = size(amplicon_info_ch, "GB")
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
-    Int all_file_sizes = ceil(estimated_compression_ratio * tar_files_size + size_amplicon_info)
     # Add buffer space and cap at 500GB
-    Int calculated_size = (all_file_sizes + 50) * dada2_space_multiplier
-    Int disk_size_gb = if calculated_size < 500 then calculated_size else 500
+    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * dada2_space_multiplier
+    Int disk_size_gb_with_max = if disk_size_gb_with_buffer < 500 then disk_size_gb_with_buffer else 500
     Int memory_gb = 16 * dada2_memory_multiplier
 
     command <<<
         set -euo pipefail
 
         echo "Memory allocated: ~{memory_gb}G"
-        echo "Disk space allocated: ~{disk_size_gb}GB"
-        echo "Size of amplicon info file: ~{size_amplicon_info}GB"
-        echo "Total size of all files: ~{all_file_sizes}GB"
-        echo "Size attempted to give before max cap: ~{calculated_size}GB"
+        echo "Disk space allocated: ~{disk_size_gb_with_max}GB"
+        echo "Total size of all tar files: ~{tar_files_size}GB"
+        echo "Size attempted to give before max cap: ~{disk_size_gb_with_buffer}GB"
         echo "CPUs allocated: ~{cpus}"
 
 
@@ -85,6 +82,6 @@ task dada2_analysis {
         docker: "~{docker_image}"
         cpu: cpus
         memory: "~{memory_gb}G"
-        disk: "~{disk_size_gb}GB"
+        disk: "~{disk_size_gb_with_max}GB"
     }
 }
