@@ -11,7 +11,6 @@ workflow Mad4HatterPostProcessing {
         Boolean just_concatenate = true
         Boolean mask_tandem_repeats = true
         Boolean mask_homopolymers = true
-        File? genome
         File? refseq_fasta
         File? masked_fasta
         String docker_image = "eppicenter/mad4hatter:develop"
@@ -31,7 +30,6 @@ workflow Mad4HatterPostProcessing {
             just_concatenate = just_concatenate,
             mask_tandem_repeats = mask_tandem_repeats,
             mask_homopolymers = mask_homopolymers,
-            genome = genome,
             refseq_fasta = refseq_fasta,
             masked_fasta = masked_fasta,
             docker_image = docker_image
