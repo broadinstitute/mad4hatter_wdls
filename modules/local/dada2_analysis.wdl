@@ -10,16 +10,27 @@ task dada2_analysis {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int cpus = 1
+        Int cpus = 2
+        Int dada2_memory_multiplier = 1
+        Int dada2_space_multiplier = 1
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
     Int estimated_compression_ratio = 5  # Typical compression ratio for genomic data
-    Int disk_size_gb = ceil(estimated_compression_ratio * size(demultiplexed_dir_tars, "GB")) + 50
-    Int memory_gb = 16
+    Int size_amplicon_info = size(amplicon_info_ch, "GB")
+    Int tar_files_size = size(demultiplexed_dir_tars, "GB")
+    Int disk_size_gb = (ceil(estimated_compression_ratio * tar_files_size + size_amplicon_info+ 50)) * dada2_space_multiplier
+    Int memory_gb = 16 * dada2_memory_multiplier
 
     command <<<
         set -euo pipefail
+
+        echo "Memory allocated: ~{memory_gb}G"
+        echo "Disk space allocated: ~{disk_size_gb}GB"
+        echo "Size of amplicon info file: ~{size_amplicon_info}GB"
+        echo "Total size of tar files: ~{tar_files_size}GB"
+        echo "CPUs allocated: ~{cpus}"
+
 
         # Create directory to extract tars
         mkdir -p extracted_dirs
