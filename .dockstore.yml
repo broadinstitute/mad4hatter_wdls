@@ -21,6 +21,13 @@ workflows:
     testParameterFiles:
       - /Mad4HatterQcOnly.wdl
 
+  - name: Mad4HatterPostProcessing
+    subclass: WDL
+    primaryDescriptorPath: /Mad4HatterPostProcessing.wdl
+    readMePath: /Mad4HatterPostProcessing.README.md
+    testParameterFiles:
+      - /Mad4HatterPostProcessing.wdl
+
   - name: NsTestingWdl
     subclass: WDL
     primaryDescriptorPath: /ns_testing.wdl
