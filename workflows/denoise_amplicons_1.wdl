@@ -28,8 +28,8 @@ workflow denoise_amplicons_1 {
             just_concatenate = just_concatenate,
             docker_image = docker_image,
             cpus = dada2_cpus,
-            dada2_memory_multiplier = dada2_memory_multiplier,
-            dada2_space_multiplier = dada2_space_multiplier,
+            memory_multiplier = dada2_memory_multiplier,
+            space_multiplier = dada2_space_multiplier,
     }
 
     output {

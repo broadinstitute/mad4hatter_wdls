@@ -11,8 +11,9 @@ task dada2_analysis {
         Int max_ee
         Boolean just_concatenate
         Int cpus = 2
-        Int dada2_memory_multiplier = 1
-        Int dada2_space_multiplier = 1
+        Int memory_multiplier = 1
+        Int space_multiplier = 1
+        Int max_disk_size_gb = 1000
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -21,9 +22,9 @@ task dada2_analysis {
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
     # Add buffer space and cap at 500GB
-    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * dada2_space_multiplier
-    Int disk_size_gb_with_max = if disk_size_gb_with_buffer < 500 then disk_size_gb_with_buffer else 500
-    Int memory_gb = 16 * dada2_memory_multiplier
+    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * space_multiplier
+    Int disk_size_gb_with_max = if disk_size_gb_with_buffer < max_disk_size_gb then disk_size_gb_with_buffer else max_disk_size_gb
+    Int memory_gb = 16 * memory_multiplier
 
     command <<<
         set -euo pipefail
