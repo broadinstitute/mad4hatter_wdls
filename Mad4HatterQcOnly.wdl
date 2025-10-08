@@ -1,11 +1,11 @@
 version 1.0
 
+import "workflows/process_inputs.wdl" as ProcessInputs
 import "workflows/qc_only.wdl" as QcOnly
-import "modules/local/move_outputs.wdl" as MoveOutputs
 
 workflow Mad4HatterQcOnly {
     input {
-        Array[string] pools
+        Array[String] pools
         Array[File] amplicon_info_files
         Array[File] left_fastqs
         Array[File] right_fastqs
@@ -15,7 +15,7 @@ workflow Mad4HatterQcOnly {
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
-    call ProcessInputsWf.generate_amplicon_info {
+    call ProcessInputs.generate_amplicon_info {
         input:
             pools = pools,
             docker_image = docker_image,
