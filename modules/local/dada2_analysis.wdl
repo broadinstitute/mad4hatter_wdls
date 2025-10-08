@@ -21,7 +21,9 @@ task dada2_analysis {
     Int size_amplicon_info = size(amplicon_info_ch, "GB")
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
-    Int disk_size_gb = max(ceil((estimated_compression_ratio * tar_files_size + size_amplicon_info + 50)) * dada2_space_multiplier, 500)
+    Int all_file_sizes = ceil(estimated_compression_ratio * tar_files_size + size_amplicon_info)
+    # Add buffer space and cap at 500GB
+    Int disk_size_gb = min(((all_file_sizes + 50) * dada2_space_multiplier), 500)
     Int memory_gb = 16 * dada2_memory_multiplier
 
     command <<<
@@ -30,7 +32,7 @@ task dada2_analysis {
         echo "Memory allocated: ~{memory_gb}G"
         echo "Disk space allocated: ~{disk_size_gb}GB"
         echo "Size of amplicon info file: ~{size_amplicon_info}GB"
-        echo "Total size of tar files: ~{tar_files_size}GB"
+        echo "Total size of all files: ~{all_file_sizes}GB"
         echo "CPUs allocated: ~{cpus}"
 
 
