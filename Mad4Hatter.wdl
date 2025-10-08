@@ -104,13 +104,13 @@ workflow MAD4HatTeR {
     call DenoiseAmplicons2Wf.denoise_amplicons_2 {
         input:
             amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-          clusters = denoise_amplicons_1.dada2_clusters,
-          just_concatenate = just_concatenate,
-          refseq_fasta = refseq_fasta,
-          masked_fasta = masked_fasta,
-          mask_tandem_repeats = mask_tandem_repeats,
-          mask_homopolymers = mask_homopolymers,
-          docker_image = docker_image
+            clusters = denoise_amplicons_1.dada2_clusters,
+            just_concatenate = just_concatenate,
+            refseq_fasta = refseq_fasta,
+            masked_fasta = masked_fasta,
+            mask_tandem_repeats = mask_tandem_repeats,
+            mask_homopolymers = mask_homopolymers,
+            docker_image = docker_image
     }
 
     # Step 4: Build final allele table
