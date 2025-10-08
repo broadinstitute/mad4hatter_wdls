@@ -23,7 +23,8 @@ task dada2_analysis {
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
     Int all_file_sizes = ceil(estimated_compression_ratio * tar_files_size + size_amplicon_info)
     # Add buffer space and cap at 500GB
-    Int disk_size_gb = min(((all_file_sizes + 50) * dada2_space_multiplier), 500)
+    Int calculated_size = (all_file_sizes + 50) * dada2_space_multiplier
+    Int disk_size_gb = if calculated_size < 500 then calculated_size else 500
     Int memory_gb = 16 * dada2_memory_multiplier
 
     command <<<
@@ -33,6 +34,7 @@ task dada2_analysis {
         echo "Disk space allocated: ~{disk_size_gb}GB"
         echo "Size of amplicon info file: ~{size_amplicon_info}GB"
         echo "Total size of all files: ~{all_file_sizes}GB"
+        echo "Size attempted to give before max cap: ~{calculated_size}GB"
         echo "CPUs allocated: ~{cpus}"
 
 
