@@ -85,6 +85,6 @@ task dada2_analysis {
         docker: docker_image
         cpu: cpus
         memory: "~{memory_gb} GB"
-        disks: "local-disk ${disk_size_gb_with_max} HDD"
+        disks: "local-disk " + disk_size_gb_with_max + " HDD"
     }
 }
