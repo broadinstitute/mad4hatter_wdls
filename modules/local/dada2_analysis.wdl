@@ -13,7 +13,10 @@ task dada2_analysis {
         Int cpus = 2
         Int memory_multiplier = 1
         Int space_multiplier = 1
+        #TODO: What is a good max space to set here?
         Int max_disk_size_gb = 1000
+        #TODO: What is a good max memory to set here?
+        Int max_memory_gb = 256
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -25,16 +28,18 @@ task dada2_analysis {
     Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * space_multiplier
     Int disk_size_gb_with_max = if disk_size_gb_with_buffer < max_disk_size_gb then disk_size_gb_with_buffer else max_disk_size_gb
     Int memory_gb = 16 * memory_multiplier
+    Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
     Int total_tar_file = length(demultiplexed_dir_tars)
 
     command <<<
         set -euo pipefail
 
-        echo "Memory allocated: ~{memory_gb}G"
+        echo "Memory allocated: ~{memory_gb_with_max} GB"
         echo "Disk space allocated: ~{disk_size_gb_with_max} GB"
         echo "Total size of all tar files: ~{tar_files_size} GB"
         echo "Total number of tar files: ~{total_tar_file}"
         echo "Size attempted to give before max cap: ~{disk_size_gb_with_buffer} GB"
+        echo "Memory attempted to give before max cap: ~{memory_gb} GB"
         echo "CPUs allocated: ~{cpus}"
 
 
@@ -84,7 +89,7 @@ task dada2_analysis {
     runtime {
         docker: docker_image
         cpu: cpus
-        memory: "~{memory_gb} GB"
+        memory: "~{memory_gb_with_max} GB"
         disks: "local-disk " + disk_size_gb_with_max + " HDD"
     }
 }
