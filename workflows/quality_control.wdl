@@ -2,7 +2,6 @@ version 1.0
 
 import "../modules/local/preprocess_coverage.wdl" as preprocess_coverage
 import "../modules/local/postprocess_coverage.wdl" as postprocess_coverage
-import "../modules/local/quality_report.wdl" as quality_report
 
 
 workflow quality_control {
@@ -40,22 +39,8 @@ workflow quality_control {
     File final_sample_coverage = select_first([postprocess_coverage.postprocess_sample_coverage, preprocess_coverage.sample_coverage])
     File final_amplicon_coverage = select_first([postprocess_coverage.postprocess_amplicon_coverage, preprocess_coverage.amplicon_coverage])
 
-    call quality_report.quality_report {
-        input:
-            sample_coverage = final_sample_coverage,
-            amplicon_coverage = final_amplicon_coverage,
-            amplicon_info_ch = amplicon_info_ch
-
-    }
-
     output {
-        File sample_coverage_out = quality_report.sample_coverage_out
-        File amplicon_coverage_out = quality_report.amplicon_coverage_out
-        File amplicon_stats = quality_report.amplicon_stats
-        File length_vs_reads = quality_report.length_vs_reads
-        File qc_plots_html = quality_report.qc_plots_html
-        File qc_plots_rmd = quality_report.qc_plots_rmd
-        File reads_histograms = quality_report.reads_histograms
-        File swarm_plots = quality_report.swarm_plots
+        File sample_coverage = final_sample_coverage
+        File amplicon_coverage = final_amplicon_coverage
     }
 }

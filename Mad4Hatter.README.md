@@ -154,7 +154,6 @@ Runs post-processing from pre-existing denoised ASVs.
 
 ### Complete Workflow Outputs
 - `final_allele_table`: Comprehensive allele frequency table
-- `quality_report`: Quality control metrics and visualizations
 - `resistance_analysis`: Resistance marker analysis results
 - `sample_summary`: Per-sample processing summary
 - `amplicon_summary`: Per-amplicon processing summary
