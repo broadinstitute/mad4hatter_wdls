@@ -10,7 +10,6 @@ workflow PostProcOnlyTest {
         Boolean just_concatenate
         Boolean mask_tandem_repeats
         Boolean mask_homopolymers
-        File? genome
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -22,7 +21,6 @@ workflow PostProcOnlyTest {
             just_concatenate = just_concatenate,
             mask_tandem_repeats = mask_tandem_repeats,
             mask_homopolymers = mask_homopolymers,
-            genome = genome,
             docker_image = docker_image
     }
 
