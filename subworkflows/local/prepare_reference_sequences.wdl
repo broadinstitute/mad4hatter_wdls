@@ -3,6 +3,7 @@ version 1.0
 # This workflow allows users to optionally create a reference from genomes or use a default
 import "../../modules/local/create_reference_from_genomes.wdl" as create_reference_from_genomes
 import "../../workflows/process_inputs.wdl" as process_inputs
+import "../../workflows/concatenate_targeted_reference.wdl" as concatenate_targeted_reference
 import "../../modules/local/error_with_message.wdl" as error_with_message
 
 workflow prepare_reference_sequences {
@@ -49,7 +50,7 @@ workflow prepare_reference_sequences {
 
   if (!defined(genome)) {
     Array[File] defined_reference_input_paths = select_first([reference_input_paths])
-    call process_inputs.concatenate_targeted_reference {
+    call concatenate_targeted_reference.concatenate_targeted_reference {
       input:
         reference_input_paths = defined_reference_input_paths,
         docker_image = docker_image
