@@ -36,6 +36,9 @@ workflow MAD4HatTeR {
         Boolean mask_homopolymers = true
         File? masked_fasta
         String output_cloud_directory
+        Int dada2_cpus = 2
+        Int dada2_memory_multiplier = 1
+        Int dada2_space_multiplier = 1
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -90,6 +93,9 @@ workflow MAD4HatTeR {
             omega_a = omega_a,
             max_ee = max_ee,
             just_concatenate = just_concatenate,
+            dada2_cpus = dada2_cpus,
+            dada2_memory_multiplier = dada2_memory_multiplier,
+            dada2_space_multiplier = dada2_space_multiplier,
             docker_image = docker_image
     }
 
@@ -98,13 +104,13 @@ workflow MAD4HatTeR {
     call DenoiseAmplicons2Wf.denoise_amplicons_2 {
         input:
             amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-          clusters = denoise_amplicons_1.dada2_clusters,
-          just_concatenate = just_concatenate,
-          refseq_fasta = refseq_fasta,
-          masked_fasta = masked_fasta,
-          mask_tandem_repeats = mask_tandem_repeats,
-          mask_homopolymers = mask_homopolymers,
-          docker_image = docker_image
+            clusters = denoise_amplicons_1.dada2_clusters,
+            just_concatenate = just_concatenate,
+            refseq_fasta = refseq_fasta,
+            masked_fasta = masked_fasta,
+            mask_tandem_repeats = mask_tandem_repeats,
+            mask_homopolymers = mask_homopolymers,
+            docker_image = docker_image
     }
 
     # Step 4: Build final allele table

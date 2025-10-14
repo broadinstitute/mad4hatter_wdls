@@ -62,7 +62,7 @@ task build_resmarker_info {
     >>>
 
     output {
-        File resmarker_info = "~{resmarker_info_output_path}"
+        File resmarker_info = resmarker_info_output_path
     }
 
     runtime {

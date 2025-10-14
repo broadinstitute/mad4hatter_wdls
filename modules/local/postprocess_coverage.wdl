@@ -28,6 +28,6 @@ task postprocess_coverage {
     runtime {
         docker: docker_image
         #TODO: Should we hardcode this?
-        memory: "8G"
+        memory: "8 GB"
     }
 }

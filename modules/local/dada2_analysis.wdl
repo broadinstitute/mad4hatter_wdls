@@ -10,16 +10,38 @@ task dada2_analysis {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int cpus = 1
+        Int cpus = 2
+        Int memory_multiplier = 1
+        Int space_multiplier = 1
+        #TODO: What is a good max space to set here?
+        Int max_disk_size_gb = 1000
+        #TODO: What is a good max memory to set here?
+        Int max_memory_gb = 256
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
-    Int estimated_compression_ratio = 5  # Typical compression ratio for genomic data
-    Int disk_size_gb = ceil(estimated_compression_ratio * size(demultiplexed_dir_tars, "GB")) + 50
-    Int memory_gb = 16
+    # Typical compression ratio for genomic data
+    Int estimated_compression_ratio = 5
+    # Calculate total size of all tar files in the array
+    Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
+    # Add buffer space and cap at 500GB
+    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * space_multiplier
+    Int disk_size_gb_with_max = if disk_size_gb_with_buffer < max_disk_size_gb then disk_size_gb_with_buffer else max_disk_size_gb
+    Int memory_gb = 16 * memory_multiplier
+    Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
+    Int total_tar_file = length(demultiplexed_dir_tars)
 
     command <<<
         set -euo pipefail
+
+        echo "Memory allocated: ~{memory_gb_with_max} GB"
+        echo "Disk space allocated: ~{disk_size_gb_with_max} GB"
+        echo "Total size of all tar files: ~{tar_files_size} GB"
+        echo "Total number of tar files: ~{total_tar_file}"
+        echo "Size attempted to give before max cap: ~{disk_size_gb_with_buffer} GB"
+        echo "Memory attempted to give before max cap: ~{memory_gb} GB"
+        echo "CPUs allocated: ~{cpus}"
+
 
         # Create directory to extract tars
         mkdir -p extracted_dirs
@@ -65,9 +87,9 @@ task dada2_analysis {
     }
 
     runtime {
-        docker: "~{docker_image}"
+        docker: docker_image
         cpu: cpus
-        memory: "~{memory_gb}G"
-        disk: "~{disk_size_gb}GB"
+        memory: "~{memory_gb_with_max} GB"
+        disks: "local-disk " + disk_size_gb_with_max + " HDD"
     }
 }
