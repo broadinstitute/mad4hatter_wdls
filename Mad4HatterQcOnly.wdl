@@ -34,13 +34,7 @@ workflow Mad4HatterQcOnly {
     }
 
     output {
-        File sample_coverage_out = qc_only.sample_coverage_out
-        File amplicon_coverage_out = qc_only.amplicon_coverage_out
-        File amplicon_stats = qc_only.amplicon_stats
-        File length_vs_reads = qc_only.length_vs_reads
-        File qc_plots_html = qc_only.qc_plots_html
-        File qc_plots_rmd = qc_only.qc_plots_rmd
-        File reads_histograms = qc_only.reads_histograms
-        File swarm_plots = qc_only.swarm_plots
+        File sample_coverage_out = qc_only.sample_coverage
+        File amplicon_coverage_out = qc_only.amplicon_coverage
     }
 }

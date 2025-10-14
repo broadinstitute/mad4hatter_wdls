@@ -35,14 +35,8 @@ workflow qc_only {
     }
 
     output {
-        File sample_coverage_out = quality_control.sample_coverage_out
-        File amplicon_coverage_out = quality_control.amplicon_coverage_out
-        File amplicon_stats = quality_control.amplicon_stats
-        File length_vs_reads = quality_control.length_vs_reads
-        File qc_plots_html = quality_control.qc_plots_html
-        File qc_plots_rmd = quality_control.qc_plots_rmd
-        File reads_histograms = quality_control.reads_histograms
-        File swarm_plots = quality_control.swarm_plots
+        File sample_coverage_out = quality_control.sample_coverage
+        File amplicon_coverage_out = quality_control.amplicon_coverage
     }
 }
 
