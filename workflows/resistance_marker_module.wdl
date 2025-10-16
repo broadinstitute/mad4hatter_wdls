@@ -21,7 +21,7 @@ workflow resistance_marker_module {
             refseq = reference,
             amplicon_info_ch = amplicon_info_ch,
             principal_resmarkers = principal_resmarkers,
-            resmarkers_amplicon = resmarkers_info_tsv,
+            resmarkers_info_tsv = resmarkers_info_tsv,
             docker_image = docker_image
     }
 
