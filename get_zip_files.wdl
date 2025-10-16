@@ -43,6 +43,7 @@ workflow MAD4HatTeR {
             docker_image = docker_image
     }
 
+
     output {
         Array[File] zip_files = demultiplex_amplicons.demux_fastqs_ch
     }
