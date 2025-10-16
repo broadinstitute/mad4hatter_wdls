@@ -1,34 +1,34 @@
 version 1.0
 
-import "workflows/postproc_only.wdl" as PostProcOnly
+import "modules/local/build_resmarker_info_and_resistance_table.wdl" as build_resmarker_info_and_resistance_table
 
 # Can be used for testing subworkflows and modules
-workflow PostProcOnlyTest {
+workflow BuildResmarkerInfoAndResistanceTableTesting {
     input {
+        File alleledata
+        File alignment_data
+        File refseq
         File amplicon_info_ch
-        File clusters
-        Boolean just_concatenate
-        Boolean mask_tandem_repeats
-        Boolean mask_homopolymers
-        File? genome
-        String docker_image = "eppicenter/mad4hatter:develop"
+        File? principal_resmarkers
+        File? resmarkers_amplicon
     }
 
     # Testing task
-    call PostProcOnly.postproc_only {
+    call build_resmarker_info_and_resistance_table.build_resmarker_info_and_resistance_table {
         input:
+            alleledata = alleledata,
+            alignment_data = alignment_data,
+            refseq = refseq,
             amplicon_info_ch = amplicon_info_ch,
-            clusters = clusters,
-            just_concatenate = just_concatenate,
-            mask_tandem_repeats = mask_tandem_repeats,
-            mask_homopolymers = mask_homopolymers,
-            genome = genome,
-            docker_image = docker_image
+            principal_resmarkers = principal_resmarkers,
+            resmarkers_amplicon = resmarkers_amplicon,
     }
 
     output {
-        File reference_ch = postproc_only.reference_ch
-        File aligned_asv_table = postproc_only.aligned_asv_table
-        File alleledata = postproc_only.alleledata
+        File resmarkers_file = build_resmarker_info_and_resistance_table.resmarkers_file
+        File resmarkers_output = build_resmarker_info_and_resistance_table.resmarkers_output
+        File resmarkers_by_locus = build_resmarker_info_and_resistance_table.resmarkers_by_locus
+        File microhaps = build_resmarker_info_and_resistance_table.microhaps
+        File new_mutations = build_resmarker_info_and_resistance_table.new_mutations
     }
 }

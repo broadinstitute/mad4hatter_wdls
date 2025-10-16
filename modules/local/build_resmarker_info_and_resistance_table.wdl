@@ -13,6 +13,8 @@ task build_resmarker_info_and_resistance_table {
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
+    # TODO: add check here: if use_remarker_amplicon is true, then resmarkers_amplicon must be provided
+
     command <<<
         echo "Running build_resmarker_info.py"
         python3 /opt/mad4hatter/bin/build_resmarker_info.py \
