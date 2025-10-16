@@ -91,5 +91,6 @@ task dada2_analysis {
         cpu: cpus
         memory: "~{memory_gb_with_max} GB"
         disks: "local-disk " + disk_size_gb_with_max + " HDD"
+        cpuPlatform: "Intel Ice Lake"
     }
 }
