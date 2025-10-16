@@ -7,6 +7,13 @@ workflows:
     testParameterFiles:
       - /sn_testing.wdl
 
+  - name: SnTestingWdlWithCpuPlatform
+    subclass: WDL
+    primaryDescriptorPath: /sn_testing_cpu_platform.wdl
+    readMePath: /testing.README.md
+    testParameterFiles:
+      - /sn_testing_cpu_platform.wdl
+
   - name: Mad4Hatter
     subclass: WDL
     primaryDescriptorPath: /Mad4Hatter.wdl
