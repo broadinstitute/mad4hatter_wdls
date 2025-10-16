@@ -44,6 +44,6 @@ workflow MAD4HatTeR {
     }
 
     output {
-        Array[File] zip_files = demultiplex_amplicons.demultiplexed_dir_tars
+        Array[File] zip_files = demultiplex_amplicons.demux_fastqs_ch
     }
 }
