@@ -36,8 +36,8 @@ workflow Mad4HatterPostProcessing {
     }
 
     output {
-        File reference_ch = postproc_only.reference_ch
-        File aligned_asv_table = postproc_only.aligned_asv_table
+        File amplicon_info = generate_amplicon_info.amplicon_info_ch
+        File reference_fasta = postproc_only.reference_ch
         File alleledata = postproc_only.alleledata
     }
 }
