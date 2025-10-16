@@ -5,11 +5,12 @@ import "../modules/local/build_resmarker_info_and_resistance_table.wdl" as build
 # This workflow is comprised of processes to build a table of resistance markers of interest.
 workflow resistance_marker_module {
     input {
-        File amplicon_info_ch
         File allele_data
         File alignment_data
         File reference
-        File? resmarkers_amplicon
+        File amplicon_info_ch
+        File? principal_resmarkers
+        File? resmarkers_info_tsv
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -19,8 +20,8 @@ workflow resistance_marker_module {
             alignment_data = alignment_data,
             refseq = reference,
             amplicon_info_ch = amplicon_info_ch,
-            principal_resmarkers = resmarkers_amplicon,
-            resmarkers_amplicon = resmarkers_amplicon,
+            principal_resmarkers = principal_resmarkers,
+            resmarkers_amplicon = resmarkers_info_tsv,
             docker_image = docker_image
     }
 

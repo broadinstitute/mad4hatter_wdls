@@ -10,7 +10,7 @@ workflow BuildResmarkerInfoAndResistanceTableTesting {
         File refseq
         File amplicon_info_ch
         File? principal_resmarkers
-        File? resmarkers_amplicon
+        File? resmarkers_info_tsv
     }
 
     # Testing task
@@ -21,7 +21,7 @@ workflow BuildResmarkerInfoAndResistanceTableTesting {
             refseq = refseq,
             amplicon_info_ch = amplicon_info_ch,
             principal_resmarkers = principal_resmarkers,
-            resmarkers_amplicon = resmarkers_amplicon,
+            resmarkers_amplicon = resmarkers_info_tsv,
     }
 
     output {
