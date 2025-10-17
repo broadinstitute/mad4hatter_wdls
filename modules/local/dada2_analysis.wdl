@@ -17,6 +17,7 @@ task dada2_analysis {
         Int max_disk_size_gb = 1000
         #TODO: What is a good max memory to set here?
         Int max_memory_gb = 256
+        String storage_type = "SSD"
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -93,6 +94,6 @@ task dada2_analysis {
         cpu: used_cpus
         cpuPlatform: "Intel Ice Lake"
         memory: "~{memory_gb_with_max} GB"
-        disks: "local-disk " + disk_size_gb_with_max + " SSD"
+        disks: "local-disk " + disk_size_gb_with_max + " " + storage_type
     }
 }
