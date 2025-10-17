@@ -1,6 +1,6 @@
 version 1.0
 
-workflow quality_report {
+workflow QualityReport {
 
     meta {
         description: "Generate a quality control report for the amplicon sequencing data."
@@ -18,7 +18,7 @@ workflow quality_report {
         File sample_coverage
         File amplicon_info
 
-        String docker_image = "eppicenter/mad4hatter:develop"
+        String docker_image = "us.gcr.io/broad-dsp-lrma/sr-mad4hatter:0.0.1"
     }
 
     call create_quality_report as t_01_create_quality_report {
