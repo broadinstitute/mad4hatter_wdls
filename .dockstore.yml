@@ -38,7 +38,7 @@ workflows:
 
   - name: QualityReportWdl
     subclass: WDL
-    primaryDescriptorPath: /quality_report.wdl
-    readMePath: /quality_report.README.md
+    primaryDescriptorPath: /QualityReport.wdl
+    readMePath: /QualityReport.README.md
     testParameterFiles:
-      - /quality_report.wdl
+      - /QualityReport.wdl
