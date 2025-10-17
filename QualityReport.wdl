@@ -62,7 +62,7 @@ task create_quality_report {
     command <<<
         set -euxo pipefail
 
-        Rscript ~{basename(qc_r_script)} ~{amplicon_coverage} ~{sample_coverage} ~{amplicon_info} ~{quality_report_dir_name}
+        Rscript ~{qc_r_script} ~{amplicon_coverage} ~{sample_coverage} ~{amplicon_info} ~{quality_report_dir_name}
 
         tar -zcf ~{quality_report_dir_name}.tar.gz ~{quality_report_dir_name}
     >>>
