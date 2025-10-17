@@ -10,7 +10,7 @@ task dada2_analysis {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int cpus = 2
+        Int cpus = 4
         Int memory_multiplier = 1
         Int space_multiplier = 1
         #TODO: What is a good max space to set here?
@@ -25,11 +25,13 @@ task dada2_analysis {
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
     # Add buffer space and cap at 500GB
-    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 25) * space_multiplier
+    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * space_multiplier
     Int disk_size_gb_with_max = if disk_size_gb_with_buffer < max_disk_size_gb then disk_size_gb_with_buffer else max_disk_size_gb
     Int memory_gb = 16 * memory_multiplier
     Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
     Int total_tar_file = length(demultiplexed_dir_tars)
+    Int n_cores = if cpus > 2 then cpus - 2 else cpus
+    Int used_cpus = if cpus < 2 then cpus + 2 else cpus
 
     command <<<
         set -euo pipefail
@@ -78,7 +80,7 @@ task dada2_analysis {
             --band-size ~{band_size} \
             --omega-a ~{omega_a} \
             --maxEE ~{max_ee} \
-            --cores ~{cpus} \
+            --cores ~{n_cores} \
             ~{if just_concatenate then "--concat-non-overlaps" else ""}
     >>>
 
@@ -88,8 +90,8 @@ task dada2_analysis {
 
     runtime {
         docker: docker_image
-        cpu: cpus
+        cpu: used_cpus
         memory: "~{memory_gb_with_max} GB"
-        disks: "local-disk " + disk_size_gb_with_max + " HDD"
+        disks: "local-disk " + disk_size_gb_with_max + " SSD"
     }
 }
