@@ -54,7 +54,7 @@ task create_quality_report {
         File amplicon_info
 
         File qc_r_script = "gs://fc-a51e78f3-024d-415f-848e-aa7046173b53/scripts/cutadapt_summaryplots.R"
-        String docker_image = "eppicenter/mad4hatter:develop"
+        String docker_image = "us.gcr.io/broad-dsp-lrma/sr-mad4hatter:0.0.1"
     }
 
     String quality_report_dir_name = "quality_report"
