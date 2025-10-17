@@ -1,6 +1,6 @@
 version 1.0
 
-import "modules/local/dada2_analysis_new_cpu.wdl" as dada2_analysis
+import "modules/local/dada2_analysis.wdl" as dada2_analysis
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
