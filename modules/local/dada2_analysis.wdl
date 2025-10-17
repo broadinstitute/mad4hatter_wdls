@@ -27,7 +27,7 @@ task dada2_analysis {
     # Add buffer space and cap at 500GB
     Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * space_multiplier
     Int disk_size_gb_with_max = if disk_size_gb_with_buffer < max_disk_size_gb then disk_size_gb_with_buffer else max_disk_size_gb
-    Int memory_gb = 16 * memory_multiplier
+    Int memory_gb = 8 * memory_multiplier
     Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
     Int total_tar_file = length(demultiplexed_dir_tars)
     Int n_cores = if cpus > 2 then cpus - 2 else cpus

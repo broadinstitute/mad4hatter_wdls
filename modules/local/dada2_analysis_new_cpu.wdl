@@ -10,7 +10,7 @@ task dada2_analysis {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int cpus = 2
+        Int cpus = 4
         Int memory_multiplier = 1
         Int space_multiplier = 1
         #TODO: What is a good max space to set here?
@@ -30,6 +30,8 @@ task dada2_analysis {
     Int memory_gb = 8 * memory_multiplier
     Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
     Int total_tar_file = length(demultiplexed_dir_tars)
+    Int n_cores = if cpus > 2 then cpus - 2 else cpus
+    Int used_cpus = if cpus < 2 then cpus + 2 else cpus
 
     command <<<
         set -euo pipefail
@@ -40,7 +42,7 @@ task dada2_analysis {
         echo "Total number of tar files: ~{total_tar_file}"
         echo "Size attempted to give before max cap: ~{disk_size_gb_with_buffer} GB"
         echo "Memory attempted to give before max cap: ~{memory_gb} GB"
-        echo "CPUs allocated: ~{cpus}"
+        echo "CPUs allocated: ~{used_cpus}"
 
 
         # Create directory to extract tars
@@ -78,7 +80,7 @@ task dada2_analysis {
             --band-size ~{band_size} \
             --omega-a ~{omega_a} \
             --maxEE ~{max_ee} \
-            --cores ~{cpus} \
+            --cores ~{n_cores} \
             ~{if just_concatenate then "--concat-non-overlaps" else ""}
     >>>
 
@@ -88,7 +90,7 @@ task dada2_analysis {
 
     runtime {
         docker: docker_image
-        cpu: cpus
+        cpu: used_cpus
         cpuPlatform: "Intel Ice Lake"
         memory: "~{memory_gb_with_max} GB"
         disks: "local-disk " + disk_size_gb_with_max + " HDD"
