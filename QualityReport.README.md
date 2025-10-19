@@ -19,6 +19,12 @@ The Quality Report workflow takes coverage and amplicon information files genera
 
 | Output Name | Description | Type |
 |-------------|-------------|------|
+| **qc_amplicon_stats** | Table summarizing key statistis (mean/median coverage, dropout rates) per amplicon across all samples | File |
+| **qc_length_vs_reads** | Scatter plot showing the relationship between amplicon length and read coverage | File |
+| **qc_plots_html** | HTML report with visualizations and coverage plots for data exploration | File |
+| **qc_plots_Rmd** | R Markdown source file used to generate the HTML quality report | File |
+| **qc_reads_histograms** | Histograms displaying the distribution of read counts for each sample or amplicon | File |
+| **qc_swarm_plots** | Swarm plots visualizing per-amplicon or per-sample coverage to highlight data distribution and outliers | File |
 | **quality_report_tar_gz** | Compressed archive containing the complete quality control report with visualizations and summaries | File |
 
 ## Workflow Description
