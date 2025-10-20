@@ -11,6 +11,7 @@ task dada2_analysis {
         Int max_ee
         Boolean just_concatenate
         Int cpus = 4
+        Int free_cpus = 2
         Int memory_multiplier = 1
         Int space_multiplier = 1
         #TODO: What is a good max space to set here?
@@ -31,8 +32,8 @@ task dada2_analysis {
     Int memory_gb = 8 * memory_multiplier
     Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
     Int total_tar_file = length(demultiplexed_dir_tars)
-    Int n_cores = if cpus > 2 then cpus - 2 else cpus
-    Int used_cpus = if cpus < 2 then cpus + 2 else cpus
+    Int n_cores = if cpus > free_cpus then cpus - free_cpus else cpus
+    Int used_cpus = if cpus < free_cpus then cpus + free_cpus else cpus
 
     command <<<
         set -euo pipefail
