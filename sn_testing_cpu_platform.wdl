@@ -16,7 +16,6 @@ workflow TestWdl {
         Int dada2_memory_multiplier = 1
         Int dada2_space_multiplier = 1
         Int free_cpus = 2
-        String storage_type
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
