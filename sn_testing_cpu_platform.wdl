@@ -34,7 +34,6 @@ workflow TestWdl {
             memory_multiplier = dada2_memory_multiplier,
             space_multiplier = dada2_space_multiplier,
             docker_image = docker_image,
-            storage_type = storage_type,
             free_cpus = free_cpus
     }
 
