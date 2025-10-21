@@ -18,7 +18,6 @@ task dada2_analysis {
         Int max_disk_size_gb = 1000
         #TODO: What is a good max memory to set here?
         Int max_memory_gb = 256
-        String storage_type = "SSD"
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -38,13 +37,20 @@ task dada2_analysis {
     command <<<
         set -euo pipefail
 
-        echo "Memory allocated: ~{memory_gb_with_max} GB"
-        echo "Disk space allocated: ~{disk_size_gb_with_max} GB"
-        echo "Total size of all tar files: ~{tar_files_size} GB"
-        echo "Total number of tar files: ~{total_tar_file}"
-        echo "Size attempted to give before max cap: ~{disk_size_gb_with_buffer} GB"
-        echo "Memory attempted to give before max cap: ~{memory_gb} GB"
-        echo "CPUs allocated: ~{used_cpus}"
+        START_TIME=$(date +%s)
+        timestamp() {
+            local now=$(date +%s)
+            local elapsed=$((now - START_TIME))
+            printf '%02d:%02d:%02d' $((elapsed/3600)) $(((elapsed%3600)/60)) $((elapsed%60))
+        }
+
+        echo "$(timestamp) : Memory allocated: ~{memory_gb_with_max} GB"
+        echo "$(timestamp) : Disk space allocated: ~{disk_size_gb_with_max} GB"
+        echo "$(timestamp) : Total size of all tar files: ~{tar_files_size} GB"
+        echo "$(timestamp) : Total number of tar files: ~{total_tar_file}"
+        echo "$(timestamp) : Size attempted to give before max cap: ~{disk_size_gb_with_buffer} GB"
+        echo "$(timestamp) : Memory attempted to give before max cap: ~{memory_gb} GB"
+        echo "$(timestamp) : CPUs allocated: ~{used_cpus}"
 
 
         # Create directory to extract tars
@@ -52,27 +58,25 @@ task dada2_analysis {
 
         # Untar all the directories and collect the paths to the directories containing fastq files
         touch fastq_dirs.txt
-        echo "Looping through tar files to extract fastq.gz files"
+        echo "$(timestamp) : Looping through tar files to extract fastq.gz files"
         tar_counter=0
         for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
             dir_name=$(basename "$tar_file" .tar.gz)_$tar_counter
             mkdir -p "extracted_dirs/$dir_name"
-            echo "Extracting $tar_file to extracted_dirs/$dir_name"
             tar -xf "$tar_file" --no-xattrs -C "extracted_dirs/$dir_name"
             # Remove tar file after successful extraction
-            rm "$tar_file"
             tar_counter=$((tar_counter + 1))
-            echo "Extraction complete"
+            echo "$(timestamp) : Extraction complete"
 
             # Find all directories containing fastq.gz files anywhere in the extracted content
             find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
         done
 
-        echo "Finished extracting all tar files."
+        echo "$(timestamp) : Finished extracting all tar files."
         # Create a sorted unique list of directories
         DIRS=$(sort -u fastq_dirs.txt | tr '\n' ' ')
 
-        echo "Directories with fastq files to be processed:"
+        echo "$(timestamp) : Directories with fastq files to be processed:"
         echo $DIRS
 
         Rscript /opt/mad4hatter/bin/dada_overlaps.R \
@@ -95,6 +99,6 @@ task dada2_analysis {
         cpu: used_cpus
         cpuPlatform: "Intel Ice Lake"
         memory: "~{memory_gb_with_max} GB"
-        disks: "local-disk " + disk_size_gb_with_max + " " + storage_type
+        disks: "local-disk " + disk_size_gb_with_max + " SSD"
     }
 }
