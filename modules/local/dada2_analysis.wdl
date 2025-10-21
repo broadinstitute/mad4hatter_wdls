@@ -66,7 +66,6 @@ task dada2_analysis {
             tar -xf "$tar_file" --no-xattrs -C "extracted_dirs/$dir_name"
             # Remove tar file after successful extraction
             tar_counter=$((tar_counter + 1))
-            echo "$(timestamp) : Extraction complete"
 
             # Find all directories containing fastq.gz files anywhere in the extracted content
             find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
@@ -88,6 +87,7 @@ task dada2_analysis {
             --maxEE ~{max_ee} \
             --cores ~{n_cores} \
             ~{if just_concatenate then "--concat-non-overlaps" else ""}
+        echo "$(timestamp) : DADA2 processing complete."
     >>>
 
     output {
