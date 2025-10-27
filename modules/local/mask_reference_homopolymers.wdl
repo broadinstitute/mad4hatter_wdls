@@ -21,7 +21,5 @@ task mask_reference_homopolymers {
 
     runtime {
         docker: docker_image
-        #TODO: Should we hardcode this?
-        memory: "8 GB"
     }
 }
