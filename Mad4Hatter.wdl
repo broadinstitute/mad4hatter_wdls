@@ -35,6 +35,8 @@ workflow MAD4HatTeR {
         Boolean mask_tandem_repeats = true
         Boolean mask_homopolymers = true
         File? masked_fasta
+        File? principal_resmarkers
+        File? resmarkers_info_tsv
         String output_cloud_directory
         Int dada2_cpus = 2
         Int dada2_memory_multiplier = 1
@@ -141,6 +143,8 @@ workflow MAD4HatTeR {
             allele_data = build_alleletable.alleledata,
             alignment_data = denoise_amplicons_2.aligned_asv_table,
             reference = denoise_amplicons_2.reference_ch,
+            principal_resmarkers = principal_resmarkers,
+            resmarkers_info_tsv = resmarkers_info_tsv,
             docker_image = docker_image
     }
 

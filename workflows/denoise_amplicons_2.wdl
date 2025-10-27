@@ -1,10 +1,9 @@
 version 1.0
 
-import "../modules/local/align_to_reference.wdl" as align_to_reference
 import "../subworkflows/local/mask_low_complexity_regions.wdl" as mask_low_complexity_regions
 import "../subworkflows/local/prepare_reference_sequences.wdl" as prepare_reference_sequences
 import "../modules/local/build_pseudocigar.wdl" as build_pseudocigar
-import "../modules/local/filter_asvs.wdl" as filter_asvs
+import "../modules/local/align_to_reference_and_filter_asvs.wdl" as align_to_reference_and_filter_asvs
 import "../modules/local/collapse_concatenated_reads.wdl" as collapse_concatenated_reads
 import "../modules/local/error_with_message.wdl" as error_with_message
 
@@ -54,19 +53,11 @@ workflow denoise_amplicons_2 {
     # Use the appropriate reference
     File reference = select_first([prepare_reference_sequences.reference_fasta, refseq_fasta])
 
-    # Align denoised sequences to reference
-    call align_to_reference.align_to_reference {
+    call align_to_reference_and_filter_asvs.align_to_reference_and_filter_asvs {
         input:
             clusters = denoise_input,
             refseq_fasta = reference,
             amplicon_info_ch = amplicon_info_ch,
-            docker_image = docker_image
-    }
-
-    # Filter ASVs
-    call filter_asvs.filter_asvs {
-        input:
-            alignments = align_to_reference.alignments,
             docker_image = docker_image
     }
 
@@ -75,13 +66,13 @@ workflow denoise_amplicons_2 {
         call mask_low_complexity_regions.mask_low_complexity_regions {
             input:
                 reference = reference,
-                alignments = filter_asvs.filtered_alignments_ch,
+                alignments = align_to_reference_and_filter_asvs.filtered_alignments_ch,
                 docker_image = docker_image
         }
     }
 
     # Set initial alignment table. Update if masked_fasta is provided
-    File alignment_table = select_first([mask_low_complexity_regions.masked_alignments, align_to_reference.alignments])
+    File alignment_table = select_first([mask_low_complexity_regions.masked_alignments, align_to_reference_and_filter_asvs.alignments])
 
     # Build pseudocigar
     call build_pseudocigar.build_pseudocigar {

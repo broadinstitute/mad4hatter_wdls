@@ -45,27 +45,3 @@ task build_targeted_reference {
         docker: docker_image
     }
 }
-
-task build_resmarker_info {
-    input {
-        File amplicon_info_ch
-        File? principal_resmarkers
-        String? resmarker_info_output_path = "resmarker_info.tsv"
-        String docker_image = "eppicenter/mad4hatter:develop"
-    }
-
-    command <<<
-        python3 /opt/mad4hatter/bin/build_resmarker_info.py \
-            --amplicon_info ~{amplicon_info_ch} \
-            --principal_resmarkers ~{select_first([principal_resmarkers, "/opt/mad4hatter/panel_information/principal_resistance_marker_info_table.tsv"])} \
-            --resmarker_info_output_path ~{resmarker_info_output_path}
-    >>>
-
-    output {
-        File resmarker_info = resmarker_info_output_path
-    }
-
-    runtime {
-        docker: docker_image
-    }
-}
