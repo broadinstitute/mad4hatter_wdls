@@ -7,6 +7,13 @@ workflows:
     testParameterFiles:
       - /sn_testing.wdl
 
+  - name: SnTestingWdlWithCpuPlatform
+    subclass: WDL
+    primaryDescriptorPath: /sn_testing_cpu_platform.wdl
+    readMePath: /testing.README.md
+    testParameterFiles:
+      - /sn_testing_cpu_platform.wdl
+
   - name: Mad4Hatter
     subclass: WDL
     primaryDescriptorPath: /Mad4Hatter.wdl
@@ -34,3 +41,10 @@ workflows:
     readMePath: /testing.README.md
     testParameterFiles:
       - /ns_testing.wdl
+
+  - name: GetZipFiles
+    subclass: WDL
+    primaryDescriptorPath: /get_zip_files.wdl
+    readMePath: /testing.README.md
+    testParameterFiles:
+      - /get_zip_files.wdl

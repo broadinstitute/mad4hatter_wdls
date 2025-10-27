@@ -29,8 +29,8 @@ workflow TestWdl {
             max_ee = max_ee,
             just_concatenate = just_concatenate,
             cpus = cpus,
-            dada2_memory_multiplier = dada2_memory_multiplier,
-            dada2_space_multiplier = dada2_space_multiplier,
+            memory_multiplier = dada2_memory_multiplier,
+            space_multiplier = dada2_space_multiplier,
             docker_image = docker_image
     }
 

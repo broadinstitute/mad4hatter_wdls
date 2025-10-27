@@ -10,13 +10,9 @@ task dada2_analysis {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int cpus = 2
+        Int cpus = 4
+        Int free_cpus = 2
         Int memory_multiplier = 1
-        Int space_multiplier = 1
-        #TODO: What is a good max space to set here?
-        Int max_disk_size_gb = 1000
-        #TODO: What is a good max memory to set here?
-        Int max_memory_gb = 256
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -24,23 +20,29 @@ task dada2_analysis {
     Int estimated_compression_ratio = 5
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
-    # Add buffer space and cap at 500GB
-    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * space_multiplier
-    Int disk_size_gb_with_max = if disk_size_gb_with_buffer < max_disk_size_gb then disk_size_gb_with_buffer else max_disk_size_gb
-    Int memory_gb = 16 * memory_multiplier
-    Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
+    Int disk_size_gb = (tar_files_size * estimated_compression_ratio + 50)
+    Int memory_gb = 8 * memory_multiplier
     Int total_tar_file = length(demultiplexed_dir_tars)
+    # If free_cpus is greater than cpus, use cpus, else use cpus - free_cpus
+    Int n_cores = if cpus > free_cpus then cpus - free_cpus else cpus
+    # If cpus is less than free_cpus, use cpus + free_cpus else use cpus
+    Int used_cpus = if cpus < free_cpus then cpus + free_cpus else cpus
 
     command <<<
         set -euo pipefail
 
-        echo "Memory allocated: ~{memory_gb_with_max} GB"
-        echo "Disk space allocated: ~{disk_size_gb_with_max} GB"
-        echo "Total size of all tar files: ~{tar_files_size} GB"
-        echo "Total number of tar files: ~{total_tar_file}"
-        echo "Size attempted to give before max cap: ~{disk_size_gb_with_buffer} GB"
-        echo "Memory attempted to give before max cap: ~{memory_gb} GB"
-        echo "CPUs allocated: ~{cpus}"
+        START_TIME=$(date +%s)
+        timestamp() {
+            local now=$(date +%s)
+            local elapsed=$((now - START_TIME))
+            printf '%02d:%02d:%02d' $((elapsed/3600)) $(((elapsed%3600)/60)) $((elapsed%60))
+        }
+
+        echo "$(timestamp) : Memory allocated: ~{memory_gb} GB"
+        echo "$(timestamp) : Disk space allocated: ~{disk_size_gb} GB"
+        echo "$(timestamp) : Total size of all tar files: ~{tar_files_size} GB"
+        echo "$(timestamp) : Total number of tar files: ~{total_tar_file}"
+        echo "$(timestamp) : CPUs allocated: ~{used_cpus}"
 
 
         # Create directory to extract tars
@@ -48,27 +50,24 @@ task dada2_analysis {
 
         # Untar all the directories and collect the paths to the directories containing fastq files
         touch fastq_dirs.txt
-        echo "Looping through tar files to extract fastq.gz files"
+        echo "$(timestamp) : Looping through tar files to extract fastq.gz files"
         tar_counter=0
         for tar_file in ~{sep=" " demultiplexed_dir_tars}; do
             dir_name=$(basename "$tar_file" .tar.gz)_$tar_counter
             mkdir -p "extracted_dirs/$dir_name"
-            echo "Extracting $tar_file to extracted_dirs/$dir_name"
             tar -xf "$tar_file" --no-xattrs -C "extracted_dirs/$dir_name"
             # Remove tar file after successful extraction
-            rm "$tar_file"
             tar_counter=$((tar_counter + 1))
-            echo "Extraction complete"
 
             # Find all directories containing fastq.gz files anywhere in the extracted content
             find "extracted_dirs/$dir_name" -type f -name "*.fastq.gz" | xargs -n1 dirname | sort -u >> fastq_dirs.txt
         done
 
-        echo "Finished extracting all tar files."
+        echo "$(timestamp) : Finished extracting all tar files."
         # Create a sorted unique list of directories
         DIRS=$(sort -u fastq_dirs.txt | tr '\n' ' ')
 
-        echo "Directories with fastq files to be processed:"
+        echo "$(timestamp) : Directories with fastq files to be processed:"
         echo $DIRS
 
         Rscript /opt/mad4hatter/bin/dada_overlaps.R \
@@ -78,8 +77,9 @@ task dada2_analysis {
             --band-size ~{band_size} \
             --omega-a ~{omega_a} \
             --maxEE ~{max_ee} \
-            --cores ~{cpus} \
+            --cores ~{n_cores} \
             ~{if just_concatenate then "--concat-non-overlaps" else ""}
+        echo "$(timestamp) : DADA2 processing complete."
     >>>
 
     output {
@@ -88,9 +88,9 @@ task dada2_analysis {
 
     runtime {
         docker: docker_image
-        cpu: cpus
-        memory: "~{memory_gb_with_max} GB"
-        disks: "local-disk " + disk_size_gb_with_max + " HDD"
+        cpu: used_cpus
         cpuPlatform: "Intel Ice Lake"
+        memory: memory_gb + " GB"
+        disks: "local-disk " + disk_size_gb + " SSD"
     }
 }
