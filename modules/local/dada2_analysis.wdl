@@ -13,11 +13,6 @@ task dada2_analysis {
         Int cpus = 4
         Int free_cpus = 2
         Int memory_multiplier = 1
-        Int space_multiplier = 1
-        #TODO: What is a good max space to set here?
-        Int max_disk_size_gb = 1000
-        #TODO: What is a good max memory to set here?
-        Int max_memory_gb = 256
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -25,13 +20,12 @@ task dada2_analysis {
     Int estimated_compression_ratio = 5
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
-    # Add buffer space and cap at 500GB
-    Int disk_size_gb_with_buffer = (tar_files_size * estimated_compression_ratio + 50) * space_multiplier
-    Int disk_size_gb_with_max = if disk_size_gb_with_buffer < max_disk_size_gb then disk_size_gb_with_buffer else max_disk_size_gb
+    Int disk_size_gb = (tar_files_size * estimated_compression_ratio + 50)
     Int memory_gb = 8 * memory_multiplier
-    Int memory_gb_with_max = if memory_gb < max_memory_gb then memory_gb else max_memory_gb
     Int total_tar_file = length(demultiplexed_dir_tars)
+    # If free_cpus is greater than cpus, use cpus, else use cpus - free_cpus
     Int n_cores = if cpus > free_cpus then cpus - free_cpus else cpus
+    # If cpus is less than free_cpus, use cpus + free_cpus else use cpus
     Int used_cpus = if cpus < free_cpus then cpus + free_cpus else cpus
 
     command <<<
@@ -44,12 +38,10 @@ task dada2_analysis {
             printf '%02d:%02d:%02d' $((elapsed/3600)) $(((elapsed%3600)/60)) $((elapsed%60))
         }
 
-        echo "$(timestamp) : Memory allocated: ~{memory_gb_with_max} GB"
-        echo "$(timestamp) : Disk space allocated: ~{disk_size_gb_with_max} GB"
+        echo "$(timestamp) : Memory allocated: ~{memory_gb} GB"
+        echo "$(timestamp) : Disk space allocated: ~{disk_size_gb} GB"
         echo "$(timestamp) : Total size of all tar files: ~{tar_files_size} GB"
         echo "$(timestamp) : Total number of tar files: ~{total_tar_file}"
-        echo "$(timestamp) : Size attempted to give before max cap: ~{disk_size_gb_with_buffer} GB"
-        echo "$(timestamp) : Memory attempted to give before max cap: ~{memory_gb} GB"
         echo "$(timestamp) : CPUs allocated: ~{used_cpus}"
 
 
@@ -98,7 +90,7 @@ task dada2_analysis {
         docker: docker_image
         cpu: used_cpus
         cpuPlatform: "Intel Ice Lake"
-        memory: "~{memory_gb_with_max} GB"
-        disks: "local-disk " + disk_size_gb_with_max + " SSD"
+        memory: memory_gb + " GB"
+        disks: "local-disk " + disk_size_gb + " SSD"
     }
 }

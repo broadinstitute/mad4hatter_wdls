@@ -38,7 +38,6 @@ workflow MAD4HatTeR {
         String output_cloud_directory
         Int dada2_cpus = 2
         Int dada2_memory_multiplier = 1
-        Int dada2_space_multiplier = 1
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -95,7 +94,6 @@ workflow MAD4HatTeR {
             just_concatenate = just_concatenate,
             dada2_cpus = dada2_cpus,
             dada2_memory_multiplier = dada2_memory_multiplier,
-            dada2_space_multiplier = dada2_space_multiplier,
             docker_image = docker_image
     }
 

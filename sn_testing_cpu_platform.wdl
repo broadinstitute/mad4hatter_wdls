@@ -12,9 +12,8 @@ workflow TestWdl {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int cpus = 2
+        Int cpus = 4
         Int dada2_memory_multiplier = 1
-        Int dada2_space_multiplier = 1
         Int free_cpus = 2
         String docker_image = "eppicenter/mad4hatter:develop"
     }
@@ -31,7 +30,6 @@ workflow TestWdl {
             just_concatenate = just_concatenate,
             cpus = cpus,
             memory_multiplier = dada2_memory_multiplier,
-            space_multiplier = dada2_space_multiplier,
             docker_image = docker_image,
             free_cpus = free_cpus
     }
