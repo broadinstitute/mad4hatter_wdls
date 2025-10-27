@@ -21,8 +21,6 @@ task mask_sequences {
 
     runtime {
         docker: docker_image
-        #TODO: Should we hardcode this?
-        memory: "8 GB"
         cpu: cpus
     }
 }
