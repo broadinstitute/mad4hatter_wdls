@@ -13,6 +13,7 @@ task dada2_analysis {
         Int cpus = 4
         Int free_cpus = 2
         Int memory_multiplier = 1
+        Int? space_gb
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -20,7 +21,8 @@ task dada2_analysis {
     Int estimated_compression_ratio = 5
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
-    Int disk_size_gb = (tar_files_size * estimated_compression_ratio + 50)
+    Int dynamic_disk_size_gb = (tar_files_size * estimated_compression_ratio + 50)
+    Int disk_size_gb = select_first([space_gb, dynamic_disk_size_gb])
     Int memory_gb = 8 * memory_multiplier
     Int total_tar_file = length(demultiplexed_dir_tars)
     # If free_cpus is greater than cpus, use cpus, else use cpus - free_cpus
@@ -91,6 +93,6 @@ task dada2_analysis {
         cpu: used_cpus
         cpuPlatform: "Intel Ice Lake"
         memory: memory_gb + " GB"
-        disks: "local-disk " + disk_size_gb + " SSD"
+        disks: "local-disk " + disk_size_gb + " LOCAL"
     }
 }

@@ -13,6 +13,7 @@ workflow TestWdl {
         Int max_ee
         Boolean just_concatenate
         Int cpus = 4
+        Int? disk_size_gb
         Int dada2_memory_multiplier = 1
         Int free_cpus = 2
         String docker_image = "eppicenter/mad4hatter:develop"
@@ -31,7 +32,8 @@ workflow TestWdl {
             cpus = cpus,
             memory_multiplier = dada2_memory_multiplier,
             docker_image = docker_image,
-            free_cpus = free_cpus
+            free_cpus = free_cpus,
+            space_gb = disk_size_gb
     }
 
     output {
