@@ -38,8 +38,8 @@ workflow MAD4HatTeR {
         File? principal_resmarkers
         File? resmarkers_info_tsv
         String output_cloud_directory
-        Int dada2_cpus = 2
         Int dada2_memory_multiplier = 1
+        String? dada2_runtime_size
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -56,9 +56,16 @@ workflow MAD4HatTeR {
     # Use a conditional call to execute the ErrorWithMessage task
     # if the condition is false.
     if (!starts_with_gs) {
-        call ErrorWithMessage.error_with_message {
+        call ErrorWithMessage.error_with_message as output_dir_check {
             input:
                 message = "ERROR: The output_cloud_directory directory does not start with 'gs://'."
+        }
+    }
+
+    # Check that the DADA2 runtime (if provided) is an allowed size
+    if (defined(dada2_runtime_size) && !(dada2_runtime_size == "small" || dada2_runtime_size == "medium" || dada2_runtime_size == "large")) {
+        call ErrorWithMessage.error_with_message as runtime_check {
+            input: message = "Invalid DADA2 runtime size provided: " + dada2_runtime_size + ". Must be 'small', 'medium', or 'large'."
         }
     }
 
@@ -94,8 +101,8 @@ workflow MAD4HatTeR {
             omega_a = omega_a,
             max_ee = max_ee,
             just_concatenate = just_concatenate,
-            dada2_cpus = dada2_cpus,
             dada2_memory_multiplier = dada2_memory_multiplier,
+            dada2_runtime_size = dada2_runtime_size,
             docker_image = docker_image
     }
 

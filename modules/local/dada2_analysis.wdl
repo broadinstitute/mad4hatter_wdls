@@ -10,9 +10,8 @@ task dada2_analysis {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int cpus = 4
-        Int free_cpus = 2
         Int memory_multiplier = 1
+        String? dada2_runtime_size
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -21,12 +20,21 @@ task dada2_analysis {
     # Calculate total size of all tar files in the array
     Int tar_files_size = ceil(size(demultiplexed_dir_tars, "GB"))
     Int disk_size_gb = (tar_files_size * estimated_compression_ratio + 50)
-    Int memory_gb = 8 * memory_multiplier
     Int total_tar_file = length(demultiplexed_dir_tars)
-    # If free_cpus is greater than cpus, use cpus, else use cpus - free_cpus
-    Int n_cores = if cpus > free_cpus then cpus - free_cpus else cpus
-    # If cpus is less than free_cpus, use cpus + free_cpus else use cpus
-    Int used_cpus = if cpus < free_cpus then cpus + free_cpus else cpus
+
+    # All small/medium/large runtime configurations for CPU are currently hard-coded
+    Int n_cores = 6
+    Int cpus = 8
+
+    # Determine the runtime size (if not provided) based on the tar file size
+    String determined_runtime_size = if defined(dada2_runtime_size) then dada2_runtime_size else if tar_files_size <= 2 then "small" else if tar_files_size <= 9 then "medium" else "large"
+    # Set the memory GB based on the runtime size (small vs medium vs large)
+    Int estimated_memory_gb = if (determined_runtime_size == "small") then 8 else if (determined_runtime_size == "medium") then 52 else 96
+    # Apply the memory multiplier (defaults to 1)
+    Int determined_memory_gb = estimated_memory_gb * memory_multiplier
+    # Don't allow memory to go over the maximum allowed GB
+    Int max_memory_allowed = 240
+    Int memory_gb = if determined_memory_gb <= max_memory_allowed then determined_memory_gb else max_memory_allowed
 
     command <<<
         set -euo pipefail
@@ -42,7 +50,7 @@ task dada2_analysis {
         echo "$(timestamp) : Disk space allocated: ~{disk_size_gb} GB"
         echo "$(timestamp) : Total size of all tar files: ~{tar_files_size} GB"
         echo "$(timestamp) : Total number of tar files: ~{total_tar_file}"
-        echo "$(timestamp) : CPUs allocated: ~{used_cpus}"
+        echo "$(timestamp) : CPUs allocated: ~{cpus}"
 
 
         # Create directory to extract tars
@@ -88,7 +96,7 @@ task dada2_analysis {
 
     runtime {
         docker: docker_image
-        cpu: used_cpus
+        cpu: cpus
         cpuPlatform: "Intel Ice Lake"
         memory: memory_gb + " GB"
         disks: "local-disk " + disk_size_gb + " SSD"
