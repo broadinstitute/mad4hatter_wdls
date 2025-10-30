@@ -38,7 +38,7 @@ workflow MAD4HatTeR {
         File? principal_resmarkers
         File? resmarkers_info_tsv
         String output_cloud_directory
-        Int dada2_memory_multiplier = 1
+        Int dada2_additional_memory = 0
         String? dada2_runtime_size
         String docker_image = "eppicenter/mad4hatter:develop"
     }
@@ -101,7 +101,7 @@ workflow MAD4HatTeR {
             omega_a = omega_a,
             max_ee = max_ee,
             just_concatenate = just_concatenate,
-            dada2_memory_multiplier = dada2_memory_multiplier,
+            additional_memory = dada2_additional_memory,
             dada2_runtime_size = dada2_runtime_size,
             docker_image = docker_image
     }

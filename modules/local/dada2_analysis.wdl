@@ -10,7 +10,7 @@ task dada2_analysis {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int memory_multiplier = 1
+        Int additional_memory
         String? dada2_runtime_size
         String docker_image = "eppicenter/mad4hatter:develop"
     }
@@ -30,8 +30,8 @@ task dada2_analysis {
     String determined_runtime_size = if defined(dada2_runtime_size) then dada2_runtime_size else if tar_files_size <= 2 then "small" else if tar_files_size <= 9 then "medium" else "large"
     # Set the memory GB based on the runtime size (small vs medium vs large)
     Int estimated_memory_gb = if (determined_runtime_size == "small") then 8 else if (determined_runtime_size == "medium") then 52 else 96
-    # Apply the memory multiplier (defaults to 1)
-    Int determined_memory_gb = estimated_memory_gb * memory_multiplier
+    # Add the additional memory requested
+    Int determined_memory_gb = estimated_memory_gb + additional_memory
     # Don't allow memory to go over the maximum allowed GB
     Int max_memory_allowed = 240
     Int memory_gb = if determined_memory_gb <= max_memory_allowed then determined_memory_gb else max_memory_allowed

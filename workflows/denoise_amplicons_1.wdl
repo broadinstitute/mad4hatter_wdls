@@ -11,7 +11,7 @@ workflow denoise_amplicons_1 {
         Float omega_a
         Int max_ee
         Boolean just_concatenate
-        Int dada2_memory_multiplier = 1
+        Int additional_memory
         String? dada2_runtime_size
         String docker_image = "eppicenter/mad4hatter:develop"
     }
@@ -25,7 +25,7 @@ workflow denoise_amplicons_1 {
             omega_a = omega_a,
             max_ee = max_ee,
             just_concatenate = just_concatenate,
-            memory_multiplier = dada2_memory_multiplier,
+            additional_memory = additional_memory,
             dada2_runtime_size = dada2_runtime_size,
             docker_image = docker_image,
     }
