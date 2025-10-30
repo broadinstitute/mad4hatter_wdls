@@ -35,6 +35,7 @@ task align_to_reference_and_filter_asvs {
 
     runtime {
         docker: docker_image
+        memory: "4 GB"
         cpu: cpus
     }
 }
