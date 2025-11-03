@@ -36,6 +36,7 @@ workflow MAD4HatTeR {
         Boolean mask_homopolymers = true
         File? masked_fasta
         File? principal_resmarkers
+        File? genome
         File? resmarkers_info_tsv
         String output_cloud_directory
         Int dada2_additional_memory = 0
@@ -68,6 +69,16 @@ workflow MAD4HatTeR {
             input: message = "Invalid DADA2 runtime size provided: " + dada2_runtime_size + ". Must be 'small', 'medium', or 'large'."
         }
     }
+
+    # Check that exactly one of genome or refseq_fasta is provided
+    Boolean ref_fasta_or_genome_provided = (defined(genome) && defined(refseq_fasta)) || (!defined(genome) && !defined(refseq_fasta))
+    if (ref_fasta_or_genome_provided) {
+        call ErrorWithMessage.error_with_message {
+            input:
+                message = "Error: Exactly one of 'genome' or 'refseq_fasta' must be provided."
+        }
+    }
+
 
     # Generate final amplicon info
     call ProcessInputsWf.generate_amplicon_info {
@@ -117,6 +128,7 @@ workflow MAD4HatTeR {
             masked_fasta = masked_fasta,
             mask_tandem_repeats = mask_tandem_repeats,
             mask_homopolymers = mask_homopolymers,
+            genome = genome,
             docker_image = docker_image
     }
 
