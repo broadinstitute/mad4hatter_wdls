@@ -36,6 +36,7 @@ workflow MAD4HatTeR {
         Boolean mask_homopolymers = true
         File? masked_fasta
         File? principal_resmarkers
+        File? genome
         File? resmarkers_info_tsv
         String output_cloud_directory
         Int dada2_additional_memory = 0
@@ -117,6 +118,7 @@ workflow MAD4HatTeR {
             masked_fasta = masked_fasta,
             mask_tandem_repeats = mask_tandem_repeats,
             mask_homopolymers = mask_homopolymers,
+            genome = genome,
             docker_image = docker_image
     }
 
