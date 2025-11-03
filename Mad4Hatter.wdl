@@ -73,7 +73,7 @@ workflow MAD4HatTeR {
     # Check that exactly one of genome or refseq_fasta is provided
     Boolean ref_fasta_or_genome_provided = (defined(genome) && defined(refseq_fasta)) || (!defined(genome) && !defined(refseq_fasta))
     if (ref_fasta_or_genome_provided) {
-        call error_with_message.error_with_message {
+        call ErrorWithMessage.error_with_message {
             input:
                 message = "Error: Exactly one of 'genome' or 'refseq_fasta' must be provided."
         }
