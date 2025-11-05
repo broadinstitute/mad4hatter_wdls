@@ -7,8 +7,8 @@ import "quality_control.wdl" as quality_control
 workflow qc_only {
     input {
         File amplicon_info_ch
-        Array[File] left_fastqs
-        Array[File] right_fastqs
+        Array[File] forward_fastqs
+        Array[File] reverse_fastqs
         String sequencer
         Int cutadapt_minlen
         Int allowed_errors
@@ -18,8 +18,8 @@ workflow qc_only {
     call demultiplex_amplicons.demultiplex_amplicons {
         input:
             amplicon_info_ch = amplicon_info_ch,
-            left_fastqs = left_fastqs,
-            right_fastqs = right_fastqs,
+            forward_fastqs = forward_fastqs,
+            reverse_fastqs = reverse_fastqs,
             sequencer = sequencer,
             cutadapt_minlen = cutadapt_minlen,
             allowed_errors = allowed_errors,
