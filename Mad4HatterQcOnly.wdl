@@ -7,8 +7,8 @@ workflow Mad4HatterQcOnly {
     input {
         Array[String] pools
         Array[File] amplicon_info_files
-        Array[File] left_fastqs
-        Array[File] right_fastqs
+        Array[File] forward_fastqs
+        Array[File] reverse_fastqs
         String sequencer
         Int cutadapt_minlen = 100
         Int allowed_errors = 0
@@ -25,8 +25,8 @@ workflow Mad4HatterQcOnly {
     call QcOnly.qc_only {
         input:
             amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-            left_fastqs = left_fastqs,
-            right_fastqs = right_fastqs,
+            forward_fastqs = forward_fastqs,
+            reverse_fastqs = reverse_fastqs,
             sequencer = sequencer,
             cutadapt_minlen = cutadapt_minlen,
             allowed_errors = allowed_errors,

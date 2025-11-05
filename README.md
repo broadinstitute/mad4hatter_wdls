@@ -11,8 +11,8 @@ Add mad4hatter/scientific overview here
 2. For the `sample` table, while you can always add additional columns, the minimum that will be required are the 
    following columns:
 - `sample_id` - The sample ID 
-- `read1` - The path to the read1 (left) FASTQ file
-- `read2` The path to the read2 (right) FASTQ file
+- `read1` - The path to the forward FASTQ file
+- `read2` The path to the reverse FASTQ file
 3. The easiest way to add this to Terra is to create a tsv (for example, called `sample.tsv`). Ensure the primary 
    key header is labeled using the name of the file, followed with `_id` (for example, `sample_id` in this case). The 
    remaining columns can have any headers that make sense for the metadata if `read1` and `read2` are not desired. 
@@ -54,9 +54,9 @@ run via Terra. To import your desired workflow into your Terra workspace, please
    choose the `sample_set` table (or whatever you named this table in the earlier steps). Under "Step 2: Select 
    Data", toggle the "Chose specific sample_sets to process" option in the popup, and then select your desired 
    dataset. Click "Ok". 
-4. Next, you'll have to configure your inputs. The two inputs to pay attention to specifically are `left_fastqs` and 
-   `right_fastqs`. The "Input value" for `left_fastqs` should be `this.samples.read1` (`read1` is the column header, 
-   so if you named it something different, use that instead). The input for `right_fastqs` should be `this.samples.read2` (or whatever you named that column if not `read2`).
+4. Next, you'll have to configure your inputs. The two inputs to pay attention to specifically are `forward_fastqs` and 
+   `reverse_fastqs`. The "Input value" for `forward_fastqs` should be `this.samples.read1` (`read1` is the column 
+   header, so if you named it something different, use that instead). The input for `reverse_fastqs` should be `this.samples.read2` (or whatever you named that column if not `read2`).
 5. The rest of the inputs can be configured as desired. If you uploaded additional columns to your `sample_set` table, you can use those as inputs as well here by using `this.samples.{column_name}`. If you uploaded additional columns to your `sample` table, you can use those as input as 
    well here by using `this.{column_name}`. Otherwise, you can put in literal hard-coded strings and file paths as 
    needed. 

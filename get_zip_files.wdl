@@ -14,8 +14,8 @@ workflow MAD4HatTeR {
     input {
         Array[String] pools
         String sequencer # The sequencer used to produce your data
-        Array[File] left_fastqs # List of left fastqs. Must be in correct order.
-        Array[File] right_fastqs # List of right fastqs. Must be in correct order.
+        Array[File] forward_fastqs # List of forward fastqs. Must be in correct order.
+        Array[File] reverse_fastqs # List of reverse fastqs. Must be in correct order.
         Array[File] amplicon_info_files
         Int cutadapt_minlen = 100
         Int allowed_errors = 0
@@ -35,8 +35,8 @@ workflow MAD4HatTeR {
     call DemultiplexAmpliconsWf.demultiplex_amplicons {
         input:
             amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-            left_fastqs = left_fastqs,
-            right_fastqs = right_fastqs,
+            left_fastqs = forward_fastqs,
+            reverse_fastqs = reverse_fastqs,
             sequencer = sequencer,
             cutadapt_minlen = cutadapt_minlen,
             allowed_errors = allowed_errors,

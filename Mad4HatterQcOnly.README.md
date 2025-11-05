@@ -8,8 +8,8 @@ This workflow runs quality control _only_ on the selected samples.
 |-------------------------|-----------------------------------------------------------------------|---------------|----------|-------------------------------|
 | **pools**               | The names of the pools.                                               | Array[String] | Yes      | -                             |
 | **amplicon_info_files** | The TSVs that contain amplicon information.                           | Array[File]   | Yes      | -                             |
-| **left_fastqs**         | The "read 1" fastq files.                                             | Array[File]   | Yes      | -                             |
-| **right_fastqs**        | The "read 2" fastq files.                                             | Array[File]   | Yes      | -                             |
+| **forward_fastqs**      | List of forward fastqs. Must be in correct order.                     | Array[File]   | Yes      | -                             |
+| **reverse_fastqs**      | List of reverse fastqs. Must be in correct order.                     | Array[File]   | Yes      | -                             |
 | **sequencer**           | The name of the sequencer that was used to process the samples.       | String        | Yes      | -                             |
 | **cutadapt_minlen**     | The minimum length used for cutadapt. Optional.                       | Int           | No       | 100                           |
 | **allowed_errors**      | The number of errors allowed to be encountered in cutadapt. Optional. | Int           | No       | 0                             |
@@ -17,8 +17,8 @@ This workflow runs quality control _only_ on the selected samples.
 
 ### Outputs:
 
-| Output Name         | Description                                         | Type |
-|---------------------|-----------------------------------------------------|------|
-| **amplicon_info**   | The processed amplicon info file                    | File |
-| **amplicon_coverage** | The sample coverage file (from QC)                | File |
-| **sample_coverage** | The amplicon coverage file (from QC)                | File |
+| Output Name             | Description                                        | Type |
+|-------------------------|----------------------------------------------------|------|
+| **amplicon_info**       | The processed amplicon info file                   | File |
+| **amplicon_coverage**   | The sample coverage file (from QC)                 | File |
+| **sample_coverage**     | The amplicon coverage file (from QC)               | File |
