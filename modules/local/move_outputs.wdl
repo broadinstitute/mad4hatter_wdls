@@ -65,17 +65,17 @@ task move_outputs {
     >>>
 
     output {
-        String final_allele_table_cloud_path = sanitized_output_directory + "/" + basename(final_allele_table)
-        String sample_coverage_cloud_path = sanitized_output_directory + "/" + basename(sample_coverage)
-        String amplicon_coverage_cloud_path = sanitized_output_directory + "/" + basename(amplicon_coverage)
-        String dada2_clusters_cloud_path = sanitized_output_directory + "/" + basename(dada2_clusters)
-        String resmarkers_output_cloud_path = sanitized_output_directory + "/" + basename(resmarkers_output)
-        String resmarkers_by_locus_cloud_path = sanitized_output_directory + "/" + basename(resmarkers_by_locus)
-        String microhaps_cloud_path = sanitized_output_directory + "/" + basename(microhaps)
-        String new_mutations_cloud_path = sanitized_output_directory + "/" + basename(new_mutations)
-        String amplicon_info_cloud_path = sanitized_output_directory + "/" + basename(amplicon_info_ch)
-        String reference_fasta_cloud_path = sanitized_output_directory + "/" + basename(reference_fasta)
-        String resmarkers_file_cloud_path = sanitized_output_directory + "/" + basename(resmarkers_file)
+        String allele_data = sanitized_output_directory + "/" + basename(final_allele_table)
+        String sample_coverage_postprocessed = sanitized_output_directory + "/" + basename(sample_coverage)
+        String amplicon_coverage_postprocessed = sanitized_output_directory + "/" + basename(amplicon_coverage)
+        String dada2_clusters = sanitized_output_directory + "/" + basename(dada2_clusters)
+        String resmarker_table = sanitized_output_directory + "/" + basename(resmarkers_output)
+        String resmarker_table_by_locus = sanitized_output_directory + "/" + basename(resmarkers_by_locus)
+        String resmarker_microhaplotype_table = sanitized_output_directory + "/" + basename(microhaps)
+        String all_mutations_table = sanitized_output_directory + "/" + basename(new_mutations)
+        String amplicon_info = sanitized_output_directory + "/" + basename(amplicon_info_ch)
+        String reference = sanitized_output_directory + "/" + basename(reference_fasta)
+        String resmarker_info = sanitized_output_directory + "/" + basename(resmarkers_file)
     }
 
     runtime {

@@ -184,16 +184,16 @@ workflow MAD4HatTeR {
     }
 
     output {
-        String final_allele_table_cloud_path = move_outputs.final_allele_table_cloud_path
-        String sample_coverage_cloud_path = move_outputs.sample_coverage_cloud_path
-        String amplicon_coverage_cloud_path = move_outputs.amplicon_coverage_cloud_path
-        String dada2_clusters_cloud_path = move_outputs.dada2_clusters_cloud_path
-        String resmarkers_output_cloud_path = move_outputs.resmarkers_output_cloud_path
-        String resmarkers_by_locus_cloud_path = move_outputs.resmarkers_by_locus_cloud_path
-        String microhaps_cloud_path = move_outputs.microhaps_cloud_path
-        String new_mutations_cloud_path = move_outputs.new_mutations_cloud_path
-        String amplicon_info_cloud_path = move_outputs.amplicon_info_cloud_path
-        String reference_fasta_cloud_path = move_outputs.reference_fasta_cloud_path
-        String resmarkers_file_cloud_path = move_outputs.resmarkers_file_cloud_path
+        String allele_data = move_outputs.final_allele_table_cloud_path
+        String sample_coverage_postprocessed = move_outputs.sample_coverage_cloud_path
+        String amplicon_coverage_postprocessed = move_outputs.amplicon_coverage_cloud_path
+        String dada2_clusters = move_outputs.dada2_clusters_cloud_path
+        String resmarker_table = move_outputs.resmarkers_output_cloud_path
+        String resmarker_table_by_locus = move_outputs.resmarkers_by_locus_cloud_path
+        String resmarker_microhaplotype_table = move_outputs.microhaps_cloud_path
+        String all_mutations_table = move_outputs.new_mutations_cloud_path
+        String amplicon_info = move_outputs.amplicon_info_cloud_path
+        String reference = move_outputs.reference_fasta_cloud_path
+        String resmarker_info = move_outputs.resmarkers_file_cloud_path
     }
 }
