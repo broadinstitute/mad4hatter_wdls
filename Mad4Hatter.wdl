@@ -184,16 +184,16 @@ workflow MAD4HatTeR {
     }
 
     output {
-        String allele_data = move_outputs.final_allele_table_cloud_path
-        String sample_coverage_postprocessed = move_outputs.sample_coverage_cloud_path
-        String amplicon_coverage_postprocessed = move_outputs.amplicon_coverage_cloud_path
-        String dada2_clusters = move_outputs.dada2_clusters_cloud_path
-        String resmarker_table = move_outputs.resmarkers_output_cloud_path
-        String resmarker_table_by_locus = move_outputs.resmarkers_by_locus_cloud_path
-        String resmarker_microhaplotype_table = move_outputs.microhaps_cloud_path
-        String all_mutations_table = move_outputs.new_mutations_cloud_path
-        String amplicon_info = move_outputs.amplicon_info_cloud_path
-        String reference = move_outputs.reference_fasta_cloud_path
-        String resmarker_info = move_outputs.resmarkers_file_cloud_path
+        String allele_data = move_outputs.allele_data
+        String sample_coverage = move_outputs.sample_coverage
+        String amplicon_coverage = move_outputs.amplicon_coverage
+        String dada2_clusters = move_outputs.dada2_clusters
+        String resmarker_table = move_outputs.resmarker_table
+        String resmarker_table_by_locus = move_outputs.resmarker_table_by_locus
+        String resmarker_microhaplotype_table = move_outputs.resmarker_microhaplotype_table
+        String all_mutations_table = move_outputs.all_mutations_table
+        String amplicon_info = move_outputs.amplicon_info
+        String reference = move_outputs.reference
+        String resmarker_info = move_outputs.resmarker_info
     }
 }
