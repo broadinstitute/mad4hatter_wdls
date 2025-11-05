@@ -21,8 +21,8 @@ workflow MAD4HatTeR {
     input {
         Array[String] pools
         String sequencer # The sequencer used to produce your data
-        Array[File] left_fastqs # List of left fastqs. Must be in correct order.
-        Array[File] right_fastqs # List of right fastqs. Must be in correct order.
+        Array[File] forward_fastqs # List of forward fastqs. Must be in correct order.
+        Array[File] reverse_fastqs # List of reverse fastqs. Must be in correct order.
         Array[File] amplicon_info_files
         Float omega_a = 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001 # Level of statistical evidence required for DADA2 to infer a new ASV
         String dada2_pool = "pseudo" # Pooling method for DADA2 to process ASVs [Options: pseudo (default), true, false]
@@ -93,8 +93,8 @@ workflow MAD4HatTeR {
     call DemultiplexAmpliconsWf.demultiplex_amplicons {
         input:
             amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-            left_fastqs = left_fastqs,
-            right_fastqs = right_fastqs,
+            forward_fastqs = forward_fastqs,
+            reverse_fastqs = reverse_fastqs,
             sequencer = sequencer,
             cutadapt_minlen = cutadapt_minlen,
             allowed_errors = allowed_errors,

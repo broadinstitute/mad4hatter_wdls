@@ -4,8 +4,8 @@ task cutadapt {
     input {
         File fwd_primers
         File rev_primers
-        File reads_1
-        File reads_2
+        File forward_fastq
+        File reverse_fastq
         Int cutadapt_minlen
         String sequencer
         Int allowed_errors
@@ -17,8 +17,8 @@ task cutadapt {
         OUTPUT_DIR="demultiplexed_fastqs"
 
         bash /opt/mad4hatter/bin/cutadapt_process.sh \
-            -1 ~{reads_1} \
-            -2 ~{reads_2} \
+            -1 ~{forward_fastq} \
+            -2 ~{reverse_fastq} \
             -r ~{rev_primers} \
             -f ~{fwd_primers} \
             -m ~{cutadapt_minlen} \
