@@ -35,7 +35,7 @@ workflow MAD4HatTeR {
     call DemultiplexAmpliconsWf.demultiplex_amplicons {
         input:
             amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
-            left_fastqs = forward_fastqs,
+            forward_fastqs = forward_fastqs,
             reverse_fastqs = reverse_fastqs,
             sequencer = sequencer,
             cutadapt_minlen = cutadapt_minlen,
