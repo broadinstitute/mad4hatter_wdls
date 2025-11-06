@@ -44,30 +44,38 @@ task move_outputs {
         # Function to copy a file and echo its destination path
         copy_file() {
             local file=$1
+            local subdirectory=$2
             local filename=$(basename "$file")
-            local destination="~{sanitized_output_directory}/$filename"
+
+            if [[ -n "$subdirectory" ]]; then
+                destination="~{sanitized_output_directory}/$subdirectory/$filename"
+            else
+                # Otherwise, copy directly under sanitized_output_directory
+                destination="~{sanitized_output_directory}/$filename"
+            fi
+
             echo "Copying $file to $destination"
             gcloud alpha storage cp "$file" "$destination"
         }
 
         # Copy individual files
-        copy_file "~{final_allele_table}"
-        copy_file "~{sample_coverage}"
-        copy_file "~{amplicon_coverage}"
-        copy_file "~{dada2_clusters}"
-        copy_file "~{resmarkers_output}"
-        copy_file "~{resmarkers_by_locus}"
-        copy_file "~{microhaps}"
-        copy_file "~{new_mutations}"
-        copy_file "~{amplicon_info_ch}"
-        copy_file "~{reference_fasta}"
-        copy_file "~{resmarkers_file}"
+        copy_file "~{final_allele_table}" ""
+        copy_file "~{sample_coverage}" ""
+        copy_file "~{amplicon_coverage}" ""
+        copy_file "~{dada2_clusters}" "raw_dada2_output"
+        copy_file "~{resmarkers_output}" "resistance_marker_module"
+        copy_file "~{resmarkers_by_locus}" "resistance_marker_module"
+        copy_file "~{microhaps}" "resistance_marker_module"
+        copy_file "~{new_mutations}" "resistance_marker_module"
+        copy_file "~{amplicon_info_ch}" "panel_information"
+        copy_file "~{reference_fasta}" "panel_information"
+        copy_file "~{resmarkers_file}" "panel_information"
     >>>
 
     output {
         String allele_data = sanitized_output_directory + "/" + basename(final_allele_table)
-        String sample_coverage_postprocessed = sanitized_output_directory + "/" + basename(sample_coverage)
-        String amplicon_coverage_postprocessed = sanitized_output_directory + "/" + basename(amplicon_coverage)
+        String sample_coverage = sanitized_output_directory + "/" + basename(sample_coverage)
+        String amplicon_coverage = sanitized_output_directory + "/" + basename(amplicon_coverage)
         String dada2_clusters = sanitized_output_directory + "/" + basename(dada2_clusters)
         String resmarker_table = sanitized_output_directory + "/" + basename(resmarkers_output)
         String resmarker_table_by_locus = sanitized_output_directory + "/" + basename(resmarkers_by_locus)
