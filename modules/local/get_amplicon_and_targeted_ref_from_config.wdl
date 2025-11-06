@@ -37,7 +37,7 @@ task get_amplicon_and_targeted_ref_from_config {
         if missing_pools:
             raise ValueError(f"The following pools are not available in the config: {', '.join(missing_pools)}")
 
-       logging.info("Writing amplicon info and targeted reference paths to output files")
+        logging.info("Writing amplicon info and targeted reference paths to output files")
         # Write the paths to output files
         with open("amplicon_info_paths.txt", "w") as f:
             for path in amplicon_info_paths:
