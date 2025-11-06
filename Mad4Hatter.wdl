@@ -40,7 +40,7 @@ workflow MAD4HatTeR {
         File? masked_fasta
         File? principal_resmarkers
         File? resmarkers_info_tsv
-        File pool_options_json = "opt/mad4hatter/conf/terra_panel.json" # Optional custom pool options JSON file. Needs to be on docker image.
+        File pool_options_json = "/opt/mad4hatter/conf/terra_panel.json" # Optional custom pool options JSON file. Needs to be on docker image.
         String output_cloud_directory
         Int dada2_additional_memory = 0
         String? dada2_runtime_size

@@ -5,13 +5,17 @@ task get_amplicon_and_targeted_ref_from_config {
     input {
         Array[String] pools
         String docker_image = "eppicenter/mad4hatter:develop"
-        String pool_options_json = "opt/mad4hatter/conf/terra_panel.json" # located on docker
+        String pool_options_json = "/opt/mad4hatter/conf/terra_panel.json" # located on docker
     }
 
     command <<<
         python3 <<CODE
         import json
+        import logging
 
+        logging.basicConfig(level=logging.INFO)
+
+        logging.info("Loading pool configuration from JSON")
         with open(~{pool_options_json}) as f:
             pool_config = json.load(f)
 
@@ -19,6 +23,7 @@ task get_amplicon_and_targeted_ref_from_config {
         targeted_reference_paths = []
         missing_pools = []
 
+        logging.info("Processing requested pools: ~{sep=',' pools}")
         for pool in "~{sep=',' pools}".split(","):
             if pool in pool_config['pool_options']:
                 amplicon_info_paths.append(pool_config['pool_options'][pool]["amplicon_info_path"])
@@ -28,6 +33,7 @@ task get_amplicon_and_targeted_ref_from_config {
         if missing_pools:
             raise ValueError(f"The following pools are not available in the config: {', '.join(missing_pools)}")
 
+       logging.info("Writing amplicon info and targeted reference paths to output files")
         # Write the paths to output files
         with open("amplicon_info_paths.txt", "w") as f:
             for path in amplicon_info_paths:
