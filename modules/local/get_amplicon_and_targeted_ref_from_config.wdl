@@ -9,7 +9,11 @@ task get_amplicon_and_targeted_ref_from_config {
     }
 
     command <<<
+        set -euo pipefail
+        set -x
+
         python3 <<CODE
+
         import json
         import logging
 
