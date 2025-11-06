@@ -20,7 +20,7 @@ task get_amplicon_and_targeted_ref_from_config {
         logging.basicConfig(level=logging.INFO)
 
         logging.info("Loading pool configuration from JSON")
-        with open(~{pool_options_json}) as f:
+        with open("~{pool_options_json}") as f:
             pool_config = json.load(f)
 
         amplicon_info_paths = []
