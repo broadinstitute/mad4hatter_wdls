@@ -21,14 +21,6 @@ workflow denoise_amplicons_2 {
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
-    Boolean invalid_args = !defined(refseq_fasta) && !defined(genome)
-    if (invalid_args) {
-        call error_with_message.error_with_message {
-            input:
-                message = "Error: If 'refseq_fasta' is NOT provided, 'genome' MUST be provided."
-        }
-    }
-
     # Process clusters if just_concatenate is true
     if (just_concatenate) {
         call collapse_concatenated_reads.collapse_concatenated_reads {
