@@ -38,29 +38,19 @@ task get_amplicon_and_targeted_ref_from_config {
         if missing_pools:
             raise ValueError(f"The following pools are not available in the config: {', '.join(missing_pools)}")
 
-        logging.info("Copying amplicon info and targeted reference files to working directory")
-        for path in amplicon_info_paths + targeted_reference_paths:
-        rel_path = os.path.relpath(path, "/")  # removes leading /
-        dest_path = os.path.join(os.getcwd(), rel_path)
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-        shutil.copy2(path, dest_path)
-
-        logging.info("Writing amplicon info and targeted reference paths to output files")
-        # Write the paths to output files
-        with open("amplicon_info_paths.txt", "w") as f:
-            for path in amplicon_info_paths:
-                f.write(path + "\n")
-
-        with open("targeted_reference_paths.txt", "w") as f:
-            for path in targeted_reference_paths:
-                f.write(path + "\n")
-        logging.info("Completed writing output files")
+        logging.info("Copying amplicon info and targeted reference files to amplicon_info_and_references directory")
+        os.makedirs("amplicon_info_files", exist_ok=True)
+        os.makedirs("targeted_reference_files", exist_ok=True)
+        for amplicon_file in amplicon_info_paths
+            shutil.copy2(amplicon_file, "amplicon_info_files/")
+        for reference_file in targeted_reference_paths
+            shutil.copy2(reference_file, "targeted_reference_files/")
         CODE
     >>>
 
     output {
-        Array[File] amplicon_info_files = read_lines("amplicon_info_paths.txt")
-        Array[File] targeted_reference_files = read_lines("targeted_reference_paths.txt")
+        Array[File] amplicon_info_files = glob("amplicon_info_files/*")
+        Array[File] targeted_reference_files = glob("targeted_reference_files/*")
     }
 
     runtime {
