@@ -5,26 +5,24 @@ task get_amplicon_and_targeted_ref_from_config {
     input {
         Array[String] pools
         String docker_image = "eppicenter/mad4hatter:develop"
-        String config_file_path = "/opt/config/wdl.config" # located on docker
+        String pool_options_json = "opt/mad4hatter/conf/terra_panel.json" # located on docker
     }
 
     command <<<
         python3 <<CODE
         import json
 
-        with open(~{config_file_path}) as f:
+        with open(~{pool_options_json}) as f:
             pool_config = json.load(f)
 
         amplicon_info_paths = []
         targeted_reference_paths = []
         missing_pools = []
-        available_pools_dict = pool_config['params']['pool_options']
 
-        #TODO: Is this how you access list in python from WDL?
-        for pool in "~{pools}".split(" "):
-            if pool in available_pools_dict:
-                amplicon_info_paths.append(available_pools_dict[pool]["amplicon_info_path"])
-                targeted_reference_paths.append(available_pools_dict[pool]["targeted_reference_path"])
+        for pool in "~{sep=',' pools}".split(","):
+            if pool in pool_config['pool_options']:
+                amplicon_info_paths.append(pool_config['pool_options'][pool]["amplicon_info_path"])
+                targeted_reference_paths.append(pool_config['pool_options'][pool]["targeted_reference_path"])
             else:
                 missing_pools.append(pool)
         if missing_pools:
