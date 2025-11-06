@@ -30,8 +30,8 @@ task get_amplicon_and_targeted_ref_from_config {
 
         # Write the paths to output files
         with open("amplicon_info_paths.txt", "w") as f:
-        for path in amplicon_info_paths:
-            f.write(path + "\n")
+            for path in amplicon_info_paths:
+                f.write(path + "\n")
 
         with open("targeted_reference_paths.txt", "w") as f:
             for path in targeted_reference_paths:
