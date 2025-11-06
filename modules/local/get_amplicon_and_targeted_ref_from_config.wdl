@@ -42,9 +42,9 @@ task get_amplicon_and_targeted_ref_from_config {
         logging.info("Copying amplicon info and targeted reference files to output directories")
         os.makedirs("amplicon_info_files", exist_ok=True)
         os.makedirs("targeted_reference_files", exist_ok=True)
-        for amplicon_file in amplicon_info_paths
+        for amplicon_file in amplicon_info_paths:
             shutil.copy2(amplicon_file, "amplicon_info_files/")
-        for reference_file in targeted_reference_paths
+        for reference_file in targeted_reference_paths:
             shutil.copy2(reference_file, "targeted_reference_files/")
         CODE
     >>>
