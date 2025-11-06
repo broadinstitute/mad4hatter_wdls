@@ -8,6 +8,7 @@ import "workflows/quality_control.wdl" as QualityControlWf
 import "workflows/process_inputs.wdl" as ProcessInputsWf
 import "modules/local/build_alleletable.wdl" as BuildAlleletable
 import "modules/local/move_outputs.wdl" as MoveOutputs
+import "modules/local/get_amplicon_and_targeted_ref_from_config.wdl" as GetAmpliconAndTargetedRefFromConfig
 import "modules/local/error_with_message.wdl" as ErrorWithMessage
 
 ## MAD4HatTeR Main Workflow
@@ -23,12 +24,14 @@ workflow MAD4HatTeR {
         String sequencer # The sequencer used to produce your data
         Array[File] forward_fastqs # List of forward fastqs. Must be in correct order.
         Array[File] reverse_fastqs # List of reverse fastqs. Must be in correct order.
-        Array[File] amplicon_info_files
+        Array[File]? amplicon_info_files
+        Array[File]? targeted_reference_files
+        File? refseq_fasta # Path to targeted reference sequences (optional, auto-generated if not provided)
+        File? genome
         Float omega_a = 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001 # Level of statistical evidence required for DADA2 to infer a new ASV
         String dada2_pool = "pseudo" # Pooling method for DADA2 to process ASVs [Options: pseudo (default), true, false]
         Int band_size = 16 # Limit on the net cumulative number of insertions of one sequence relative to the other in DADA2
         Int max_ee = 3 # Limit on number of expected errors within a read during filtering and trimming within DADA2
-        File? refseq_fasta # Path to targeted reference sequences (optional, auto-generated if not provided)
         Int cutadapt_minlen = 100
         Int allowed_errors = 0
         Boolean just_concatenate = false
@@ -36,7 +39,6 @@ workflow MAD4HatTeR {
         Boolean mask_homopolymers = true
         File? masked_fasta
         File? principal_resmarkers
-        File? genome
         File? resmarkers_info_tsv
         String output_cloud_directory
         Int dada2_additional_memory = 0
@@ -70,22 +72,35 @@ workflow MAD4HatTeR {
         }
     }
 
-    # Check that exactly one of genome or refseq_fasta is provided
-    Boolean ref_fasta_or_genome_provided = (defined(genome) && defined(refseq_fasta)) || (!defined(genome) && !defined(refseq_fasta))
-    if (ref_fasta_or_genome_provided) {
+    # Check that either one of genome or refseq_fasta is provided or nothing is provided (then refseq_fasta is auto-generated)
+    Boolean both_genome_and_refseq_provided = defined(genome) && defined(refseq_fasta)
+    if (both_genome_and_refseq_provided) {
         call ErrorWithMessage.error_with_message {
             input:
-                message = "Error: Exactly one of 'genome' or 'refseq_fasta' must be provided."
+                message = "Error: Either one of 'genome' or 'refseq_fasta' is provided or nothing is provided."
         }
     }
 
+    # Check if either amplicon_info_files or targeted_reference_files
+    Boolean either_amplicon_info_or_targeted_ref_provided = defined(amplicon_info_files) || defined(targeted_reference_files)
+    if (!either_amplicon_info_or_targeted_ref_provided) {
+        # If neither is provided then get it from config on docker image
+        call GetAmpliconAndTargetedRefFromConfig.get_amplicon_and_targeted_ref_from_config {
+            input:
+                pools = pools,
+                docker_image = docker_image
+        }
+    }
+
+    # Determine final amplicon info files to use. If provided, use those; otherwise, use from config.
+    Array[File] amplicon_info_files_final = select_first([amplicon_info_files, get_amplicon_and_targeted_ref_from_config.amplicon_info_files])
 
     # Generate final amplicon info
     call ProcessInputsWf.generate_amplicon_info {
         input:
             pools = pools,
             docker_image = docker_image,
-            amplicon_info_files = amplicon_info_files
+            amplicon_info_files = amplicon_info_files_final
     }
 
     # Step 1: Demultiplex amplicons by target region
@@ -122,6 +137,7 @@ workflow MAD4HatTeR {
     call DenoiseAmplicons2Wf.denoise_amplicons_2 {
         input:
             amplicon_info_ch = generate_amplicon_info.amplicon_info_ch,
+            targeted_reference_files = select_first([targeted_reference_files, get_amplicon_and_targeted_ref_from_config.targeted_reference_files]),
             clusters = denoise_amplicons_1.dada2_clusters,
             just_concatenate = just_concatenate,
             refseq_fasta = refseq_fasta,
