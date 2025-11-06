@@ -16,6 +16,7 @@ task get_amplicon_and_targeted_ref_from_config {
 
         import json
         import logging
+        import shutil
 
         logging.basicConfig(level=logging.INFO)
 
@@ -36,6 +37,13 @@ task get_amplicon_and_targeted_ref_from_config {
                 missing_pools.append(pool)
         if missing_pools:
             raise ValueError(f"The following pools are not available in the config: {', '.join(missing_pools)}")
+
+        logging.info("Copying amplicon info and targeted reference files to working directory")
+        for path in amplicon_info_paths + targeted_reference_paths:
+        rel_path = os.path.relpath(path, "/")  # removes leading /
+        dest_path = os.path.join(os.getcwd(), rel_path)
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        shutil.copy2(path, dest_path)
 
         logging.info("Writing amplicon info and targeted reference paths to output files")
         # Write the paths to output files
