@@ -38,7 +38,7 @@ task get_amplicon_and_targeted_ref_from_config {
         if missing_pools:
             raise ValueError(f"The following pools are not available in the config: {', '.join(missing_pools)}")
 
-        logging.info("Copying amplicon info and targeted reference files to amplicon_info_and_references directory")
+        logging.info("Copying amplicon info and targeted reference files to output directories")
         os.makedirs("amplicon_info_files", exist_ok=True)
         os.makedirs("targeted_reference_files", exist_ok=True)
         for amplicon_file in amplicon_info_paths
