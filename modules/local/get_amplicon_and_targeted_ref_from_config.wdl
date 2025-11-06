@@ -17,6 +17,7 @@ task get_amplicon_and_targeted_ref_from_config {
         import json
         import logging
         import shutil
+        import os
 
         logging.basicConfig(level=logging.INFO)
 
