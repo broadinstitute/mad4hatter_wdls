@@ -1,6 +1,6 @@
 version 1.0
 
-import "../../modules/local/mask_reference_tandem_repeats.wdl" as mask_reference_tandem_repeats
+import "modules/local/mask_reference_tandem_repeats.wdl" as mask_reference_tandem_repeats
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
