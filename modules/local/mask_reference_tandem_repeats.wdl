@@ -12,6 +12,9 @@ task mask_reference_tandem_repeats {
     command <<<
         set -euo pipefail
 
+        ls -l ~{refseq_fasta}
+        md5sum ~{refseq_fasta}
+
         trf ~{refseq_fasta} 2 7 7 80 10 ~{min_score} ~{max_period} -h -m
     >>>
 
