@@ -1,6 +1,6 @@
 version 1.0
 
-import "modules/local/mask_reference_tandem_repeats.wdl" as mask_reference_tandem_repeats
+import "modules/local/mask_reference_tandem_repeats.wdl" as MaskReferenceTandemRepeats
 
 # Can be used for testing subworkflows and modules
 workflow TestWdl {
@@ -12,7 +12,7 @@ workflow TestWdl {
     }
 
     # Testing task
-    call mask_reference_tandem_repeats.mask_reference_tandem_repeats {
+    call MaskReferenceTandemRepeats.mask_reference_tandem_repeats as z {
         input:
             refseq_fasta = refseq_fasta,
             min_score = min_score,
@@ -21,6 +21,6 @@ workflow TestWdl {
     }
 
     output {
-        File masked_fasta = mask_reference_tandem_repeats.masked_fasta
+        File masked_fasta = z.masked_fasta
     }
 }
