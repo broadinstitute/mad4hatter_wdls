@@ -15,6 +15,8 @@ task mask_reference_tandem_repeats {
         ls -l ~{refseq_fasta}
         md5sum ~{refseq_fasta}
 
+        # Name the input file to a standard name so outputs are predictable
+        mv ~{refseq_fasta} reference.fasta
         trf ~{refseq_fasta} 2 7 7 80 10 ~{min_score} ~{max_period} -h -m
     >>>
 
