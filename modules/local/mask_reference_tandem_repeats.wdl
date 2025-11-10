@@ -5,7 +5,6 @@ task mask_reference_tandem_repeats {
         File refseq_fasta
         Int min_score
         Int max_period
-        Int mem_gb = 2
         String docker_image = "eppicenter/mad4hatter:develop"
     }
 
@@ -23,6 +22,5 @@ task mask_reference_tandem_repeats {
 
     runtime {
         docker: docker_image
-        memory: "~{mem_gb} GB"
     }
 }
