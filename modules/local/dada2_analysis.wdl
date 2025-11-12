@@ -46,6 +46,7 @@ task dada2_analysis {
             printf '%02d:%02d:%02d' $((elapsed/3600)) $(((elapsed%3600)/60)) $((elapsed%60))
         }
 
+        echo "$(timestamp) : runtime size selected: ~{determined_runtime_size}"
         echo "$(timestamp) : Memory allocated: ~{memory_gb} GB"
         echo "$(timestamp) : Disk space allocated: ~{disk_size_gb} GB"
         echo "$(timestamp) : Total size of all tar files: ~{tar_files_size} GB"

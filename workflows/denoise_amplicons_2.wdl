@@ -17,15 +17,8 @@ workflow denoise_amplicons_2 {
         Boolean mask_tandem_repeats
         Boolean mask_homopolymers
         File? genome
+        Array[File]? targeted_reference_files
         String docker_image = "eppicenter/mad4hatter:develop"
-    }
-
-    Boolean invalid_args = !defined(refseq_fasta) && !defined(genome)
-    if (invalid_args) {
-        call error_with_message.error_with_message {
-            input:
-                message = "Error: If 'refseq_fasta' is NOT provided, 'genome' MUST be provided."
-        }
     }
 
     # Process clusters if just_concatenate is true
@@ -46,7 +39,8 @@ workflow denoise_amplicons_2 {
             input:
                 amplicon_info_ch = amplicon_info_ch,
                 genome = genome,
-                docker_image = docker_image
+                docker_image = docker_image,
+                targeted_reference_files = targeted_reference_files
         }
     }
 
