@@ -59,7 +59,7 @@ workflow MAD4HatTeR {
     # Use a conditional call to execute the ErrorWithMessage task
     # if the condition is false.
     if (!valid_subdirectory) {
-        call ErrorWithMessage.error_with_message as output_dir_check {
+        call ErrorWithMessage.error_with_message as invalid_output_directory {
             input:
                 message = "ERROR: The output_directory can only contain alphanumeric, dashes and underscores."
         }
@@ -67,15 +67,26 @@ workflow MAD4HatTeR {
 
     # Check that the DADA2 runtime (if provided) is an allowed size
     if (defined(dada2_runtime_size) && !(dada2_runtime_size == "small" || dada2_runtime_size == "medium" || dada2_runtime_size == "large")) {
-        call ErrorWithMessage.error_with_message as runtime_check {
+        call ErrorWithMessage.error_with_message as invalid_dada2_runtime_size {
             input: message = "Invalid DADA2 runtime size provided: " + dada2_runtime_size + ". Must be 'small', 'medium', or 'large'."
+        }
+    }
+
+    # Check that the number of forward and reverse fastqs are not empty
+    Int num_forward_fastqs = length(forward_fastqs)
+    Int num_reverse_fastqs = length(reverse_fastqs)
+
+    if (num_forward_fastqs == 0 || num_reverse_fastqs == 0) {
+        call ErrorWithMessage.error_with_message as invalid_fastq_list {
+            input:
+                message = "Error: One or both of 'forward_fastqs' and 'reverse_fastqs' is an empty list. Please ensure you are referencing the correct columns from your data table. If your samples are in a 'sample' table and you are running from a 'sample_set' data table, use 'this.samples.read1' and 'this.samples.read2' (NOT 'this.read1' or 'sample_set.read1')."
         }
     }
 
     # Check that either one of genome or refseq_fasta is provided or nothing is provided (then refseq_fasta is auto-generated)
     Boolean both_genome_and_refseq_provided = defined(genome) && defined(refseq_fasta)
     if (both_genome_and_refseq_provided) {
-        call ErrorWithMessage.error_with_message {
+        call ErrorWithMessage.error_with_message as invalid_reference_inputs {
             input:
                 message = "Error: Either one of 'genome' or 'refseq_fasta' is provided or nothing is provided."
         }
